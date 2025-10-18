@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { LoginPage } from "@/components/LoginPage";
+import { TechnologySelection } from "@/components/TechnologySelection";
 import { Dashboard } from "@/components/Dashboard";
 import { QueryPage } from "@/components/QueryPage";
 import { CertificatePage } from "@/components/CertificatePage";
@@ -8,9 +9,10 @@ interface UserData {
   name: string;
   track: string;
   batchCode: string;
+  technology?: "sql" | "python";
 }
 
-type View = "login" | "dashboard" | "query" | "certificate";
+type View = "login" | "techSelection" | "dashboard" | "query" | "certificate";
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>("login");
@@ -51,7 +53,16 @@ const Index = () => {
     const user = { name, track, batchCode };
     setUserData(user);
     localStorage.setItem("haq_user", JSON.stringify(user));
-    setCurrentView("dashboard");
+    setCurrentView("techSelection");
+  };
+
+  const handleTechnologySelect = (technology: "sql" | "python") => {
+    if (userData) {
+      const updatedUser = { ...userData, technology };
+      setUserData(updatedUser);
+      localStorage.setItem("haq_user", JSON.stringify(updatedUser));
+      setCurrentView("dashboard");
+    }
   };
 
   const handleDayClick = (day: number) => {
@@ -92,6 +103,10 @@ const Index = () => {
 
   if (currentView === "login") {
     return <LoginPage onLogin={handleLogin} />;
+  }
+
+  if (currentView === "techSelection" && userData) {
+    return <TechnologySelection onSelect={handleTechnologySelect} />;
   }
 
   if (currentView === "query" && selectedDay && userData) {
