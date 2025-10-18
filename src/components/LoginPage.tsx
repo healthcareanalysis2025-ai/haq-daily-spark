@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import haqLogo from "@/assets/haq-logo.png";
-import { Facebook } from "lucide-react";
+
 
 interface LoginPageProps {
   onLogin: (name: string, track: string, batchCode: string) => void;
@@ -63,64 +63,45 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       <div className="flex-1 container mx-auto px-6 py-16 flex items-center justify-between gap-16">
         {/* Left Side - Tagline */}
         <div className="flex-1 max-w-xl animate-fade-in">
-          <h2 className="text-5xl font-bold text-foreground mb-6 leading-tight">
+          <h2 className="text-5xl font-bold text-foreground mb-6 leading-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
             Ready to master the technologies that power healthcare analysis?
           </h2>
-          <p className="text-lg text-muted-foreground mb-4">
+          <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
             Being a healthcare analyst comes down to mastering SQL, Python and Statistics.
           </p>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-muted-foreground leading-relaxed">
             Start your journey to mastery with us today.
           </p>
         </div>
 
         {/* Right Side - Sign Up Form */}
-        <Card className="w-full max-w-md shadow-xl animate-scale-in bg-card border-border">
-          <CardHeader className="text-center space-y-2 pb-6">
-            <CardTitle className="text-2xl font-bold text-foreground">
-              Sign Up
+        <Card className="w-full max-w-md shadow-2xl animate-scale-in bg-card border-border backdrop-blur-sm">
+          <CardHeader className="text-center space-y-3 pb-8">
+            <CardTitle className="text-3xl font-bold text-foreground">
+              Get Started
             </CardTitle>
+            <p className="text-sm text-muted-foreground">Create your account to begin learning</p>
           </CardHeader>
 
-          <CardContent className="space-y-6">
-            {/* Facebook Login Button */}
-            <Button 
-              variant="default" 
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
-              disabled
-            >
-              <Facebook className="w-5 h-5" />
-              Login with Facebook
-            </Button>
+          <CardContent className="space-y-6 px-8 pb-8">
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">or</span>
-              </div>
-            </div>
-
-            <p className="text-center text-sm font-semibold text-foreground">Sign Up with Email</p>
-
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
                 <Input
                   id="name"
                   type="text"
                   placeholder="Enter your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="transition-all focus:ring-2 focus:ring-primary"
+                  className="h-12 transition-all focus:ring-2 focus:ring-primary border-border"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="track">Track</Label>
+                <Label htmlFor="track" className="text-sm font-medium">Track</Label>
                 <Select value={track} onValueChange={setTrack}>
-                  <SelectTrigger id="track" className="transition-all focus:ring-2 focus:ring-primary">
+                  <SelectTrigger id="track" className="h-12 transition-all focus:ring-2 focus:ring-primary border-border">
                     <SelectValue placeholder="Select your track" />
                   </SelectTrigger>
                   <SelectContent>
@@ -132,23 +113,23 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="batchCode">Batch Code</Label>
+                <Label htmlFor="batchCode" className="text-sm font-medium">Batch Code</Label>
                 <Input
                   id="batchCode"
                   type="text"
                   placeholder="e.g., DA100"
                   value={batchCode}
                   onChange={(e) => setBatchCode(e.target.value)}
-                  className="transition-all focus:ring-2 focus:ring-primary"
+                  className="h-12 transition-all focus:ring-2 focus:ring-primary border-border"
                 />
               </div>
 
               <Button
                 onClick={handleSubmit}
                 disabled={!name || !track || !batchCode}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all hover:scale-105"
+                className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground transition-all hover:scale-[1.02] hover:shadow-lg font-semibold text-base mt-2"
               >
-                Sign Up with Email
+                Start Learning
               </Button>
             </div>
 
