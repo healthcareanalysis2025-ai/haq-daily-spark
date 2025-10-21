@@ -4,6 +4,7 @@ import { TechnologySelection } from "@/components/TechnologySelection";
 import { Dashboard } from "@/components/Dashboard";
 import { QueryPage } from "@/components/QueryPage";
 import { CertificatePage } from "@/components/CertificatePage";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UserData {
   name: string;
@@ -20,26 +21,58 @@ const Index = () => {
   const [completedDays, setCompletedDays] = useState<number[]>([]);
   const [attemptedDays, setAttemptedDays] = useState<number[]>([]);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
   
   // Current day is October 17, 2025 (day 1)
   const currentDay = 1;
 
-  // Load data from localStorage
+  // Check authentication and load data
   useEffect(() => {
-    const savedUser = localStorage.getItem("haq_user");
-    const savedCompleted = localStorage.getItem("haq_completed");
-    const savedAttempted = localStorage.getItem("haq_attempted");
+    // Check for active Supabase session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        // User is authenticated, load their data
+        const savedUser = localStorage.getItem("haq_user");
+        const savedCompleted = localStorage.getItem("haq_completed");
+        const savedAttempted = localStorage.getItem("haq_attempted");
 
-    if (savedUser) {
-      setUserData(JSON.parse(savedUser));
-      setCurrentView("dashboard");
-    }
-    if (savedCompleted) {
-      setCompletedDays(JSON.parse(savedCompleted));
-    }
-    if (savedAttempted) {
-      setAttemptedDays(JSON.parse(savedAttempted));
-    }
+        if (savedUser) {
+          const user = JSON.parse(savedUser);
+          setUserData(user);
+          
+          // Check if technology is selected
+          if (user.technology) {
+            setCurrentView("dashboard");
+          } else {
+            setCurrentView("techSelection");
+          }
+        } else {
+          // Has session but no user data, stay on login to complete profile
+          setCurrentView("login");
+        }
+        
+        if (savedCompleted) {
+          setCompletedDays(JSON.parse(savedCompleted));
+        }
+        if (savedAttempted) {
+          setAttemptedDays(JSON.parse(savedAttempted));
+        }
+      } else {
+        // No session, show login
+        setCurrentView("login");
+      }
+      setIsAuthChecking(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        setUserData(null);
+        setCurrentView("login");
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   // Check if all queries are completed
@@ -100,6 +133,18 @@ const Index = () => {
     setAttemptedDays([]);
     setCurrentView("login");
   };
+
+  // Show loading while checking auth
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (currentView === "login") {
     return <LoginPage onLogin={handleLogin} />;
