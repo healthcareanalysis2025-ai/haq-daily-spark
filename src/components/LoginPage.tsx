@@ -203,37 +203,37 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 container mx-auto px-6 py-16 flex items-center justify-between gap-16">
+      <div className="flex-1 container mx-auto px-6 py-20 flex items-center justify-between gap-16">
         {/* Left Side - Tagline */}
         <div className="flex-1 max-w-xl animate-fade-in">
           <h2 className="text-5xl font-bold text-foreground mb-6 leading-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
             Ready to master the technologies that power healthcare analysis?
           </h2>
-          <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
+          <p className="text-lg text-muted-foreground mb-4">
             Being a healthcare analyst comes down to mastering SQL, Python and Statistics.
           </p>
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <p className="text-lg text-muted-foreground">
             Start your journey to mastery with us today.
           </p>
         </div>
 
         {/* Right Side - Login/Sign Up Form */}
         <Card className="w-full max-w-md shadow-elegant animate-scale-in bg-card border-border hover:shadow-card-hover transition-shadow duration-300">
-          <CardHeader className="text-center space-y-3 pb-8">
+          <CardHeader className="text-center space-y-3 pb-6 pt-8 px-6">
             <CardTitle className="text-3xl font-bold text-foreground">
               Get Started
             </CardTitle>
             <p className="text-sm text-muted-foreground">Login or create your account</p>
           </CardHeader>
 
-          <CardContent className="space-y-6 px-8 pb-8">
+          <CardContent className="space-y-6 px-6 pb-6">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login" className="data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-primary">Login</TabsTrigger>
                 <TabsTrigger value="signup" className="data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-primary">Sign Up</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="login" className="space-y-5 mt-6">
+              <TabsContent value="login" className="space-y-5 mt-6 pt-2">
                 <div className="space-y-2">
                   <Label htmlFor="login-email" className="text-sm font-medium">Email</Label>
                   <Input
@@ -267,7 +267,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 </Button>
               </TabsContent>
 
-              <TabsContent value="signup" className="space-y-5 mt-6">
+              <TabsContent value="signup" className="space-y-5 mt-6 pt-2">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
                   <Input
@@ -350,12 +350,12 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>About Healthcare Analysis HQ</DialogTitle>
-                    <DialogDescription className="space-y-4 pt-4">
-                      <p>
+                  <DialogDescription className="pt-4 space-y-4">
+                      <p className="mb-4">
                         Healthcare Analysis HQ (HAQ) is your daily companion for mastering
                         healthcare analysis technologies.
                       </p>
-                      <p>
+                      <p className="mb-4">
                         Complete 15 daily queries to earn your certificate and demonstrate your
                         expertise in healthcare data analysis.
                       </p>
