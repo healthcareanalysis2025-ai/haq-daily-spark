@@ -37,6 +37,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showTechDialog, setShowTechDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState("login");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -190,7 +191,10 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 Logout
               </Button>
             ) : (
-              <button className="nav-link !text-primary">
+              <button 
+                onClick={() => setActiveTab("login")}
+                className="nav-link !text-primary"
+              >
                 Login
               </button>
             )}
@@ -223,7 +227,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
           </CardHeader>
 
           <CardContent className="space-y-6 px-8 pb-8">
-            <Tabs defaultValue="login" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login" className="data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-primary">Login</TabsTrigger>
                 <TabsTrigger value="signup" className="data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-primary">Sign Up</TabsTrigger>
