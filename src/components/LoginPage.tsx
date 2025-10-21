@@ -36,6 +36,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [showTechDialog, setShowTechDialog] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -164,9 +165,18 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
             <h1 className="text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ (HAQ)</h1>
           </div>
           <nav className="flex gap-8 items-center">
-            <button className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-              Technology
-            </button>
+            {isLoggedIn ? (
+              <button 
+                onClick={() => setShowTechDialog(true)}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                Technology
+              </button>
+            ) : (
+              <span className="text-sm font-medium text-muted-foreground/50 cursor-not-allowed">
+                Technology
+              </span>
+            )}
             <button className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               About Us
             </button>
@@ -356,6 +366,48 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Technology Selection Dialog */}
+      <Dialog open={showTechDialog} onOpenChange={setShowTechDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Choose Your Technology</DialogTitle>
+            <DialogDescription>
+              Select the technology you want to focus on for your learning journey.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 py-4">
+            <Button
+              variant="outline"
+              className="h-24 flex flex-col gap-2 hover:bg-primary/10 hover:border-primary transition-all"
+              onClick={() => {
+                toast({
+                  title: "Python Selected",
+                  description: "You've chosen to learn Python for healthcare analysis.",
+                });
+                setShowTechDialog(false);
+              }}
+            >
+              <span className="text-2xl">🐍</span>
+              <span className="font-semibold">Python</span>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-24 flex flex-col gap-2 hover:bg-primary/10 hover:border-primary transition-all"
+              onClick={() => {
+                toast({
+                  title: "SQL Selected",
+                  description: "You've chosen to learn SQL for healthcare analysis.",
+                });
+                setShowTechDialog(false);
+              }}
+            >
+              <span className="text-2xl">🗄️</span>
+              <span className="font-semibold">SQL</span>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
