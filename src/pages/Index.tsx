@@ -124,6 +124,11 @@ const Index = () => {
     setSelectedDay(null);
   };
 
+  const handleBackToTechSelection = () => {
+    setCurrentView("techSelection");
+    setSelectedDay(null);
+  };
+
   const handleReset = () => {
     localStorage.removeItem("haq_user");
     localStorage.removeItem("haq_completed");
@@ -181,6 +186,7 @@ const Index = () => {
       <CompletionPage
         day={selectedDay}
         onBackToDashboard={handleBackToDashboard}
+        onBackToTechSelection={handleBackToTechSelection}
       />
     );
   }

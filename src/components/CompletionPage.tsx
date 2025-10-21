@@ -7,9 +7,10 @@ import { toast } from "sonner";
 interface CompletionPageProps {
   day: number;
   onBackToDashboard: () => void;
+  onBackToTechSelection: () => void;
 }
 
-export const CompletionPage = ({ day, onBackToDashboard }: CompletionPageProps) => {
+export const CompletionPage = ({ day, onBackToDashboard, onBackToTechSelection }: CompletionPageProps) => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast.success("Logged out successfully");
@@ -56,7 +57,7 @@ export const CompletionPage = ({ day, onBackToDashboard }: CompletionPageProps) 
             </Button>
 
             <Button
-              onClick={onBackToDashboard}
+              onClick={onBackToTechSelection}
               variant="outline"
               className="flex-1 h-12 font-semibold"
             >
