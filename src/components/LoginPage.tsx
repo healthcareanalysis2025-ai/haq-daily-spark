@@ -159,7 +159,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-border">
+      <header className="border-b border-border bg-card shadow-card">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={haqLogo} alt="HAQ" className="h-10" />
@@ -218,7 +218,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
         </div>
 
         {/* Right Side - Login/Sign Up Form */}
-        <Card className="w-full max-w-md shadow-2xl animate-scale-in bg-card border-border backdrop-blur-sm">
+        <Card className="w-full max-w-md shadow-elegant animate-scale-in bg-card border-border hover:shadow-card-hover transition-shadow duration-300">
           <CardHeader className="text-center space-y-3 pb-8">
             <CardTitle className="text-3xl font-bold text-foreground">
               Get Started
@@ -261,7 +261,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 <Button
                   onClick={handleLogin}
                   disabled={!email || !password}
-                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground transition-all hover:scale-[1.02] hover:shadow-lg font-semibold text-base mt-2"
+                  className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground transition-all hover:scale-[1.02] shadow-card hover:shadow-elegant font-semibold text-base mt-2"
                 >
                   Login
                 </Button>
@@ -333,7 +333,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 <Button
                   onClick={handleSignUp}
                   disabled={!name || !track || !batchCode || !email || !password}
-                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground transition-all hover:scale-[1.02] hover:shadow-lg font-semibold text-base mt-2"
+                  className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground transition-all hover:scale-[1.02] shadow-card hover:shadow-elegant font-semibold text-base mt-2"
                 >
                   Create Account
                 </Button>

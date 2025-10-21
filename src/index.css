@@ -8,27 +8,27 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 353 67% 20%;
+    --background: 0 0% 98%;
+    --foreground: 353 70% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 353 67% 20%;
+    --card-foreground: 353 70% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 353 67% 20%;
+    --popover-foreground: 353 70% 20%;
 
-    --primary: 353 67% 38%;
+    --primary: 353 70% 38%;
     --primary-hover: 353 70% 30%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 350 68% 84%;
-    --secondary-foreground: 353 67% 20%;
+    --secondary: 353 50% 92%;
+    --secondary-foreground: 353 70% 20%;
 
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 350 68% 84%;
-    --accent-foreground: 353 67% 38%;
+    --accent: 353 50% 92%;
+    --accent-foreground: 353 70% 38%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
@@ -36,11 +36,17 @@ All colors MUST be HSL.
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 353 67% 38%;
+    --border: 0 0% 92%;
+    --input: 0 0% 92%;
+    --ring: 353 70% 38%;
 
     --radius: 0.75rem;
+    
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 2px 8px 0 rgb(0 0 0 / 0.08);
+    --shadow-md: 0 4px 12px 0 rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 8px 24px 0 rgb(0 0 0 / 0.12);
+    --shadow-xl: 0 12px 32px 0 rgb(0 0 0 / 0.15);
 
     --sidebar-background: 0 0% 98%;
 
@@ -104,7 +110,7 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans antialiased;
   }
 }
 
@@ -120,5 +126,17 @@ All colors MUST be HSL.
   
   .nav-link:hover::after {
     @apply w-full;
+  }
+  
+  .shadow-elegant {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .shadow-card {
+    box-shadow: var(--shadow);
+  }
+  
+  .shadow-card-hover {
+    box-shadow: var(--shadow-lg);
   }
 }
