@@ -4,6 +4,7 @@ import { TechnologySelection } from "@/components/TechnologySelection";
 import { Dashboard } from "@/components/Dashboard";
 import { QueryPage } from "@/components/QueryPage";
 import { CertificatePage } from "@/components/CertificatePage";
+import { CompletionPage } from "@/components/CompletionPage";
 import { supabase } from "@/integrations/supabase/client";
 
 interface UserData {
@@ -13,7 +14,7 @@ interface UserData {
   technology?: "sql" | "python";
 }
 
-type View = "login" | "techSelection" | "dashboard" | "query" | "certificate";
+type View = "login" | "techSelection" | "dashboard" | "query" | "certificate" | "completion";
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>("login");
@@ -114,8 +115,7 @@ const Index = () => {
     localStorage.setItem("haq_attempted", JSON.stringify(newAttempted));
     
     setTimeout(() => {
-      setCurrentView("dashboard");
-      setSelectedDay(null);
+      setCurrentView("completion");
     }, 2000);
   };
 
@@ -172,6 +172,15 @@ const Index = () => {
         track={userData.track}
         batchCode={userData.batchCode}
         onReset={handleReset}
+      />
+    );
+  }
+
+  if (currentView === "completion" && selectedDay) {
+    return (
+      <CompletionPage
+        day={selectedDay}
+        onBackToDashboard={handleBackToDashboard}
       />
     );
   }
