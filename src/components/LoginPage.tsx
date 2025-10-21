@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +18,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import haqLogo from "@/assets/haq-logo.png";
 
 
@@ -29,11 +32,126 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [name, setName] = useState("");
   const [track, setTrack] = useState("");
   const [batchCode, setBatchCode] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { toast } = useToast();
 
-  const handleSubmit = () => {
-    if (name && track && batchCode) {
-      onLogin(name, track, batchCode);
+  useEffect(() => {
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setIsLoggedIn(true);
+        setCurrentUser(session.user);
+      }
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setIsLoggedIn(true);
+        setCurrentUser(session.user);
+      } else {
+        setIsLoggedIn(false);
+        setCurrentUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignUp = async () => {
+    if (!name || !track || !batchCode || !email || !password) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
     }
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            name,
+            track,
+            batch_code: batchCode,
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Account created!",
+        description: "You can now proceed with your learning journey.",
+      });
+
+      // Auto-login after signup
+      onLogin(name, track, batchCode);
+    } catch (error: any) {
+      toast({
+        title: "Sign up failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast({
+        title: "Missing information",
+        description: "Please enter email and password",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Welcome back!",
+        description: "Successfully logged in.",
+      });
+
+      // Get user metadata for name, track, batchCode
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.user_metadata) {
+        onLogin(
+          user.user_metadata.name || "User",
+          user.user_metadata.track || "DA",
+          user.user_metadata.batch_code || "DA100"
+        );
+      }
+    } catch (error: any) {
+      toast({
+        title: "Login failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsLoggedIn(false);
+    setCurrentUser(null);
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+    });
   };
 
   return (
@@ -45,16 +163,27 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
             <img src={haqLogo} alt="HAQ" className="h-10" />
             <h1 className="text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ (HAQ)</h1>
           </div>
-          <nav className="flex gap-8">
+          <nav className="flex gap-8 items-center">
             <button className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Technology
             </button>
             <button className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               About Us
             </button>
-            <button className="text-sm font-medium text-primary transition-colors">
-              Login
-            </button>
+            {isLoggedIn ? (
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="text-sm font-medium"
+              >
+                Logout
+              </Button>
+            ) : (
+              <button className="text-sm font-medium text-primary transition-colors">
+                Login
+              </button>
+            )}
           </nav>
         </div>
       </header>
@@ -74,64 +203,128 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
           </p>
         </div>
 
-        {/* Right Side - Sign Up Form */}
+        {/* Right Side - Login/Sign Up Form */}
         <Card className="w-full max-w-md shadow-2xl animate-scale-in bg-card border-border backdrop-blur-sm">
           <CardHeader className="text-center space-y-3 pb-8">
             <CardTitle className="text-3xl font-bold text-foreground">
               Get Started
             </CardTitle>
-            <p className="text-sm text-muted-foreground">Create your account to begin learning</p>
+            <p className="text-sm text-muted-foreground">Login or create your account</p>
           </CardHeader>
 
           <CardContent className="space-y-6 px-8 pb-8">
+            <Tabs defaultValue="login" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
 
-            <div className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="h-12 transition-all focus:ring-2 focus:ring-primary border-border"
-                />
-              </div>
+              <TabsContent value="login" className="space-y-5 mt-6">
+                <div className="space-y-2">
+                  <Label htmlFor="login-email" className="text-sm font-medium">Email</Label>
+                  <Input
+                    id="login-email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-12 transition-all focus:ring-2 focus:ring-primary border-border"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="track" className="text-sm font-medium">Track</Label>
-                <Select value={track} onValueChange={setTrack}>
-                  <SelectTrigger id="track" className="h-12 transition-all focus:ring-2 focus:ring-primary border-border">
-                    <SelectValue placeholder="Select your track" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="DA">DA - Data Analyst</SelectItem>
-                    <SelectItem value="SDET">SDET - Software Development Engineer in Test</SelectItem>
-                    <SelectItem value="DVLPR">DVLPR - Developer</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="login-password" className="text-sm font-medium">Password</Label>
+                  <Input
+                    id="login-password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="h-12 transition-all focus:ring-2 focus:ring-primary border-border"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="batchCode" className="text-sm font-medium">Batch Code</Label>
-                <Input
-                  id="batchCode"
-                  type="text"
-                  placeholder="e.g., DA100"
-                  value={batchCode}
-                  onChange={(e) => setBatchCode(e.target.value)}
-                  className="h-12 transition-all focus:ring-2 focus:ring-primary border-border"
-                />
-              </div>
+                <Button
+                  onClick={handleLogin}
+                  disabled={!email || !password}
+                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground transition-all hover:scale-[1.02] hover:shadow-lg font-semibold text-base mt-2"
+                >
+                  Login
+                </Button>
+              </TabsContent>
 
-              <Button
-                onClick={handleSubmit}
-                disabled={!name || !track || !batchCode}
-                className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground transition-all hover:scale-[1.02] hover:shadow-lg font-semibold text-base mt-2"
-              >
-                Start Learning
-              </Button>
-            </div>
+              <TabsContent value="signup" className="space-y-5 mt-6">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="h-12 transition-all focus:ring-2 focus:ring-primary border-border"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="track" className="text-sm font-medium">Track</Label>
+                  <Select value={track} onValueChange={setTrack}>
+                    <SelectTrigger id="track" className="h-12 transition-all focus:ring-2 focus:ring-primary border-border">
+                      <SelectValue placeholder="Select your track" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="DA">DA - Data Analyst</SelectItem>
+                      <SelectItem value="SDET">SDET - Software Development Engineer in Test</SelectItem>
+                      <SelectItem value="DVLPR">DVLPR - Developer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="batchCode" className="text-sm font-medium">Batch Code</Label>
+                  <Input
+                    id="batchCode"
+                    type="text"
+                    placeholder="e.g., DA100"
+                    value={batchCode}
+                    onChange={(e) => setBatchCode(e.target.value)}
+                    className="h-12 transition-all focus:ring-2 focus:ring-primary border-border"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="signup-email" className="text-sm font-medium">Email</Label>
+                  <Input
+                    id="signup-email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-12 transition-all focus:ring-2 focus:ring-primary border-border"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="signup-password" className="text-sm font-medium">Password</Label>
+                  <Input
+                    id="signup-password"
+                    type="password"
+                    placeholder="Create a password (min 6 characters)"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="h-12 transition-all focus:ring-2 focus:ring-primary border-border"
+                  />
+                </div>
+
+                <Button
+                  onClick={handleSignUp}
+                  disabled={!name || !track || !batchCode || !email || !password}
+                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground transition-all hover:scale-[1.02] hover:shadow-lg font-semibold text-base mt-2"
+                >
+                  Create Account
+                </Button>
+              </TabsContent>
+            </Tabs>
 
             <div className="text-center">
               <Dialog>
