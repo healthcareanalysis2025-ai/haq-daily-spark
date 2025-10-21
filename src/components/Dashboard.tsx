@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Mail, Calendar } from "lucide-react";
+import { Mail, Calendar, LogOut } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import ninjaLogo from "@/assets/ninja-logo.png";
 
 interface DashboardProps {
   userName: string;
@@ -21,6 +23,11 @@ export const Dashboard = ({
 
   const handleEmailProgress = () => {
     toast.success("Progress summary sent to your email!");
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Logged out successfully");
   };
 
   const getDayStatus = (day: number) => {
@@ -43,16 +50,35 @@ export const Dashboard = ({
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-4xl mx-auto animate-fade-in">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary mb-2">
-            Welcome, {userName}!
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Your learning journey is underway
-          </p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b border-border bg-card shadow-card">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src={ninjaLogo} alt="HAQ" className="h-10" />
+            <h1 className="text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ (HAQ)</h1>
+          </div>
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            className="gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </Button>
         </div>
+      </header>
+
+      <div className="p-4 md:p-8">
+        <div className="max-w-4xl mx-auto animate-fade-in">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-primary mb-2">
+              Welcome, {userName}!
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Your learning journey is underway
+            </p>
+          </div>
 
         <div className="bg-card p-6 rounded-lg shadow-lg mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -141,6 +167,7 @@ export const Dashboard = ({
               <span className="text-sm">Locked (Future)</span>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
