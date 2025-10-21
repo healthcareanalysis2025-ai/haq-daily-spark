@@ -21,7 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import haqLogo from "@/assets/haq-logo.png";
+import ninjaLogo from "@/assets/ninja-logo.png";
 
 
 interface LoginPageProps {
@@ -162,7 +162,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       <header className="border-b border-border bg-card shadow-card">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={haqLogo} alt="HAQ" className="h-10" />
+            <img src={ninjaLogo} alt="HAQ" className="h-10" />
             <h1 className="text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ (HAQ)</h1>
           </div>
           <nav className="flex gap-8 items-center">
