@@ -168,7 +168,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
             {isLoggedIn ? (
               <button 
                 onClick={() => setShowTechDialog(true)}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                className="nav-link"
               >
                 Technology
               </button>
@@ -177,7 +177,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 Technology
               </span>
             )}
-            <button className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            <button className="nav-link">
               About Us
             </button>
             {isLoggedIn ? (
@@ -190,7 +190,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 Logout
               </Button>
             ) : (
-              <button className="text-sm font-medium text-primary transition-colors">
+              <button className="nav-link !text-primary">
                 Login
               </button>
             )}
@@ -225,8 +225,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
           <CardContent className="space-y-6 px-8 pb-8">
             <Tabs defaultValue="login" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                <TabsTrigger value="login" className="data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-primary">Login</TabsTrigger>
+                <TabsTrigger value="signup" className="data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-primary">Sign Up</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login" className="space-y-5 mt-6">
