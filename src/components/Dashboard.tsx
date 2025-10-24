@@ -4,7 +4,7 @@ import { Mail, Calendar, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import ninjaLogo from "@/assets/ninja-logo.png";
-
+import { useUser } from "../context/UserContext";
 interface DashboardProps {
   userName: string;
   completedDays: number[];
@@ -20,6 +20,8 @@ export const Dashboard = ({
 }: DashboardProps) => {
   const totalDays = 15;
   const progress = (completedDays.length / totalDays) * 100;
+  const { loginEmail,loginDate,loginTime } = useUser();
+  console.log("Logged in user:", loginEmail, "date :", loginDate,"  Time :",loginTime);
 
   const handleEmailProgress = () => {
     toast.success("Progress summary sent to your email!");

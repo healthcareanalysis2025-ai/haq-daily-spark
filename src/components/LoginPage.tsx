@@ -22,7 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ninjaLogo from "@/assets/ninja-logo.png";
-
+import { useUser } from "../context/UserContext";
 
 interface LoginPageProps {
   onLogin: (name: string, track: string, batchCode: string) => void;
@@ -39,7 +39,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [showTechDialog, setShowTechDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
   const { toast } = useToast();
-
+  const { setLoginEmail, setLoginDate, setLoginTime } = useUser();
+  
   useEffect(() => {
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -64,87 +65,125 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   }, []);
 
   const handleSignUp = async () => {
-    if (!name || !track || !batchCode || !email || !password) {
-      toast({
-        title: "Missing information",
-        description: "Please fill in all fields",
-        variant: "destructive",
-      });
-      return;
+  if (!name || !track || !batchCode || !email || !password) {
+    toast({
+      title: "Missing information",
+      description: "Please fill in all fields",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  try {
+    
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    // Prepare key-value data to send
+    const payload = {
+      name: name,
+      track: track,
+      batch_code: batchCode,
+      email: email,
+      password: password,
+      zone: timezone
+    };
+    console.log("Signup payload:", payload);
+    const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/signUp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload), //  send key-value data
+    });
+
+    if (!res.ok) {
+      throw new Error(`Signup request failed with status ${res.status}`);
     }
 
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            name,
-            track,
-            batch_code: batchCode,
-          }
-        }
-      });
+    const data = await res.json();
+    console.log("Signup response:", data);
+    if(data.success=="true"){
+    toast({
+      title: "Account created!",
+      description: "You can now proceed with your learning journey.",
+    });
 
-      if (error) throw error;
-
-      toast({
-        title: "Account created!",
-        description: "You can now proceed with your learning journey.",
-      });
-
-      // Auto-login after signup
-      onLogin(name, track, batchCode);
-    } catch (error: any) {
-      toast({
-        title: "Sign up failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
+    // Auto-login after signup
+    onLogin(name, track, batchCode);
+  } else {
+    toast({
+      title: data.message,
+      description: "Create account with different email",
+    });
+  }
+  } catch (error: any) {
+    console.error("Error during signup:", error);
+    toast({
+      title: "Sign up failed",
+      description: error.message || "Something went wrong. Please try again.",
+      variant: "destructive",
+    });
+  }
+};
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      toast({
-        title: "Missing information",
-        description: "Please enter email and password",
-        variant: "destructive",
-      });
-      return;
+  if (!email || !password) {
+    toast({
+      title: "Missing information",
+      description: "Please enter email and password",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  try {
+    // Call your n8n webhook (adjust URL to your deployed one)
+    const payload = {
+      email: email,
+      password: password
+    };
+    console.log("Signup payload:", payload);
+    const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to login. Please check credentials.");
     }
 
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+    const data = await res.json();
+    console.log(data);
 
-      if (error) throw error;
-
+    if (data.status === "success" && data.user) {
       toast({
         title: "Welcome back!",
         description: "Successfully logged in.",
       });
+      const now = new Date();
+      const date = now.toISOString().split("T")[0];
+      const time = now.toTimeString().split(" ")[0];
 
-      // Get user metadata for name, track, batchCode
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user?.user_metadata) {
-        onLogin(
-          user.user_metadata.name || "User",
-          user.user_metadata.track || "DA",
-          user.user_metadata.batch_code || "DA100"
-        );
-      }
-    } catch (error: any) {
-      toast({
-        title: "Login failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      
+      setLoginEmail(email); // store logged-in email
+      setLoginDate(date);
+      setLoginTime(time);
+
+      onLogin(
+        data.user.name || "User",
+        data.user.track || "DA",
+        data.user.batch_code || "DA100"
+      );
+    } else {
+      throw new Error(data.message || "Invalid credentials");
     }
-  };
+  } catch (error: any) {
+    toast({
+      title: "Login failed",
+      description: error.message,
+      variant: "destructive",
+    });
+  }
+};
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
