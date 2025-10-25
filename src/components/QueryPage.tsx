@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -6,11 +6,15 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Mail, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
+import { useUser } from "@/context/UserContext";
+import { BASE_URL } from "@/config";
 
 interface Question {
+  mcq_id: number;
   question: string;
   options: string[];
   correctAnswer: number;
+  correctOption: string;
 }
 
 interface QueryPageProps {
@@ -21,118 +25,7 @@ interface QueryPageProps {
 }
 
 // Sample questions for 15 days
-const questions: Question[] = [
-  {
-    question: "What is SQL primarily used for?",
-    options: ["Data Analysis", "Web Design", "Graphic Design", "Video Editing"],
-    correctAnswer: 0,
-  },
-  {
-    question: "Which of these is a relational database management system?",
-    options: ["MongoDB", "PostgreSQL", "Redis", "Elasticsearch"],
-    correctAnswer: 1,
-  },
-  {
-    question: "What does ETL stand for in data processing?",
-    options: [
-      "Extract, Transform, Load",
-      "Evaluate, Test, Launch",
-      "Export, Transfer, Link",
-      "Enter, Track, List",
-    ],
-    correctAnswer: 0,
-  },
-  {
-    question: "Which tool is commonly used for data visualization?",
-    options: ["Tableau", "Git", "Docker", "Jenkins"],
-    correctAnswer: 0,
-  },
-  {
-    question: "What is the purpose of data normalization?",
-    options: [
-      "To increase data redundancy",
-      "To reduce data redundancy",
-      "To delete data",
-      "To encrypt data",
-    ],
-    correctAnswer: 1,
-  },
-  {
-    question: "Which programming language is most popular for data analysis?",
-    options: ["Java", "C++", "Python", "Ruby"],
-    correctAnswer: 2,
-  },
-  {
-    question: "What does API stand for?",
-    options: [
-      "Application Programming Interface",
-      "Advanced Program Integration",
-      "Automated Process Interaction",
-      "Application Process Interface",
-    ],
-    correctAnswer: 0,
-  },
-  {
-    question: "Which of these is a NoSQL database?",
-    options: ["MySQL", "Oracle", "MongoDB", "PostgreSQL"],
-    correctAnswer: 2,
-  },
-  {
-    question: "What is the purpose of a primary key in a database?",
-    options: [
-      "To uniquely identify records",
-      "To store passwords",
-      "To create backups",
-      "To encrypt data",
-    ],
-    correctAnswer: 0,
-  },
-  {
-    question: "What does HIPAA regulate?",
-    options: [
-      "Healthcare data privacy",
-      "Software licensing",
-      "Cloud computing",
-      "Network security",
-    ],
-    correctAnswer: 0,
-  },
-  {
-    question: "Which SQL clause is used to filter results?",
-    options: ["SELECT", "FROM", "WHERE", "GROUP BY"],
-    correctAnswer: 2,
-  },
-  {
-    question: "What is the purpose of data validation?",
-    options: [
-      "To ensure data accuracy",
-      "To delete old data",
-      "To compress data",
-      "To share data",
-    ],
-    correctAnswer: 0,
-  },
-  {
-    question: "Which chart type is best for showing trends over time?",
-    options: ["Pie chart", "Line chart", "Scatter plot", "Bar chart"],
-    correctAnswer: 1,
-  },
-  {
-    question: "What does BI stand for in healthcare analytics?",
-    options: [
-      "Business Intelligence",
-      "Binary Integration",
-      "Basic Interface",
-      "Backup Information",
-    ],
-    correctAnswer: 0,
-  },
-  {
-    question: "Which metric measures central tendency?",
-    options: ["Standard deviation", "Mean", "Range", "Variance"],
-    correctAnswer: 1,
-  },
-];
+
 
 export const QueryPage = ({
   day,
@@ -145,29 +38,155 @@ export const QueryPage = ({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
-  const currentQuestion = questions[day - 1];
+  // const currentQuestion = questions[day - 1];
 
-  const handleSubmit = () => {
-    if (selectedAnswer === null) {
-      toast.error("Please select an answer!");
-      return;
-    }
+  //const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
+  const [answers, setAnswers] = useState<(number | null)[]>([]); // will initialize after fetch
+const [questions, setQuestions] = useState<Question[]>([]);
+ const [loading, setLoading] = useState(true);
+const { userId,loginEmail,loginDate,loginTime } = useUser();
+ useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        
+        console.log("Date ",loginDate," user ",userId);
+        
+        //const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/getQuestions", {
+    const res = await fetch(`${BASE_URL}/getQuestions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({current_date:loginDate}), //  send key-value data
+    });
+        if (!res.ok) throw new Error("Failed to fetch questions");
+        
+        const rawData = await res.json(); // raw n8n items
+        console.log(rawData);
+        console.log("array kength ",rawData.length);
+        
+// check if rawData is array or wrapped in {mcqs: [...]}
+const data: Question[] = Array.isArray(rawData)
+  ? rawData
+  : Array.isArray(rawData.mcqs)
+  ? rawData.mcqs
+  : [];
+        console.log("Fetched questions:", data);
 
-    const correct = selectedAnswer === currentQuestion.correctAnswer;
-    setIsCorrect(correct);
-    setSubmitted(true);
+        setQuestions(data);
+        setAnswers(Array(data.length).fill(null)); // initialize answers array
+        setLoading(false);
+      } catch (err: any) {
+        console.error(err);
+        toast.error(err.message || "Error fetching questions");
+        setLoading(false);
+      }
+    };
 
-    if (correct) {
-      setShowConfetti(true);
-      toast.success("Correct! Great job! 🎉");
-      setTimeout(() => {
-        onComplete(day);
-        setShowConfetti(false);
-      }, 2000);
-    } else {
-      toast.error("Incorrect! Try again tomorrow.");
-    }
-  };
+    fetchQuestions();
+  }, []);
+
+  if (loading) {
+    return <p>Loading questions...</p>;
+  }
+  
+  const currentQuestion = questions;
+const handleSelect = (qIndex: number, value: number) => {
+  setAnswers(prev => {
+    const newAnswers = [...prev];
+    newAnswers[qIndex] = value;
+    return newAnswers;
+  });
+};
+
+const handleSubmit = async () => {
+  // 1️⃣ Check if any question is unanswered
+  if (answers.some((ans) => ans === null)) {
+    toast.error("Please answer all questions!");
+    return;
+  }
+
+  // 2️⃣ Check correctness for each question
+  const results = questions.map((q, i) => answers[i] === q.correctAnswer);
+
+  // 3️⃣ Count correct answers
+  const correctCount = results.filter(Boolean).length;
+
+  // 4️⃣ Prepare payload for n8n
+  const payload = questions.map((q, i) => ({
+    mcq_id: q.mcq_id,
+    user_id: userId, // replace with actual userId if available from context
+    selected_option: String.fromCharCode(65 + answers[i]!), // A, B, C, D, ...
+    correct_flag: results[i],
+    answered: true,
+    respond_date: loginDate // assuming you already have loginDate state
+  }));
+console.log(payload);
+  try {
+    // 5️⃣ Send to n8n
+    // const res = await fetch(
+    //   "https://mite-kind-neatly.ngrok-free.app/webhook-test/submitResponse",
+    //   {
+    const res = await fetch(`${BASE_URL}/submitResponse`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!res.ok) throw new Error("Failed to submit responses");
+
+    toast.success("Responses submitted successfully!");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to submit responses to server.");
+  }
+
+  // 6️⃣ Show confetti if all correct
+  if (correctCount === questions.length) {
+    setIsCorrect(true);
+    setShowConfetti(true);
+    toast.success("All answers correct! 🎉 Great job!");
+    setTimeout(() => {
+      onComplete(day);
+      setShowConfetti(false);
+    }, 2000);
+  } else {
+    setIsCorrect(false);
+    toast.error(`You got ${correctCount}/${questions.length} correct.`);
+  }
+
+  setSubmitted(true);
+};
+
+  const handleSubmit_old = () => {
+  // Check if any question is unanswered
+  if (answers.some((ans) => ans === null)) {
+    toast.error("Please answer all questions!");
+    return;
+  }
+
+  // Check correctness for each question
+  const results = questions.map((q, i) => answers[i] === q.correctAnswer);
+
+  // Count how many are correct
+  const correctCount = results.filter(Boolean).length;
+
+  // If all correct
+  if (correctCount === questions.length) {
+    setIsCorrect(true);
+    setShowConfetti(true);
+    toast.success("All answers correct! 🎉 Great job!");
+    setTimeout(() => {
+      onComplete(day);
+      setShowConfetti(false);
+    }, 2000);
+  } else {
+    setIsCorrect(false);
+    toast.error(`You got ${correctCount}/${questions.length} correct.`);
+  }
+
+  setSubmitted(true);
+};
+
 
   const handleEmailQuery = () => {
     toast.success("Query and your response have been emailed!");
@@ -207,51 +226,58 @@ export const QueryPage = ({
           </div>
 
           <div className="mb-8">
-            <h3 className="text-xl font-semibold mb-6">
-              {currentQuestion.question}
-            </h3>
+  {currentQuestion.map((q, qIndex) => (
+    <div key={q.mcq_id} className="mb-10">
+      <h3 className="text-xl font-semibold mb-4">
+        {qIndex + 1}. {q.question}
+      </h3>
 
-            <RadioGroup
-              value={selectedAnswer?.toString()}
-              onValueChange={(value) => setSelectedAnswer(parseInt(value))}
-              disabled={submitted}
-              className="space-y-4"
+      <RadioGroup
+        value={answers[qIndex]?.toString()}
+        onValueChange={(value) => handleSelect(qIndex, parseInt(value))}
+        disabled={submitted}
+        className="space-y-4"
+      >
+        {q.options.map((option, index) => (
+          <div
+            key={index}
+            className={`
+              flex items-center space-x-3 p-4 rounded-lg border-2 transition-all
+              ${
+                submitted
+                  ? index === q.correctAnswer
+                    ? "border-success bg-success/10"
+                    : answers[qIndex] === index && index !== q.correctAnswer
+                    ? "border-destructive bg-destructive/10"
+                    : "border-border"
+                  : "border-border hover:border-accent"
+              }
+            `}
+          >
+            <RadioGroupItem value={index.toString()} id={`option-${qIndex}-${index}`} />
+            <Label
+              htmlFor={`option-${qIndex}-${index}`}
+              className="flex-1 cursor-pointer font-medium"
             >
-              {currentQuestion.options.map((option, index) => (
-                <div
-                  key={index}
-                  className={`
-                    flex items-center space-x-3 p-4 rounded-lg border-2 transition-all
-                    ${
-                      submitted
-                        ? index === currentQuestion.correctAnswer
-                          ? "border-success bg-success/10"
-                          : selectedAnswer === index
-                          ? "border-destructive bg-destructive/10"
-                          : "border-border"
-                        : "border-border hover:border-accent"
-                    }
-                  `}
-                >
-                  <RadioGroupItem value={index.toString()} id={`option-${index}`} />
-                  <Label
-                    htmlFor={`option-${index}`}
-                    className="flex-1 cursor-pointer font-medium"
-                  >
-                    {String.fromCharCode(97 + index)}) {option}
-                  </Label>
-                  {submitted && index === currentQuestion.correctAnswer && (
-                    <CheckCircle className="w-5 h-5 text-success" />
-                  )}
-                  {submitted &&
-                    selectedAnswer === index &&
-                    index !== currentQuestion.correctAnswer && (
-                      <XCircle className="w-5 h-5 text-destructive" />
-                    )}
-                </div>
-              ))}
-            </RadioGroup>
+              {String.fromCharCode(97 + index)}) {option}
+            </Label>
+
+            {/* ✅ show icons */}
+            {submitted && index === q.correctAnswer && (
+              <CheckCircle className="w-5 h-5 text-success" />
+            )}
+            {submitted &&
+              answers[qIndex] === index &&
+              index !== q.correctAnswer && (
+                <XCircle className="w-5 h-5 text-destructive" />
+              )}
           </div>
+        ))}
+      </RadioGroup>
+    </div>
+  ))}
+</div>
+
 
           {!submitted ? (
             <Button

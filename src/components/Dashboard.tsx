@@ -1,10 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Mail, Calendar, LogOut } from "lucide-react";
+import { Mail,Calendar, LogOut } from "lucide-react";
+//import Calendar from "react-calendar";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import ninjaLogo from "@/assets/ninja-logo.png";
 import { useUser } from "../context/UserContext";
+import { BASE_URL } from "@/config";
+import { useNavigate } from "react-router-dom";
+
 interface DashboardProps {
   userName: string;
   completedDays: number[];
@@ -20,17 +24,43 @@ export const Dashboard = ({
 }: DashboardProps) => {
   const totalDays = 15;
   const progress = (completedDays.length / totalDays) * 100;
-  const { loginEmail,loginDate,loginTime } = useUser();
+  const { userId,loginEmail,loginDate,loginTime } = useUser();
   console.log("Logged in user:", loginEmail, "date :", loginDate,"  Time :",loginTime);
+  const navigate = useNavigate();
 
   const handleEmailProgress = () => {
     toast.success("Progress summary sent to your email!");
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    toast.success("Logged out successfully");
-  };
+  try {
+    //const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/logOut", {
+    const res = await fetch(`${BASE_URL}/logOut`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: userId
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      toast.success(data.message || "Logged out successfully");
+      // Optionally clear local state
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate("/");
+      window.location.reload(); // optional: ensures Index re-runs useEffect
+    } else {
+      toast.error("Logout failed");
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error("Error during logout");
+  }
+};
+
 
   const getDayStatus = (day: number) => {
     if (completedDays.includes(day)) return "completed";
@@ -107,8 +137,34 @@ export const Dashboard = ({
             </div>
             <Progress value={progress} className="h-3" />
           </div>
-
           <div className="grid grid-cols-5 gap-4">
+            {Array.from({ length: totalDays }, (_, i) => i + 1).map((day) => {
+              // Temporarily force all days to active
+              const status: "completed" | "active" | "locked" = "active";
+              const isClickable = status === "active";
+
+      return (
+        <button
+          key={day}
+          onClick={() => isClickable && onDayClick(day)}
+          disabled={!isClickable}
+          className={`
+            aspect-square rounded-lg flex flex-col items-center justify-center
+            font-semibold text-lg shadow-md
+            ${getDayClasses(status)}
+          `}
+          title="Active (temporarily enabled)"
+        >
+          <span className="text-xs opacity-75 mb-1">Day</span>
+          <span>{day}</span>
+          {/*{status === "completed" && <span className="text-xs mt-1">✓</span>}
+          {status === "locked" && <span className="text-xs mt-1">🔒</span>} */}
+        </button>
+      );
+      })}
+  </div>
+
+        {/*  <div className="grid grid-cols-5 gap-4">
             {Array.from({ length: totalDays }, (_, i) => i + 1).map((day) => {
               const status = getDayStatus(day);
               const isClickable = status === "active";
@@ -142,7 +198,7 @@ export const Dashboard = ({
                 </button>
               );
             })}
-          </div>
+          </div> */}
         </div>
 
         <div className="bg-card p-6 rounded-lg shadow-lg">

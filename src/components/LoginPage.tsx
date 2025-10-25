@@ -23,6 +23,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ninjaLogo from "@/assets/ninja-logo.png";
 import { useUser } from "../context/UserContext";
+import { BASE_URL } from "@/config";
 
 interface LoginPageProps {
   onLogin: (name: string, track: string, batchCode: string) => void;
@@ -39,7 +40,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [showTechDialog, setShowTechDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
   const { toast } = useToast();
-  const { setLoginEmail, setLoginDate, setLoginTime } = useUser();
+  const { setuserId, setLoginEmail, setLoginDate, setLoginTime } = useUser();
   
   useEffect(() => {
     // Check for existing session
@@ -88,7 +89,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       zone: timezone
     };
     console.log("Signup payload:", payload);
-    const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/signUp", {
+    //const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/signUp", {
+    const res = await fetch(`${BASE_URL}/signUp`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload), //  send key-value data
@@ -141,7 +143,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       password: password
     };
     console.log("Signup payload:", payload);
-    const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/login", {
+    //const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/login", {
+    const res = await fetch(`${BASE_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -162,8 +165,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       const now = new Date();
       const date = now.toISOString().split("T")[0];
       const time = now.toTimeString().split(" ")[0];
-
-      
+      console.log(data.user);
+      setuserId(data.user.user_id);
       setLoginEmail(email); // store logged-in email
       setLoginDate(date);
       setLoginTime(time);
@@ -185,7 +188,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   }
 };
 
-  const handleLogout = async () => {
+  const handleLogout_supabase = async () => {
     await supabase.auth.signOut();
     setIsLoggedIn(false);
     setCurrentUser(null);
@@ -194,6 +197,41 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       description: "You have been successfully logged out.",
     });
   };
+  const handleLogout = async () => {
+  try {
+    const res = await fetch("https://your-ngrok-url.ngrok-free.app/webhook-test/logout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: currentUser.email })
+    });
+
+    const data = await res.json();
+
+    if (data.status === "success") {
+      setIsLoggedIn(false);
+      setCurrentUser(null);
+      toast({
+        title: "Logged out",
+        description: data.message,
+      });
+      setLoginEmail(null);
+      setLoginDate(null);
+      setLoginTime(null);
+    } else {
+      toast({
+        title: "Logout failed",
+        description: data.message || "Unknown error",
+        variant: "destructive",
+      });
+    }
+  } catch (error) {
+    toast({
+      title: "Network error",
+      description: "Failed to reach logout service",
+      variant: "destructive",
+    });
+  }
+};
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

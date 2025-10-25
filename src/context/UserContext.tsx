@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface UserContextType {
+  userId: number | null;
+  setuserId: (userId: number) => void;
   loginEmail: string | null;
   setLoginEmail: (loginEmail: string) => void;
   loginTime: string | null;
@@ -12,12 +14,13 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
+  const [userId, setuserId] = useState<number | null>(null);
   const [loginEmail, setLoginEmail] = useState<string | null>(null);
   const [loginTime, setLoginTime] = useState<string | null>(null);
   const [loginDate, setLoginDate] = useState<string | null>(null);
 
   return (
-    <UserContext.Provider value={{ loginEmail, setLoginEmail, loginTime, setLoginTime, loginDate, setLoginDate }}>
+    <UserContext.Provider value={{ userId,setuserId, loginEmail, setLoginEmail, loginTime, setLoginTime, loginDate, setLoginDate }}>
       {children}
     </UserContext.Provider>
   );
