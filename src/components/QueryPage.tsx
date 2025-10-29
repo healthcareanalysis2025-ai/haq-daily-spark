@@ -45,6 +45,7 @@ export const QueryPage = ({
 const [questions, setQuestions] = useState<Question[]>([]);
  const [loading, setLoading] = useState(true);
 const { userId,loginEmail,loginDate,loginTime } = useUser();
+
  useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -111,81 +112,80 @@ const handleSubmit = async () => {
   const correctCount = results.filter(Boolean).length;
 
   // 4️⃣ Prepare payload for n8n
-  const payload = questions.map((q, i) => ({
-    mcq_id: q.mcq_id,
-    user_id: userId, // replace with actual userId if available from context
-    selected_option: String.fromCharCode(65 + answers[i]!), // A, B, C, D, ...
-    correct_flag: results[i],
-    answered: true,
-    respond_date: loginDate // assuming you already have loginDate state
-  }));
-console.log(payload);
+  const payload = {
+    responses: questions.map((q, i) => ({
+      mcq_id: q.mcq_id,
+      user_id: userId,
+      selected_option: String.fromCharCode(65 + answers[i]!),
+      correct_flag: results[i],
+      answered: true,
+      respond_date: loginDate,
+    })),
+    summary: {
+      no_correct: correctCount,
+      total_mcq: questions.length,
+      user_id: userId,
+      respond_date: loginDate,
+      question_id: 1,
+    },
+  };
+
+  console.log("Payload sent to n8n:", payload);
+
   try {
-    // 5️⃣ Send to n8n
-    // const res = await fetch(
-    //   "https://mite-kind-neatly.ngrok-free.app/webhook-test/submitResponse",
-    //   {
     const res = await fetch(`${BASE_URL}/submitResponse`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`n8n API error: ${errorText || res.statusText}`);
+    }
+
+    const data = await res.json();
+    console.log("n8n raw response:", data);
+
+    // 🧩 Normalize array/object
+    const result = Array.isArray(data) ? data[0] : data;
+
+    // ✅ Now result.status and result.message will always exist
+    if (result.status === "fail") {
+      toast.error(result.message || "Already responded for the day!!");
+      setSubmitted(false);
+      return;
+    }
+
+    if (result.status === "success") {
+      toast.success(result.message || "Responses submitted successfully!");
+      if (correctCount === questions.length) {
+        setIsCorrect(true);
+        setShowConfetti(true);
+        toast.success("All answers correct! 🎉 Great job!");
+        setTimeout(() => {
+          onComplete(day);
+          setShowConfetti(false);
+        }, 2000);
+      } else {
+        setIsCorrect(false);
+        toast.error(`You got ${correctCount}/${questions.length} correct.`);
       }
-    );
+      setSubmitted(true);
+    } else {
+      toast.error("Unexpected response from server.");
+      console.warn("Unexpected n8n response:", data);
+      setSubmitted(false);
+    }
 
-    if (!res.ok) throw new Error("Failed to submit responses");
-
-    toast.success("Responses submitted successfully!");
   } catch (err) {
-    console.error(err);
-    toast.error("Failed to submit responses to server.");
+    console.error("Submission failed:", err);
+    toast.error(`Failed to submit responses: ${err.message || err}`);
+    setSubmitted(false);
   }
-
-  // 6️⃣ Show confetti if all correct
-  if (correctCount === questions.length) {
-    setIsCorrect(true);
-    setShowConfetti(true);
-    toast.success("All answers correct! 🎉 Great job!");
-    setTimeout(() => {
-      onComplete(day);
-      setShowConfetti(false);
-    }, 2000);
-  } else {
-    setIsCorrect(false);
-    toast.error(`You got ${correctCount}/${questions.length} correct.`);
-  }
-
-  setSubmitted(true);
 };
 
-  const handleSubmit_old = () => {
-  // Check if any question is unanswered
-  if (answers.some((ans) => ans === null)) {
-    toast.error("Please answer all questions!");
-    return;
-  }
 
-  // Check correctness for each question
-  const results = questions.map((q, i) => answers[i] === q.correctAnswer);
-
-  // Count how many are correct
-  const correctCount = results.filter(Boolean).length;
-
-  // If all correct
-  if (correctCount === questions.length) {
-    setIsCorrect(true);
-    setShowConfetti(true);
-    toast.success("All answers correct! 🎉 Great job!");
-    setTimeout(() => {
-      onComplete(day);
-      setShowConfetti(false);
-    }, 2000);
-  } else {
-    setIsCorrect(false);
-    toast.error(`You got ${correctCount}/${questions.length} correct.`);
-  }
-
-  setSubmitted(true);
-};
 
 
   const handleEmailQuery = () => {
