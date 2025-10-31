@@ -75,11 +75,18 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     return;
   }
 
+  if (password.length < 6) {
+    toast({
+      title: "Password too short",
+      description: "Password must be at least 6 characters",
+      variant: "destructive",
+    });
+    return;
+  }
+
   try {
-    
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    // Prepare key-value data to send
     const payload = {
       name: name,
       track: track,
@@ -88,39 +95,52 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       password: password,
       zone: timezone
     };
-    console.log("Signup payload:", payload);
-    //const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/signUp", {
+
     const res = await fetch(`${BASE_URL}/signUp`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload), //  send key-value data
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(10000), // 10 second timeout
     });
 
     if (!res.ok) {
-      throw new Error(`Signup request failed with status ${res.status}`);
+      throw new Error(`Backend returned status ${res.status}`);
     }
 
     const data = await res.json();
-    console.log("Signup response:", data);
-    if(data.success=="true"){
-    toast({
-      title: "Account created!",
-      description: "You can now proceed with your learning journey.",
-    });
+    
+    if(data.success === "true"){
+      toast({
+        title: "Account created!",
+        description: "You can now proceed with your learning journey.",
+      });
 
-    // Auto-login after signup
-    onLogin(name, track, batchCode);
-  } else {
-    toast({
-      title: data.message,
-      description: "Create account with different email",
-    });
-  }
+      // Auto-login after signup
+      onLogin(name, track, batchCode);
+    } else {
+      toast({
+        title: data.message || "Sign up failed",
+        description: "Please try with a different email",
+        variant: "destructive",
+      });
+    }
   } catch (error: any) {
     console.error("Error during signup:", error);
+    
+    let errorMessage = "Unable to connect to the backend server";
+    let errorDescription = "Please ensure the backend service is running and accessible";
+    
+    if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      errorMessage = "Connection timeout";
+      errorDescription = "The backend server is taking too long to respond";
+    } else if (error.message?.includes('Failed to fetch')) {
+      errorMessage = "Backend not accessible";
+      errorDescription = "Cannot reach the backend server. Please check if the backend URL is correct and the service is running.";
+    }
+    
     toast({
-      title: "Sign up failed",
-      description: error.message || "Something went wrong. Please try again.",
+      title: errorMessage,
+      description: errorDescription,
       variant: "destructive",
     });
   }
@@ -137,37 +157,41 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   }
 
   try {
-    // Call your n8n webhook (adjust URL to your deployed one)
     const payload = {
       email: email,
       password: password
     };
-    console.log("Signup payload:", payload);
-    //const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/login", {
+
     const res = await fetch(`${BASE_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(10000), // 10 second timeout
     });
 
     if (!res.ok) {
-      throw new Error("Failed to login. Please check credentials.");
+      if (res.status === 401) {
+        throw new Error("Invalid email or password");
+      } else if (res.status === 404) {
+        throw new Error("Account not found. Please sign up first.");
+      }
+      throw new Error(`Backend returned status ${res.status}`);
     }
 
     const data = await res.json();
-    console.log(data);
 
     if (data.status === "success" && data.user) {
       toast({
         title: "Welcome back!",
         description: "Successfully logged in.",
       });
+      
       const now = new Date();
       const date = now.toISOString().split("T")[0];
       const time = now.toTimeString().split(" ")[0];
-      console.log(data.user);
+      
       setuserId(data.user.user_id);
-      setLoginEmail(email); // store logged-in email
+      setLoginEmail(email);
       setLoginDate(date);
       setLoginTime(time);
 
@@ -180,9 +204,22 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       throw new Error(data.message || "Invalid credentials");
     }
   } catch (error: any) {
+    console.error("Error during login:", error);
+    
+    let errorMessage = "Login failed";
+    let errorDescription = error.message;
+    
+    if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      errorMessage = "Connection timeout";
+      errorDescription = "The backend server is taking too long to respond";
+    } else if (error.message?.includes('Failed to fetch')) {
+      errorMessage = "Backend not accessible";
+      errorDescription = "Cannot reach the backend server. Please check if the backend URL is correct and the service is running.";
+    }
+    
     toast({
-      title: "Login failed",
-      description: error.message,
+      title: errorMessage,
+      description: errorDescription,
       variant: "destructive",
     });
   }
