@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database } from "lucide-react";
+import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database, Server, FolderPlus, FileText, Upload, PlayCircle, X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
 import { useUser } from "@/context/UserContext";
@@ -37,6 +38,7 @@ export const QueryPage = ({
   const [submitted, setSubmitted] = useState(hasAttempted);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showSetupGuide, setShowSetupGuide] = useState(false);
 
   // const currentQuestion = questions[day - 1];
 
@@ -351,6 +353,7 @@ const handleSubmit = async () => {
                   variant="outline" 
                   className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
                   size="lg"
+                  onClick={() => setShowSetupGuide(true)}
                 >
                   <Settings className="w-4 h-4" />
                   Setup Guide
@@ -382,6 +385,122 @@ const handleSubmit = async () => {
           </div>
         </div>
       </div>
+
+      {/* Setup Guide Dialog */}
+      <Dialog open={showSetupGuide} onOpenChange={setShowSetupGuide}>
+        <DialogContent className="max-w-2xl bg-gradient-to-br from-card to-muted/20 border-border/50">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10">
+                  <Database className="w-6 h-6 text-primary" />
+                </div>
+                <DialogTitle className="text-2xl font-bold">pgAdmin Database Setup Guide</DialogTitle>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowSetupGuide(false)}
+                className="h-8 w-8 rounded-full hover:bg-muted"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-6">
+            {/* Step 1 */}
+            <div className="flex gap-4 p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-all">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                  1
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Server className="w-5 h-5 text-primary" />
+                  <h3 className="font-bold text-foreground">Connect to Server</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Open pgAdmin and connect to your PostgreSQL server.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="flex gap-4 p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-all">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                  2
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <FolderPlus className="w-5 h-5 text-primary" />
+                  <h3 className="font-bold text-foreground">Create Database</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Right-click on "Databases" → "Create" → "Database..."
+                </p>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="flex gap-4 p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-all">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                  3
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="w-5 h-5 text-primary" />
+                  <h3 className="font-bold text-foreground">Name Database</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Name the database <code className="px-2 py-0.5 bg-muted rounded text-primary font-mono text-xs">medical_queries</code> and click "Save".
+                </p>
+              </div>
+            </div>
+
+            {/* Step 4 */}
+            <div className="flex gap-4 p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-all">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                  4
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Upload className="w-5 h-5 text-primary" />
+                  <h3 className="font-bold text-foreground">Start Restore</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Right-click the new database → "Restore..."
+                </p>
+              </div>
+            </div>
+
+            {/* Step 5 */}
+            <div className="flex gap-4 p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-primary/30 transition-all">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                  5
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <PlayCircle className="w-5 h-5 text-primary" />
+                  <h3 className="font-bold text-foreground">Complete Restore</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Select the downloaded SQL file and click "Restore" to import the dataset.
+                </p>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
