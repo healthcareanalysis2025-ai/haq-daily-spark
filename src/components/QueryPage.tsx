@@ -390,21 +390,11 @@ const handleSubmit = async () => {
       <Dialog open={showSetupGuide} onOpenChange={setShowSetupGuide}>
         <DialogContent className="max-w-2xl bg-gradient-to-br from-card to-muted/20 border-border/50">
           <DialogHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-lg bg-primary/10">
-                  <Database className="w-6 h-6 text-primary" />
-                </div>
-                <DialogTitle className="text-2xl font-bold">pgAdmin Database Setup Guide</DialogTitle>
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-lg bg-primary/10">
+                <Database className="w-6 h-6 text-primary" />
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowSetupGuide(false)}
-                className="h-8 w-8 rounded-full hover:bg-muted"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <DialogTitle className="text-2xl font-bold">pgAdmin Database Setup Guide</DialogTitle>
             </div>
           </DialogHeader>
           
