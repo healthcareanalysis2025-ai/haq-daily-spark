@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Mail, Calendar as CalendarIcon, LogOut, BarChart3 } from "lucide-react";
+import { Mail, Calendar as CalendarIcon, LogOut, BarChart3, Download, Settings, ExternalLink, Database } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import ninjaLogo from "@/assets/ninja-logo.png";
@@ -108,6 +109,62 @@ export const Dashboard = ({
               Continue your learning journey and track your progress
             </p>
           </div>
+
+          {/* Clinical Dataset Card */}
+          <Card className="bg-gradient-to-br from-card to-muted/20 border-border/50 hover:shadow-lg transition-all duration-300">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10">
+                  <Database className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle className="text-2xl">Clinical Dataset</CardTitle>
+                  <CardDescription className="mt-1.5">
+                    Access the complete medical database for advanced analysis
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button 
+                className="w-full gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white shadow-md"
+                size="lg"
+              >
+                <Download className="w-4 h-4" />
+                Download Dataset
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
+                size="lg"
+              >
+                <Settings className="w-4 h-4" />
+                Setup Guide
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
+                size="lg"
+              >
+                <ExternalLink className="w-4 h-4" />
+                PhysioNet Details
+              </Button>
+              <div className="pt-2 text-center">
+                <p className="text-xs text-muted-foreground">
+                  Data sourced from{" "}
+                  <a 
+                    href="https://physionet.org" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline font-medium"
+                  >
+                    PhysioNet
+                  </a>
+                  {" "}- A repository of freely-available medical research data
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
         <div className="bg-card p-6 md:p-8 rounded-lg shadow-md border border-border mb-6 hover:shadow-lg transition-all duration-300">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
