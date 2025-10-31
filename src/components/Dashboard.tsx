@@ -1,33 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Mail, Calendar, LogOut, BarChart3 } from "lucide-react";
-//import Calendar from "react-calendar";
+import { Mail, Calendar as CalendarIcon, LogOut, BarChart3 } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import ninjaLogo from "@/assets/ninja-logo.png";
 import { useUser } from "../context/UserContext";
-import { BASE_URL } from "@/config";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import { useState } from "react";
 
 interface DashboardProps {
   userName: string;
-  completedDays: number[];
-  currentDay: number;
-  onDayClick: (day: number) => void;
+  completedDays: string[]; // Now stores date strings in YYYY-MM-DD format
+  attemptedDays: string[]; // Store attempted but not completed days
+  onDayClick: (date: string) => void;
   onViewStats?: () => void;
 }
 
 export const Dashboard = ({
   userName,
   completedDays,
-  currentDay,
+  attemptedDays,
   onDayClick,
   onViewStats,
 }: DashboardProps) => {
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const totalDays = 15;
   const progress = (completedDays.length / totalDays) * 100;
-  const { userId,loginEmail,loginDate,loginTime } = useUser();
-  console.log("Logged in user:", loginEmail, "date :", loginDate,"  Time :",loginTime);
+  const { userId, loginEmail, loginDate, loginTime } = useUser();
+  console.log("Logged in user:", loginEmail, "date :", loginDate, "  Time :", loginTime);
   const navigate = useNavigate();
 
   const handleEmailProgress = () => {
@@ -48,23 +50,22 @@ export const Dashboard = ({
   };
 
 
-  const getDayStatus = (day: number) => {
-    if (completedDays.includes(day)) return "completed";
-    if (day === currentDay) return "active";
-    return "locked";
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date);
+      const dateString = format(date, "yyyy-MM-dd");
+      onDayClick(dateString);
+    }
   };
 
-  const getDayClasses = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "bg-success text-success-foreground cursor-not-allowed";
-      case "active":
-        return "bg-accent text-accent-foreground cursor-pointer hover:scale-110 transition-transform animate-pulse-success";
-      case "locked":
-        return "bg-muted text-muted-foreground cursor-not-allowed";
-      default:
-        return "";
-    }
+  const isDateCompleted = (date: Date) => {
+    const dateString = format(date, "yyyy-MM-dd");
+    return completedDays.includes(dateString);
+  };
+
+  const isDateAttempted = (date: Date) => {
+    const dateString = format(date, "yyyy-MM-dd");
+    return attemptedDays.includes(dateString);
   };
 
   return (
@@ -101,7 +102,7 @@ export const Dashboard = ({
         <div className="bg-card p-6 rounded-lg shadow-lg mb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
             <div className="flex items-center gap-2">
-              <Calendar className="text-primary" />
+              <CalendarIcon className="text-primary" />
               <h2 className="text-2xl font-semibold">Your Progress</h2>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -135,92 +136,49 @@ export const Dashboard = ({
             </div>
             <Progress value={progress} className="h-3" />
           </div>
-          <div className="grid grid-cols-5 gap-4">
-            {Array.from({ length: totalDays }, (_, i) => i + 1).map((day) => {
-              // Temporarily force all days to active
-              const status: "completed" | "active" | "locked" = "active";
-              const isClickable = status === "active";
 
-      return (
-        <button
-          key={day}
-          onClick={() => isClickable && onDayClick(day)}
-          disabled={!isClickable}
-          className={`
-            aspect-square rounded-lg flex flex-col items-center justify-center
-            font-semibold text-lg shadow-md
-            ${getDayClasses(status)}
-          `}
-          title="Active (temporarily enabled)"
-        >
-          <span className="text-xs opacity-75 mb-1">Day</span>
-          <span>{day}</span>
-          {/*{status === "completed" && <span className="text-xs mt-1">✓</span>}
-          {status === "locked" && <span className="text-xs mt-1">🔒</span>} */}
-        </button>
-      );
-      })}
-  </div>
-
-        {/*  <div className="grid grid-cols-5 gap-4">
-            {Array.from({ length: totalDays }, (_, i) => i + 1).map((day) => {
-              const status = getDayStatus(day);
-              const isClickable = status === "active";
-
-              return (
-                <button
-                  key={day}
-                  onClick={() => isClickable && onDayClick(day)}
-                  disabled={!isClickable}
-                  className={`
-                    aspect-square rounded-lg flex flex-col items-center justify-center
-                    font-semibold text-lg shadow-md
-                    ${getDayClasses(status)}
-                  `}
-                  title={
-                    status === "completed"
-                      ? "Completed"
-                      : status === "active"
-                      ? "Click to start today's query"
-                      : "Locked"
-                  }
-                >
-                  <span className="text-xs opacity-75 mb-1">Day</span>
-                  <span>{day}</span>
-                  {status === "completed" && (
-                    <span className="text-xs mt-1">✓</span>
-                  )}
-                  {status === "locked" && (
-                    <span className="text-xs mt-1">🔒</span>
-                  )}
-                </button>
-              );
-            })}
-          </div> */}
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold mb-3 text-primary">
+              Select a Day to Attempt
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Click any date on the calendar to start or review that day's query
+            </p>
+            <div className="flex justify-center">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={handleDateSelect}
+                className="rounded-md border shadow-sm"
+                modifiers={{
+                  completed: (date) => isDateCompleted(date),
+                  attempted: (date) => isDateAttempted(date) && !isDateCompleted(date),
+                }}
+                modifiersClassNames={{
+                  completed: "bg-success text-success-foreground font-bold",
+                  attempted: "bg-accent text-accent-foreground font-semibold",
+                }}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="bg-card p-6 rounded-lg shadow-lg">
           <h3 className="text-xl font-semibold mb-4 text-primary">
             Legend
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center font-bold">
-                {currentDay}
-              </div>
-              <span className="text-sm">Today's Query (Active)</span>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-success rounded-lg flex items-center justify-center font-bold text-success-foreground">
                 ✓
               </div>
-              <span className="text-sm">Completed</span>
+              <span className="text-sm">Completed Query</span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center font-bold">
-                🔒
+              <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center font-bold">
+                ~
               </div>
-              <span className="text-sm">Locked (Future)</span>
+              <span className="text-sm">Attempted (Not Completed)</span>
             </div>
           </div>
         </div>

@@ -18,9 +18,9 @@ interface Question {
 }
 
 interface QueryPageProps {
-  day: number;
+  day: string;
   onBack: () => void;
-  onComplete: (day: number) => void;
+  onComplete: (day: string) => void;
   hasAttempted: boolean;
 }
 
@@ -209,7 +209,9 @@ const handleSubmit = async () => {
         <Card className="p-8 shadow-lg">
           <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-primary">Day {day} Query</h2>
+              <h2 className="text-2xl font-bold text-primary">
+                Query for {new Date(day).toLocaleDateString()}
+              </h2>
               <Button
                 variant="outline"
                 size="sm"

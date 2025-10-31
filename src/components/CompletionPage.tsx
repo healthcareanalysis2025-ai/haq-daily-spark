@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface CompletionPageProps {
-  day: number;
+  day: string;
   onBackToDashboard: () => void;
   onBackToTechSelection: () => void;
 }
@@ -27,7 +27,7 @@ export const CompletionPage = ({ day, onBackToDashboard, onBackToTechSelection }
           <div className="space-y-2">
             <h2 className="text-3xl font-bold text-foreground">Great Job!</h2>
             <p className="text-muted-foreground">
-              You've completed Day {day}'s question
+              You've completed the query for {new Date(day).toLocaleDateString()}
             </p>
           </div>
         </div>

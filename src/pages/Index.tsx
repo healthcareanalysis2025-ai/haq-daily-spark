@@ -20,13 +20,10 @@ type View = "login" | "techSelection" | "dashboard" | "query" | "certificate" | 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>("login");
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [completedDays, setCompletedDays] = useState<number[]>([]);
-  const [attemptedDays, setAttemptedDays] = useState<number[]>([]);
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [completedDays, setCompletedDays] = useState<string[]>([]);
+  const [attemptedDays, setAttemptedDays] = useState<string[]>([]);
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
-  
-  // Current day is October 17, 2025 (day 1)
-  const currentDay = 1;
 
   // Check authentication and load data
   useEffect(() => {
@@ -100,14 +97,14 @@ const Index = () => {
     }
   };
 
-  const handleDayClick = (day: number) => {
-    setSelectedDay(day);
+  const handleDayClick = (dateString: string) => {
+    setSelectedDay(dateString);
     setCurrentView("query");
   };
 
-  const handleQueryComplete = (day: number) => {
-    const newCompleted = [...completedDays, day];
-    const newAttempted = [...attemptedDays, day];
+  const handleQueryComplete = (dateString: string) => {
+    const newCompleted = [...completedDays, dateString];
+    const newAttempted = [...attemptedDays, dateString];
     
     setCompletedDays(newCompleted);
     setAttemptedDays(newAttempted);
@@ -216,7 +213,7 @@ const Index = () => {
       <Dashboard
         userName={userData.name}
         completedDays={completedDays}
-        currentDay={currentDay}
+        attemptedDays={attemptedDays}
         onDayClick={handleDayClick}
         onViewStats={handleViewStats}
       />
