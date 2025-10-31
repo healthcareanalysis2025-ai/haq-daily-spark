@@ -22,7 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ninjaLogo from "@/assets/ninja-logo.png";
-import { useUser } from "../context/UserContext";
+import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config";
 
 interface LoginPageProps {
@@ -337,26 +337,26 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-border bg-card shadow-card">
+      <header className="sticky top-0 z-50 border-b border-border/40 bg-card/80 backdrop-blur-lg shadow-sm">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={ninjaLogo} alt="HAQ" className="h-10" />
-            <h1 className="text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ (HAQ)</h1>
+            <img src={ninjaLogo} alt="HAQ" className="h-10 w-10 object-contain" />
+            <h1 className="text-base md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
           </div>
-          <nav className="flex gap-8 items-center">
+          <nav className="flex gap-4 md:gap-8 items-center">
             {isLoggedIn ? (
               <button 
                 onClick={() => setShowTechDialog(true)}
-                className="nav-link"
+                className="nav-link text-sm md:text-base"
               >
                 Technology
               </button>
             ) : (
-              <span className="text-sm font-medium text-muted-foreground/50 cursor-not-allowed">
+              <span className="text-xs md:text-sm font-medium text-muted-foreground/50 cursor-not-allowed">
                 Technology
               </span>
             )}
-            <button className="nav-link">
+            <button className="nav-link text-sm md:text-base hidden sm:block">
               About Us
             </button>
             {isLoggedIn ? (
@@ -364,14 +364,14 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
-                className="text-sm font-medium"
+                className="text-xs md:text-sm font-medium hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
               >
                 Logout
               </Button>
             ) : (
               <button 
                 onClick={() => setActiveTab("login")}
-                className="nav-link !text-primary"
+                className="nav-link !text-primary text-sm md:text-base"
               >
                 Login
               </button>
@@ -381,24 +381,25 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 container mx-auto px-6 py-20 flex items-center justify-between gap-16">
+      <div className="flex-1 container mx-auto px-6 py-12 md:py-20 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
         {/* Left Side - Tagline */}
-        <div className="flex-1 max-w-xl animate-fade-in">
-          <h2 className="text-5xl font-bold text-foreground mb-6 leading-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Ready to master the technologies that power healthcare analysis?
+        <div className="flex-1 max-w-2xl animate-fade-in text-center lg:text-left">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+            Ready to master the technologies that power{" "}
+            <span className="text-primary">healthcare analysis</span>?
           </h2>
-          <p className="text-lg text-muted-foreground mb-4">
+          <p className="text-base md:text-lg text-muted-foreground mb-4 leading-relaxed">
             Being a healthcare analyst comes down to mastering SQL, Python and Statistics.
           </p>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
             Start your journey to mastery with us today.
           </p>
         </div>
 
         {/* Right Side - Login/Sign Up Form */}
-        <Card className="w-full max-w-md shadow-elegant animate-scale-in bg-card border-border hover:shadow-card-hover transition-shadow duration-300">
+        <Card className="w-full max-w-md shadow-elegant animate-scale-in bg-card border-border/50 hover:shadow-card-hover transition-all duration-300">
           <CardHeader className="text-center space-y-3 pb-6 pt-8 px-6">
-            <CardTitle className="text-3xl font-bold text-foreground">
+            <CardTitle className="text-2xl md:text-3xl font-bold text-foreground">
               Get Started
             </CardTitle>
             <p className="text-sm text-muted-foreground">Login or create your account</p>

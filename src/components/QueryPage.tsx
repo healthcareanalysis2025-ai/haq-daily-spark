@@ -196,41 +196,43 @@ const handleSubmit = async () => {
     <div className="min-h-screen bg-background p-4 md:p-8">
       {showConfetti && <Confetti />}
       
-      <div className="max-w-3xl mx-auto animate-fade-in">
+      <div className="max-w-4xl mx-auto animate-fade-in">
         <Button
           variant="ghost"
           onClick={onBack}
-          className="mb-6 gap-2"
+          className="mb-6 gap-2 hover:bg-muted"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Dashboard
         </Button>
 
-        <Card className="p-8 shadow-lg">
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-primary">
-                Query for {new Date(day).toLocaleDateString()}
-              </h2>
+        <Card className="p-6 md:p-8 shadow-elegant border-border/50 hover:shadow-card-hover transition-all duration-300">
+          <div className="mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+              <div className="space-y-2">
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                  Query for {new Date(day).toLocaleDateString()}
+                </h2>
+                <p className="text-sm md:text-base text-muted-foreground">
+                  Answer all questions below to complete today's challenge
+                </p>
+              </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleEmailQuery}
-                className="gap-2"
+                className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
               >
                 <Mail className="w-4 h-4" />
-                Email Query
+                <span className="hidden sm:inline">Email Query</span>
               </Button>
             </div>
-            <p className="text-muted-foreground">
-              Answer the question below to complete today's challenge
-            </p>
           </div>
 
-          <div className="mb-8">
+          <div className="mb-10 space-y-8">
   {currentQuestion.map((q, qIndex) => (
-    <div key={q.mcq_id} className="mb-10">
-      <h3 className="text-xl font-semibold mb-4">
+    <div key={q.mcq_id} className="p-6 bg-muted/20 rounded-xl">
+      <h3 className="text-lg md:text-xl font-bold mb-6 text-foreground">
         {qIndex + 1}. {q.question}
       </h3>
 
@@ -238,40 +240,40 @@ const handleSubmit = async () => {
         value={answers[qIndex]?.toString()}
         onValueChange={(value) => handleSelect(qIndex, parseInt(value))}
         disabled={submitted}
-        className="space-y-4"
+        className="space-y-3"
       >
         {q.options.map((option, index) => (
           <div
             key={index}
             className={`
-              flex items-center space-x-3 p-4 rounded-lg border-2 transition-all
+              flex items-center space-x-3 p-4 md:p-5 rounded-xl border-2 transition-all duration-200
               ${
                 submitted
                   ? index === q.correctAnswer
-                    ? "border-success bg-success/10"
+                    ? "border-success bg-success/10 shadow-sm"
                     : answers[qIndex] === index && index !== q.correctAnswer
-                    ? "border-destructive bg-destructive/10"
-                    : "border-border"
-                  : "border-border hover:border-accent"
+                    ? "border-destructive bg-destructive/10 shadow-sm"
+                    : "border-border bg-card"
+                  : "border-border bg-card hover:border-primary/50 hover:bg-muted/30 cursor-pointer"
               }
             `}
           >
             <RadioGroupItem value={index.toString()} id={`option-${qIndex}-${index}`} />
             <Label
               htmlFor={`option-${qIndex}-${index}`}
-              className="flex-1 cursor-pointer font-medium"
+              className="flex-1 cursor-pointer font-medium text-sm md:text-base"
             >
               {String.fromCharCode(97 + index)}) {option}
             </Label>
 
             {/* ✅ show icons */}
             {submitted && index === q.correctAnswer && (
-              <CheckCircle className="w-5 h-5 text-success" />
+              <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
             )}
             {submitted &&
               answers[qIndex] === index &&
               index !== q.correctAnswer && (
-                <XCircle className="w-5 h-5 text-destructive" />
+                <XCircle className="w-5 h-5 text-destructive flex-shrink-0" />
               )}
           </div>
         ))}
@@ -284,32 +286,32 @@ const handleSubmit = async () => {
           {!submitted ? (
             <Button
               onClick={handleSubmit}
-              className="w-full py-6 text-lg transition-all hover:scale-105"
+              className="w-full py-6 text-base md:text-lg font-semibold shadow-card hover:shadow-card-hover transition-all hover:scale-[1.02]"
             >
               Submit Answer
             </Button>
           ) : (
-            <div className="text-center">
+            <div className="text-center p-6 bg-muted/20 rounded-xl">
               {isCorrect ? (
                 <div className="space-y-4">
-                  <div className="text-success font-semibold text-xl flex items-center justify-center gap-2">
-                    <CheckCircle className="w-6 h-6" />
+                  <div className="text-success font-bold text-xl md:text-2xl flex items-center justify-center gap-3">
+                    <CheckCircle className="w-8 h-8" />
                     Correct! Well done!
                   </div>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground text-sm md:text-base">
                     Returning to dashboard...
                   </p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="text-destructive font-semibold text-xl flex items-center justify-center gap-2">
-                    <XCircle className="w-6 h-6" />
+                  <div className="text-destructive font-bold text-xl md:text-2xl flex items-center justify-center gap-3">
+                    <XCircle className="w-8 h-8" />
                     Incorrect! Try again tomorrow.
                   </div>
-                  <p className="text-muted-foreground">
-                    The correct answer is highlighted above.
+                  <p className="text-muted-foreground text-sm md:text-base mb-4">
+                    The correct answers are highlighted above.
                   </p>
-                  <Button onClick={onBack} className="mt-4">
+                  <Button onClick={onBack} className="mt-4 shadow-card hover:shadow-card-hover">
                     Return to Dashboard
                   </Button>
                 </div>
