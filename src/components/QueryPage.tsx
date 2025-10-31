@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database } from "lucide-react";
+import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
 import { useUser } from "@/context/UserContext";
@@ -196,7 +196,7 @@ const handleSubmit = async () => {
     <div className="min-h-screen bg-background p-4 md:p-8">
       {showConfetti && <Confetti />}
       
-      <div className="max-w-4xl mx-auto animate-fade-in space-y-6">
+      <div className="max-w-7xl mx-auto animate-fade-in space-y-6">
         <Button
           variant="ghost"
           onClick={onBack}
@@ -206,175 +206,198 @@ const handleSubmit = async () => {
           Back to Dashboard
         </Button>
 
-        {/* Clinical Dataset Card */}
-        <Card className="bg-gradient-to-br from-card to-muted/20 border-border/50 hover:shadow-lg transition-all duration-300">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-lg bg-primary/10">
-                <Database className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <CardTitle className="text-2xl">Clinical Dataset</CardTitle>
-                <CardDescription className="mt-1.5">
-                  Access the complete medical database for advanced analysis
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button 
-              className="w-full gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white shadow-md"
-              size="lg"
-            >
-              <Download className="w-4 h-4" />
-              Download Dataset
-            </Button>
-            <Button 
-              variant="outline" 
-              className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
-              size="lg"
-            >
-              <Settings className="w-4 h-4" />
-              Setup Guide
-            </Button>
-            <Button 
-              variant="outline" 
-              className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
-              size="lg"
-            >
-              <ExternalLink className="w-4 h-4" />
-              PhysioNet Details
-            </Button>
-            <div className="pt-2 text-center">
-              <p className="text-xs text-muted-foreground">
-                Data sourced from{" "}
-                <a 
-                  href="https://physionet.org" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline font-medium"
-                >
-                  PhysioNet
-                </a>
-                {" "}- A repository of freely-available medical research data
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="p-6 md:p-8 shadow-md border-border hover:shadow-lg transition-all duration-300">
-          <div className="mb-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                  Query for {new Date(day).toLocaleDateString()}
-                </h2>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                  Answer all questions below to complete today's challenge
-                </p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleEmailQuery}
-                className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
-              >
-                <Mail className="w-4 h-4" />
-                <span className="hidden sm:inline">Email Query</span>
-              </Button>
-            </div>
-          </div>
-
-          <div className="mb-10 space-y-8">
-  {currentQuestion.map((q, qIndex) => (
-    <div key={q.mcq_id} className="p-6 bg-muted/30 rounded-lg border border-border/50">
-      <h3 className="text-lg md:text-xl font-bold mb-6 text-foreground tracking-tight">
-        {qIndex + 1}. {q.question}
-      </h3>
-
-      <RadioGroup
-        value={answers[qIndex]?.toString()}
-        onValueChange={(value) => handleSelect(qIndex, parseInt(value))}
-        disabled={submitted}
-        className="space-y-3"
-      >
-        {q.options.map((option, index) => (
-          <div
-            key={index}
-            className={`
-              flex items-center space-x-3 p-4 md:p-5 rounded-md border transition-all duration-200
-              ${
-                submitted
-                  ? index === q.correctAnswer
-                    ? "border-success bg-success/10 shadow-sm"
-                    : answers[qIndex] === index && index !== q.correctAnswer
-                    ? "border-destructive bg-destructive/10 shadow-sm"
-                    : "border-border bg-card"
-                  : "border-border bg-card hover:border-primary/50 hover:bg-accent/50 cursor-pointer"
-              }
-            `}
-          >
-            <RadioGroupItem value={index.toString()} id={`option-${qIndex}-${index}`} />
-            <Label
-              htmlFor={`option-${qIndex}-${index}`}
-              className="flex-1 cursor-pointer font-medium text-sm md:text-base"
-            >
-              {String.fromCharCode(97 + index)}) {option}
-            </Label>
-
-            {/* ✅ show icons */}
-            {submitted && index === q.correctAnswer && (
-              <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
-            )}
-            {submitted &&
-              answers[qIndex] === index &&
-              index !== q.correctAnswer && (
-                <XCircle className="w-5 h-5 text-destructive flex-shrink-0" />
-              )}
-          </div>
-        ))}
-      </RadioGroup>
-    </div>
-  ))}
-</div>
-
-
-          {!submitted ? (
-            <Button
-              onClick={handleSubmit}
-              className="w-full py-6 text-base md:text-lg font-semibold shadow-card hover:shadow-card-hover transition-all hover:scale-[1.02]"
-            >
-              Submit Answer
-            </Button>
-          ) : (
-            <div className="text-center p-6 bg-muted/20 rounded-xl">
-              {isCorrect ? (
-                <div className="space-y-4">
-                  <div className="text-success font-bold text-xl md:text-2xl flex items-center justify-center gap-3">
-                    <CheckCircle className="w-8 h-8" />
-                    Correct! Well done!
+        {/* Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Questions (2/3 width) */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="p-6 md:p-8 shadow-md border-border hover:shadow-lg transition-all duration-300">
+              <div className="mb-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                  <div className="space-y-2">
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                      Query for {new Date(day).toLocaleDateString()}
+                    </h2>
+                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                      Answer all questions below to complete today's challenge
+                    </p>
                   </div>
-                  <p className="text-muted-foreground text-sm md:text-base">
-                    Returning to dashboard...
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="text-destructive font-bold text-xl md:text-2xl flex items-center justify-center gap-3">
-                    <XCircle className="w-8 h-8" />
-                    Incorrect! Try again tomorrow.
-                  </div>
-                  <p className="text-muted-foreground text-sm md:text-base mb-4">
-                    The correct answers are highlighted above.
-                  </p>
-                  <Button onClick={onBack} className="mt-4 shadow-card hover:shadow-card-hover">
-                    Return to Dashboard
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleEmailQuery}
+                    className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
+                  >
+                    <Mail className="w-4 h-4" />
+                    <span className="hidden sm:inline">Email Query</span>
                   </Button>
                 </div>
+              </div>
+
+              <div className="mb-10 space-y-8">
+                {currentQuestion.map((q, qIndex) => (
+                  <div key={q.mcq_id} className="p-6 bg-muted/30 rounded-lg border border-border/50">
+                    <h3 className="text-lg md:text-xl font-bold mb-6 text-foreground tracking-tight">
+                      {qIndex + 1}. {q.question}
+                    </h3>
+
+                    <RadioGroup
+                      value={answers[qIndex]?.toString()}
+                      onValueChange={(value) => handleSelect(qIndex, parseInt(value))}
+                      disabled={submitted}
+                      className="space-y-3"
+                    >
+                      {q.options.map((option, index) => (
+                        <div
+                          key={index}
+                          className={`
+                            flex items-center space-x-3 p-4 md:p-5 rounded-md border transition-all duration-200
+                            ${
+                              submitted
+                                ? index === q.correctAnswer
+                                  ? "border-success bg-success/10 shadow-sm"
+                                  : answers[qIndex] === index && index !== q.correctAnswer
+                                  ? "border-destructive bg-destructive/10 shadow-sm"
+                                  : "border-border bg-card"
+                                : "border-border bg-card hover:border-primary/50 hover:bg-accent/50 cursor-pointer"
+                            }
+                          `}
+                        >
+                          <RadioGroupItem value={index.toString()} id={`option-${qIndex}-${index}`} />
+                          <Label
+                            htmlFor={`option-${qIndex}-${index}`}
+                            className="flex-1 cursor-pointer font-medium text-sm md:text-base"
+                          >
+                            {String.fromCharCode(97 + index)}) {option}
+                          </Label>
+
+                          {submitted && index === q.correctAnswer && (
+                            <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
+                          )}
+                          {submitted &&
+                            answers[qIndex] === index &&
+                            index !== q.correctAnswer && (
+                              <XCircle className="w-5 h-5 text-destructive flex-shrink-0" />
+                            )}
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </div>
+                ))}
+              </div>
+
+              {!submitted ? (
+                <Button
+                  onClick={handleSubmit}
+                  className="w-full py-6 text-base md:text-lg font-semibold shadow-card hover:shadow-card-hover transition-all hover:scale-[1.02]"
+                >
+                  Submit Answer
+                </Button>
+              ) : (
+                <div className="text-center p-6 bg-muted/20 rounded-xl">
+                  {isCorrect ? (
+                    <div className="space-y-4">
+                      <div className="text-success font-bold text-xl md:text-2xl flex items-center justify-center gap-3">
+                        <CheckCircle className="w-8 h-8" />
+                        Correct! Well done!
+                      </div>
+                      <p className="text-muted-foreground text-sm md:text-base">
+                        Returning to dashboard...
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="text-destructive font-bold text-xl md:text-2xl flex items-center justify-center gap-3">
+                        <XCircle className="w-8 h-8" />
+                        Incorrect! Try again tomorrow.
+                      </div>
+                      <p className="text-muted-foreground text-sm md:text-base mb-4">
+                        The correct answers are highlighted above.
+                      </p>
+                      <Button onClick={onBack} className="mt-4 shadow-card hover:shadow-card-hover">
+                        Return to Dashboard
+                      </Button>
+                    </div>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-        </Card>
+            </Card>
+
+            {/* Expert Analysis Section */}
+            <Card className="p-6 md:p-8 bg-gradient-to-br from-card to-muted/20 border-border/50 hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2.5 rounded-lg bg-primary/10">
+                  <Clock className="w-6 h-6 text-primary" />
+                </div>
+                <CardTitle className="text-2xl">Expert Analysis & Answer</CardTitle>
+              </div>
+              <CardContent className="p-0">
+                <div className="p-4 bg-muted/30 rounded-lg border border-border/50">
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                    The detailed answer and clinical explanation will be revealed here at 8:00 PM daily.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Clinical Dataset (1/3 width) */}
+          <div className="lg:col-span-1">
+            <Card className="bg-gradient-to-br from-card to-muted/20 border-border/50 hover:shadow-lg transition-all duration-300 sticky top-6">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-lg bg-primary/10">
+                    <Database className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Clinical Dataset</CardTitle>
+                    <CardDescription className="mt-1.5 text-xs">
+                      Access the complete medical database for advanced analysis
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button 
+                  className="w-full gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white shadow-md"
+                  size="lg"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Dataset
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
+                  size="lg"
+                >
+                  <Settings className="w-4 h-4" />
+                  Setup Guide
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
+                  size="lg"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  PhysioNet Details
+                </Button>
+                <div className="pt-2 text-center">
+                  <p className="text-xs text-muted-foreground">
+                    Data sourced from{" "}
+                    <a 
+                      href="https://physionet.org" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline font-medium"
+                    >
+                      PhysioNet
+                    </a>
+                    {" "}- A repository of freely-available medical research data
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
