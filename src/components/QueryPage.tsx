@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database, Clock } from "lucide-react";
+import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database } from "lucide-react";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
 import { useUser } from "@/context/UserContext";
@@ -320,23 +320,6 @@ const handleSubmit = async () => {
                   )}
                 </div>
               )}
-            </Card>
-
-            {/* Expert Analysis Section */}
-            <Card className="p-6 md:p-8 bg-gradient-to-br from-card to-muted/20 border-border/50 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 rounded-lg bg-primary/10">
-                  <Clock className="w-6 h-6 text-primary" />
-                </div>
-                <CardTitle className="text-2xl">Expert Analysis & Answer</CardTitle>
-              </div>
-              <CardContent className="p-0">
-                <div className="p-4 bg-muted/30 rounded-lg border border-border/50">
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                    The detailed answer and clinical explanation will be revealed here at 8:00 PM daily.
-                  </p>
-                </div>
-              </CardContent>
             </Card>
           </div>
 
