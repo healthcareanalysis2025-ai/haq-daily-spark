@@ -345,9 +345,12 @@ const handleSubmit = async () => {
                 <Button 
                   className="w-full gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white shadow-md"
                   size="lg"
+                  asChild
                 >
-                  <Download className="w-4 h-4" />
-                  Download Dataset
+                  <a href="https://drive.google.com/your-dataset-link" target="_blank" rel="noopener noreferrer">
+                    <Download className="w-4 h-4" />
+                    Download Dataset
+                  </a>
                 </Button>
                 <Button 
                   variant="outline" 
@@ -362,9 +365,12 @@ const handleSubmit = async () => {
                   variant="outline" 
                   className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
                   size="lg"
+                  asChild
                 >
-                  <ExternalLink className="w-4 h-4" />
-                  PhysioNet Details
+                  <a href="https://physionet.org" target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-4 h-4" />
+                    PhysioNet Details
+                  </a>
                 </Button>
                 <div className="pt-2 text-center">
                   <p className="text-xs text-muted-foreground">
