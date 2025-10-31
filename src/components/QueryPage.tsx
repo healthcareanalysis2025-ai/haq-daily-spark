@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Mail, CheckCircle, XCircle } from "lucide-react";
+import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database } from "lucide-react";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
 import { useUser } from "@/context/UserContext";
@@ -196,7 +196,7 @@ const handleSubmit = async () => {
     <div className="min-h-screen bg-background p-4 md:p-8">
       {showConfetti && <Confetti />}
       
-      <div className="max-w-4xl mx-auto animate-fade-in">
+      <div className="max-w-4xl mx-auto animate-fade-in space-y-6">
         <Button
           variant="ghost"
           onClick={onBack}
@@ -205,6 +205,62 @@ const handleSubmit = async () => {
           <ArrowLeft className="w-4 h-4" />
           Back to Dashboard
         </Button>
+
+        {/* Clinical Dataset Card */}
+        <Card className="bg-gradient-to-br from-card to-muted/20 border-border/50 hover:shadow-lg transition-all duration-300">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-lg bg-primary/10">
+                <Database className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl">Clinical Dataset</CardTitle>
+                <CardDescription className="mt-1.5">
+                  Access the complete medical database for advanced analysis
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button 
+              className="w-full gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white shadow-md"
+              size="lg"
+            >
+              <Download className="w-4 h-4" />
+              Download Dataset
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
+              size="lg"
+            >
+              <Settings className="w-4 h-4" />
+              Setup Guide
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
+              size="lg"
+            >
+              <ExternalLink className="w-4 h-4" />
+              PhysioNet Details
+            </Button>
+            <div className="pt-2 text-center">
+              <p className="text-xs text-muted-foreground">
+                Data sourced from{" "}
+                <a 
+                  href="https://physionet.org" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline font-medium"
+                >
+                  PhysioNet
+                </a>
+                {" "}- A repository of freely-available medical research data
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="p-6 md:p-8 shadow-md border-border hover:shadow-lg transition-all duration-300">
           <div className="mb-8">
