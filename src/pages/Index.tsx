@@ -5,6 +5,7 @@ import { Dashboard } from "@/components/Dashboard";
 import { QueryPage } from "@/components/QueryPage";
 import { CertificatePage } from "@/components/CertificatePage";
 import { CompletionPage } from "@/components/CompletionPage";
+import { ProgressStats } from "@/components/ProgressStats";
 import { supabase } from "@/integrations/supabase/client";
 
 interface UserData {
@@ -14,7 +15,7 @@ interface UserData {
   technology?: "sql" | "python";
 }
 
-type View = "login" | "techSelection" | "dashboard" | "query" | "certificate" | "completion";
+type View = "login" | "techSelection" | "dashboard" | "query" | "certificate" | "completion" | "stats";
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>("login");
@@ -129,6 +130,14 @@ const Index = () => {
     setSelectedDay(null);
   };
 
+  const handleViewStats = () => {
+    setCurrentView("stats");
+  };
+
+  const handleBackFromStats = () => {
+    setCurrentView("dashboard");
+  };
+
   const handleReset = () => {
     localStorage.removeItem("haq_user");
     localStorage.removeItem("haq_completed");
@@ -191,6 +200,17 @@ const Index = () => {
     );
   }
 
+  if (currentView === "stats" && userData) {
+    return (
+      <ProgressStats
+        userName={userData.name}
+        completedDays={completedDays}
+        attemptedDays={attemptedDays}
+        onBack={handleBackFromStats}
+      />
+    );
+  }
+
   if (currentView === "dashboard" && userData) {
     return (
       <Dashboard
@@ -198,6 +218,7 @@ const Index = () => {
         completedDays={completedDays}
         currentDay={currentDay}
         onDayClick={handleDayClick}
+        onViewStats={handleViewStats}
       />
     );
   }

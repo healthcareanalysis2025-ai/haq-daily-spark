@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, Award } from "lucide-react";
+import { Download, Award, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
 import haqLogo from "@/assets/haq-logo.png";
+import { useRef, useState } from "react";
+import html2canvas from "html2canvas";
 
 interface CertificatePageProps {
   userName: string;
@@ -18,12 +20,66 @@ export const CertificatePage = ({
   batchCode,
   onReset,
 }: CertificatePageProps) => {
-  const handleDownload = () => {
-    toast.success("Certificate downloaded successfully!");
-    setTimeout(() => {
-      toast.info("Your progress has been securely cleared from the system.");
-      setTimeout(onReset, 2000);
-    }, 1000);
+  const certificateRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    try {
+      if (!certificateRef.current) return;
+      
+      setIsDownloading(true);
+      
+      // Use html2canvas to capture the certificate
+      const canvas = await html2canvas(certificateRef.current, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+
+      // Convert canvas to blob and download
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `HAQ-Certificate-${userName.replace(/\s+/g, '-')}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        setIsDownloading(false);
+        toast.success("Certificate downloaded successfully!");
+        
+        setTimeout(() => {
+          toast.info("Your progress has been securely cleared from the system.");
+          setTimeout(onReset, 2000);
+        }, 1000);
+      });
+    } catch (error) {
+      setIsDownloading(false);
+      toast.error("Failed to download certificate. Please try again.");
+      console.error(error);
+    }
+  };
+
+  const handleShare = () => {
+    const text = `🎉 I just completed the 15-Day Healthcare Analysis Query Challenge at HAQ! #HAQ #HealthcareAnalytics #Learning`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'HAQ Certificate',
+        text: text,
+      }).catch(() => {
+        // Fallback to copying text
+        navigator.clipboard.writeText(text);
+        toast.success("Share text copied to clipboard!");
+      });
+    } else {
+      navigator.clipboard.writeText(text);
+      toast.success("Share text copied to clipboard!");
+    }
   };
 
   return (
@@ -41,7 +97,7 @@ export const CertificatePage = ({
           </p>
         </div>
 
-        <Card className="p-8 md:p-12 shadow-2xl border-4 border-primary">
+        <Card ref={certificateRef} className="p-8 md:p-12 shadow-2xl border-4 border-primary bg-card">
           <div className="text-center space-y-6">
             <img
               src={haqLogo}
@@ -83,14 +139,25 @@ export const CertificatePage = ({
               </div>
             </div>
 
-            <div className="pt-6">
+            <div className="pt-6 flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={handleDownload}
                 size="lg"
+                disabled={isDownloading}
                 className="gap-2 px-8 py-6 text-lg transition-all hover:scale-105"
               >
                 <Download className="w-5 h-5" />
-                Download Certificate
+                {isDownloading ? "Downloading..." : "Download Certificate"}
+              </Button>
+              
+              <Button
+                onClick={handleShare}
+                size="lg"
+                variant="outline"
+                className="gap-2 px-8 py-6 text-lg transition-all hover:scale-105"
+              >
+                <Share2 className="w-5 h-5" />
+                Share Achievement
               </Button>
             </div>
 

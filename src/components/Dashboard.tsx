@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Mail,Calendar, LogOut } from "lucide-react";
+import { Mail, Calendar, LogOut, BarChart3 } from "lucide-react";
 //import Calendar from "react-calendar";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,7 @@ interface DashboardProps {
   completedDays: number[];
   currentDay: number;
   onDayClick: (day: number) => void;
+  onViewStats?: () => void;
 }
 
 export const Dashboard = ({
@@ -21,6 +22,7 @@ export const Dashboard = ({
   completedDays,
   currentDay,
   onDayClick,
+  onViewStats,
 }: DashboardProps) => {
   const totalDays = 15;
   const progress = (completedDays.length / totalDays) * 100;
@@ -97,19 +99,31 @@ export const Dashboard = ({
           </div>
 
         <div className="bg-card p-6 rounded-lg shadow-lg mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
             <div className="flex items-center gap-2">
               <Calendar className="text-primary" />
               <h2 className="text-2xl font-semibold">Your Progress</h2>
             </div>
-            <Button
-              variant="outline"
-              onClick={handleEmailProgress}
-              className="gap-2"
-            >
-              <Mail className="w-4 h-4" />
-              Email Progress
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              {onViewStats && (
+                <Button
+                  variant="outline"
+                  onClick={onViewStats}
+                  className="gap-2"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  View Stats
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                onClick={handleEmailProgress}
+                className="gap-2"
+              >
+                <Mail className="w-4 h-4" />
+                Email Progress
+              </Button>
+            </div>
           </div>
           
           <div className="space-y-2 mb-6">
