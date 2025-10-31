@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import ninjaLogo from "@/assets/ninja-logo.png";
 import { useUser } from "@/context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { format } from "date-fns";
 import { useState } from "react";
 
@@ -77,14 +77,24 @@ export const Dashboard = ({
             <img src={ninjaLogo} alt="HAQ" className="h-10 w-10 object-contain" />
             <h1 className="text-lg md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
           </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </Button>
+          <div className="flex items-center gap-4 md:gap-6">
+            <nav className="hidden md:flex gap-6 items-center">
+              <Link to="/technology" className="nav-link text-sm">
+                Technology
+              </Link>
+              <Link to="/about" className="nav-link text-sm">
+                About Us
+              </Link>
+            </nav>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
+          </div>
         </div>
       </header>
 

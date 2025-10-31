@@ -24,6 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import ninjaLogo from "@/assets/ninja-logo.png";
 import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config";
+import { useNavigate } from "react-router-dom";
 
 interface LoginPageProps {
   onLogin: (name: string, track: string, batchCode: string) => void;
@@ -41,6 +42,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [activeTab, setActiveTab] = useState("login");
   const { toast } = useToast();
   const { setuserId, setLoginEmail, setLoginDate, setLoginTime } = useUser();
+  const navigate = useNavigate();
   
   useEffect(() => {
     // Check for existing session
@@ -344,19 +346,16 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
             <h1 className="text-base md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
           </div>
           <nav className="flex gap-4 md:gap-8 items-center">
-            {isLoggedIn ? (
-              <button 
-                onClick={() => setShowTechDialog(true)}
-                className="nav-link text-sm md:text-base"
-              >
-                Technology
-              </button>
-            ) : (
-              <span className="text-xs md:text-sm font-medium text-muted-foreground/50 cursor-not-allowed">
-                Technology
-              </span>
-            )}
-            <button className="nav-link text-sm md:text-base hidden sm:block">
+            <button 
+              onClick={() => navigate("/technology")}
+              className="nav-link text-sm md:text-base"
+            >
+              Technology
+            </button>
+            <button 
+              onClick={() => navigate("/about")}
+              className="nav-link text-sm md:text-base hidden sm:block"
+            >
               About Us
             </button>
             {isLoggedIn ? (
