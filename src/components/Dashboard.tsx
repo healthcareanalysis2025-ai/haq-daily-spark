@@ -33,33 +33,17 @@ export const Dashboard = ({
   };
 
   const handleLogout = async () => {
-  try {
-    //const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/logOut", {
-    const res = await fetch(`${BASE_URL}/logOut`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_id: userId
-      }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      toast.success(data.message || "Logged out successfully");
-      // Optionally clear local state
+    try {
+      await supabase.auth.signOut();
       localStorage.clear();
       sessionStorage.clear();
+      toast.success("Logged out successfully");
       navigate("/");
-      window.location.reload(); // optional: ensures Index re-runs useEffect
-    } else {
-      toast.error("Logout failed");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error during logout");
     }
-  } catch (error) {
-    console.error(error);
-    toast.error("Error during logout");
-  }
-};
+  };
 
 
   const getDayStatus = (day: number) => {
