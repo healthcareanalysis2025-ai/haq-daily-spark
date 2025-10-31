@@ -90,19 +90,19 @@ export const Dashboard = ({
 
       <div className="p-4 md:p-8">
         <div className="max-w-5xl mx-auto animate-fade-in space-y-6">
-          <div className="text-center mb-8 space-y-2">
+          <div className="text-center mb-10 space-y-3">
             <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-3 tracking-tight">
-              Welcome back, {userName}!
+              Welcome back, <span className="text-primary">{userName}</span>!
             </h1>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
               Continue your learning journey and track your progress
             </p>
           </div>
 
-        <div className="bg-card p-6 md:p-8 rounded-2xl shadow-elegant border border-border/50 mb-6 hover:shadow-card-hover transition-all duration-300">
+        <div className="bg-card p-6 md:p-8 rounded-lg shadow-md border border-border mb-6 hover:shadow-lg transition-all duration-300">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-primary/10">
+              <div className="p-2.5 rounded-lg bg-primary/10">
                 <CalendarIcon className="text-primary w-6 h-6" />
               </div>
               <h2 className="text-2xl md:text-3xl font-bold text-foreground">Your Progress</h2>
@@ -129,15 +129,15 @@ export const Dashboard = ({
             </div>
           </div>
           
-          <div className="space-y-3 mb-8 p-5 bg-muted/30 rounded-xl">
+          <div className="space-y-3 mb-8 p-5 bg-muted/40 rounded-lg border border-border/50">
             <div className="flex justify-between text-sm md:text-base">
               <span className="text-muted-foreground font-medium">Completed Queries</span>
-              <span className="font-bold text-foreground text-lg">
+              <span className="font-bold text-primary text-lg">
                 {completedDays.length} / {totalDays}
               </span>
             </div>
             <Progress value={progress} className="h-3 bg-muted" />
-            <p className="text-xs text-muted-foreground text-right">
+            <p className="text-xs text-muted-foreground text-right font-medium">
               {Math.round(progress)}% Complete
             </p>
           </div>
@@ -146,15 +146,15 @@ export const Dashboard = ({
             <h3 className="text-lg md:text-xl font-bold mb-2 text-foreground">
               Select a Day to Attempt
             </h3>
-            <p className="text-sm text-muted-foreground mb-6">
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
               Click any date on the calendar to start or review that day's query
             </p>
-            <div className="flex justify-center bg-muted/20 p-6 rounded-xl">
+            <div className="flex justify-center bg-muted/30 p-6 rounded-lg border border-border/50">
               <Calendar
                 mode="single"
                 selected={selectedDate}
                 onSelect={handleDateSelect}
-                className="rounded-xl border-0 shadow-sm bg-card"
+                className="rounded-lg border-0 shadow-sm bg-card"
                 modifiers={{
                   completed: (date) => isDateCompleted(date),
                   attempted: (date) => isDateAttempted(date) && !isDateCompleted(date),
@@ -168,19 +168,19 @@ export const Dashboard = ({
           </div>
         </div>
 
-        <div className="bg-card p-6 md:p-8 rounded-2xl shadow-elegant border border-border/50 hover:shadow-card-hover transition-all duration-300">
+        <div className="bg-card p-6 md:p-8 rounded-lg shadow-md border border-border hover:shadow-lg transition-all duration-300">
           <h3 className="text-xl md:text-2xl font-bold mb-6 text-foreground">
             Legend
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-xl">
-              <div className="w-14 h-14 bg-success rounded-xl flex items-center justify-center font-bold text-success-foreground text-xl shadow-sm">
+            <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border border-border/50">
+              <div className="w-14 h-14 bg-success rounded-lg flex items-center justify-center font-bold text-success-foreground text-xl shadow-sm">
                 ✓
               </div>
               <span className="text-sm md:text-base font-medium">Completed Query</span>
             </div>
-            <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-xl">
-              <div className="w-14 h-14 bg-accent rounded-xl flex items-center justify-center font-bold text-xl shadow-sm">
+            <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border border-border/50">
+              <div className="w-14 h-14 bg-accent rounded-lg flex items-center justify-center font-bold text-primary text-xl shadow-sm">
                 ~
               </div>
               <span className="text-sm md:text-base font-medium">Attempted (Not Completed)</span>

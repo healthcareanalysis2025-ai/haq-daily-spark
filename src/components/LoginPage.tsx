@@ -384,22 +384,22 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       <div className="flex-1 container mx-auto px-6 py-12 md:py-20 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
         {/* Left Side - Tagline */}
         <div className="flex-1 max-w-2xl animate-fade-in text-center lg:text-left">
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
-            Ready to master the technologies that power{" "}
-            <span className="text-primary">healthcare analysis</span>?
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight tracking-tight">
+            Master the technologies that power{" "}
+            <span className="text-primary">healthcare analysis</span>
           </h2>
           <p className="text-base md:text-lg text-muted-foreground mb-4 leading-relaxed">
-            Being a healthcare analyst comes down to mastering SQL, Python and Statistics.
+            Excellence in healthcare analytics requires mastery of SQL, Python, and Statistics.
           </p>
           <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-            Start your journey to mastery with us today.
+            Begin your journey to expertise with us today.
           </p>
         </div>
 
         {/* Right Side - Login/Sign Up Form */}
-        <Card className="w-full max-w-md shadow-elegant animate-scale-in bg-card border-border/50 hover:shadow-card-hover transition-all duration-300">
+        <Card className="w-full max-w-md shadow-lg animate-scale-in bg-card border-border hover:shadow-xl transition-all duration-300">
           <CardHeader className="text-center space-y-3 pb-6 pt-8 px-6">
-            <CardTitle className="text-2xl md:text-3xl font-bold text-foreground">
+            <CardTitle className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
               Get Started
             </CardTitle>
             <p className="text-sm text-muted-foreground">Login or create your account</p>

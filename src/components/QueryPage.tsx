@@ -206,14 +206,14 @@ const handleSubmit = async () => {
           Back to Dashboard
         </Button>
 
-        <Card className="p-6 md:p-8 shadow-elegant border-border/50 hover:shadow-card-hover transition-all duration-300">
+        <Card className="p-6 md:p-8 shadow-md border-border hover:shadow-lg transition-all duration-300">
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
               <div className="space-y-2">
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
                   Query for {new Date(day).toLocaleDateString()}
                 </h2>
-                <p className="text-sm md:text-base text-muted-foreground">
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                   Answer all questions below to complete today's challenge
                 </p>
               </div>
@@ -231,8 +231,8 @@ const handleSubmit = async () => {
 
           <div className="mb-10 space-y-8">
   {currentQuestion.map((q, qIndex) => (
-    <div key={q.mcq_id} className="p-6 bg-muted/20 rounded-xl">
-      <h3 className="text-lg md:text-xl font-bold mb-6 text-foreground">
+    <div key={q.mcq_id} className="p-6 bg-muted/30 rounded-lg border border-border/50">
+      <h3 className="text-lg md:text-xl font-bold mb-6 text-foreground tracking-tight">
         {qIndex + 1}. {q.question}
       </h3>
 
@@ -246,7 +246,7 @@ const handleSubmit = async () => {
           <div
             key={index}
             className={`
-              flex items-center space-x-3 p-4 md:p-5 rounded-xl border-2 transition-all duration-200
+              flex items-center space-x-3 p-4 md:p-5 rounded-md border transition-all duration-200
               ${
                 submitted
                   ? index === q.correctAnswer
@@ -254,7 +254,7 @@ const handleSubmit = async () => {
                     : answers[qIndex] === index && index !== q.correctAnswer
                     ? "border-destructive bg-destructive/10 shadow-sm"
                     : "border-border bg-card"
-                  : "border-border bg-card hover:border-primary/50 hover:bg-muted/30 cursor-pointer"
+                  : "border-border bg-card hover:border-primary/50 hover:bg-accent/50 cursor-pointer"
               }
             `}
           >
