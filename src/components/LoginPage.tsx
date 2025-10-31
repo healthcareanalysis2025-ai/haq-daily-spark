@@ -84,6 +84,29 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     return;
   }
 
+  // DUMMY LOGIN - Backend disabled temporarily
+  try {
+    toast({
+      title: "Account created!",
+      description: "You can now proceed with your learning journey.",
+    });
+
+    const now = new Date();
+    const date = now.toISOString().split("T")[0];
+    const time = now.toTimeString().split(" ")[0];
+    
+    setuserId(Math.floor(Math.random() * 10000)); // Dummy user ID
+    setLoginEmail(email);
+    setLoginDate(date);
+    setLoginTime(time);
+
+    // Auto-login after signup
+    onLogin(name, track, batchCode);
+  } catch (error: any) {
+    console.error("Error during signup:", error);
+  }
+
+  /* BACKEND CALL - Commented out temporarily
   try {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -100,7 +123,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(10000), // 10 second timeout
+      signal: AbortSignal.timeout(10000),
     });
 
     if (!res.ok) {
@@ -115,7 +138,6 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
         description: "You can now proceed with your learning journey.",
       });
 
-      // Auto-login after signup
       onLogin(name, track, batchCode);
     } else {
       toast({
@@ -144,6 +166,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       variant: "destructive",
     });
   }
+  */
 };
 
   const handleLogin = async () => {
@@ -156,6 +179,32 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     return;
   }
 
+  // DUMMY LOGIN - Backend disabled temporarily
+  try {
+    toast({
+      title: "Welcome back!",
+      description: "Successfully logged in.",
+    });
+    
+    const now = new Date();
+    const date = now.toISOString().split("T")[0];
+    const time = now.toTimeString().split(" ")[0];
+    
+    setuserId(Math.floor(Math.random() * 10000)); // Dummy user ID
+    setLoginEmail(email);
+    setLoginDate(date);
+    setLoginTime(time);
+
+    onLogin(
+      "Demo User",
+      "DA",
+      "DA100"
+    );
+  } catch (error: any) {
+    console.error("Error during login:", error);
+  }
+
+  /* BACKEND CALL - Commented out temporarily
   try {
     const payload = {
       email: email,
@@ -166,7 +215,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(10000), // 10 second timeout
+      signal: AbortSignal.timeout(10000),
     });
 
     if (!res.ok) {
@@ -223,6 +272,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       variant: "destructive",
     });
   }
+  */
 };
 
   const handleLogout_supabase = async () => {
@@ -235,6 +285,19 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     });
   };
   const handleLogout = async () => {
+  // DUMMY LOGOUT - Backend disabled temporarily
+  setIsLoggedIn(false);
+  setCurrentUser(null);
+  setLoginEmail(null);
+  setLoginDate(null);
+  setLoginTime(null);
+  
+  toast({
+    title: "Logged out",
+    description: "You have been successfully logged out.",
+  });
+
+  /* BACKEND CALL - Commented out temporarily
   try {
     const res = await fetch("https://your-ngrok-url.ngrok-free.app/webhook-test/logout", {
       method: "POST",
@@ -268,6 +331,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       variant: "destructive",
     });
   }
+  */
 };
 
   return (
