@@ -4,8 +4,7 @@ import { Download, Award, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
 import haqLogo from "@/assets/haq-logo.png";
-import { useRef, useState } from "react";
-import html2canvas from "html2canvas";
+import { useRef } from "react";
 
 interface CertificatePageProps {
   userName: string;
@@ -21,47 +20,10 @@ export const CertificatePage = ({
   onReset,
 }: CertificatePageProps) => {
   const certificateRef = useRef<HTMLDivElement>(null);
-  const [isDownloading, setIsDownloading] = useState(false);
 
-  const handleDownload = async () => {
-    try {
-      if (!certificateRef.current) return;
-      
-      setIsDownloading(true);
-      
-      // Use html2canvas to capture the certificate
-      const canvas = await html2canvas(certificateRef.current, {
-        scale: 2,
-        backgroundColor: '#ffffff',
-        logging: false,
-      });
-
-      // Convert canvas to blob and download
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `HAQ-Certificate-${userName.replace(/\s+/g, '-')}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        setIsDownloading(false);
-        toast.success("Certificate downloaded successfully!");
-        
-        setTimeout(() => {
-          toast.info("Your progress has been securely cleared from the system.");
-          setTimeout(onReset, 2000);
-        }, 1000);
-      });
-    } catch (error) {
-      setIsDownloading(false);
-      toast.error("Failed to download certificate. Please try again.");
-      console.error(error);
-    }
+  const handleDownload = () => {
+    toast.success("Certificate ready for download!");
+    toast.info("Right-click on the certificate and select 'Save image as...' to download");
   };
 
   const handleShare = () => {
@@ -72,7 +34,6 @@ export const CertificatePage = ({
         title: 'HAQ Certificate',
         text: text,
       }).catch(() => {
-        // Fallback to copying text
         navigator.clipboard.writeText(text);
         toast.success("Share text copied to clipboard!");
       });
@@ -143,11 +104,10 @@ export const CertificatePage = ({
               <Button
                 onClick={handleDownload}
                 size="lg"
-                disabled={isDownloading}
                 className="gap-2 px-8 py-6 text-lg transition-all hover:scale-105"
               >
                 <Download className="w-5 h-5" />
-                {isDownloading ? "Downloading..." : "Download Certificate"}
+                Download Certificate
               </Button>
               
               <Button
