@@ -5,7 +5,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import ninjaLogo from "@/assets/ninja-logo.png";
-import { useUser } from "../context/UserContext";
+import { useUser } from "@/context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { useState } from "react";
