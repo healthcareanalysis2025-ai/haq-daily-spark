@@ -200,7 +200,7 @@ export default function AboutUs() {
 
               <Card className="border-border">
                 <CardContent className="p-6 space-y-4">
-                  <div className="px-3 py-1 bg-muted text-foreground w-fit rounded-full text-sm font-bold">
+                  <div className="px-3 py-1 bg-primary text-primary-foreground w-fit rounded-full text-sm font-bold">
                     SDET Track
                   </div>
                   <h3 className="text-xl font-bold text-foreground">Software Development Engineer in Test</h3>
@@ -212,7 +212,7 @@ export default function AboutUs() {
 
               <Card className="border-border">
                 <CardContent className="p-6 space-y-4">
-                  <div className="px-3 py-1 bg-muted text-foreground w-fit rounded-full text-sm font-bold">
+                  <div className="px-3 py-1 bg-primary text-primary-foreground w-fit rounded-full text-sm font-bold">
                     DVLPR Track
                   </div>
                   <h3 className="text-xl font-bold text-foreground">Developer</h3>
