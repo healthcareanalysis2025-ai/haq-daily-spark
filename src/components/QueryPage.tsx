@@ -191,7 +191,7 @@ const handleSubmit = async () => {
 
 
   const handleEmailQuery = () => {
-    toast.success("Query and your response have been emailed!");
+    toast.success("Query and solution have been emailed");
   };
 
   return (
