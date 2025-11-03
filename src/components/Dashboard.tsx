@@ -52,9 +52,19 @@ export const Dashboard = ({
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      setSelectedDate(date);
-      const dateString = format(date, "yyyy-MM-dd");
-      onDayClick(dateString);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selectedDay = new Date(date);
+      selectedDay.setHours(0, 0, 0, 0);
+      
+      // Only allow selecting today's date
+      if (selectedDay.getTime() === today.getTime()) {
+        setSelectedDate(date);
+        const dateString = format(date, "yyyy-MM-dd");
+        onDayClick(dateString);
+      } else {
+        toast.error("You can only attempt today's challenge!");
+      }
     }
   };
 
@@ -154,10 +164,10 @@ export const Dashboard = ({
 
           <div className="mt-6">
             <h3 className="text-lg md:text-xl font-bold mb-2 text-foreground">
-              Select a Day to Attempt
+              Attempt Today's Challenge
             </h3>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              Click any date on the calendar to start or review that day's query
+              Click on today's date to attempt the daily challenge
             </p>
             <div className="flex justify-center bg-muted/30 p-6 rounded-lg border border-border/50">
               <Calendar
@@ -165,6 +175,14 @@ export const Dashboard = ({
                 selected={selectedDate}
                 onSelect={handleDateSelect}
                 className="rounded-lg border-0 shadow-sm bg-card"
+                disabled={(date) => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  const checkDate = new Date(date);
+                  checkDate.setHours(0, 0, 0, 0);
+                  // Disable all dates except today
+                  return checkDate.getTime() !== today.getTime();
+                }}
                 modifiers={{
                   completed: (date) => isDateCompleted(date),
                   attempted: (date) => isDateAttempted(date) && !isDateCompleted(date),
