@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database, Server, FolderPlus, FileText, Upload, PlayCircle, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
@@ -47,6 +48,9 @@ export const QueryPage = ({
 const [questions, setQuestions] = useState<Question[]>([]);
  const [loading, setLoading] = useState(true);
 const { userId,loginEmail,loginDate,loginTime } = useUser();
+  const [mainQuery, setMainQuery] = useState<string>("");
+  const [loadingMainQuery, setLoadingMainQuery] = useState(false);
+  const [sheetUrl, setSheetUrl] = useState<string>("");
 
  useEffect(() => {
     const fetchQuestions = async () => {
@@ -194,6 +198,50 @@ const handleSubmit = async () => {
     toast.success("Query and solution have been emailed");
   };
 
+  const fetchMainQuery = async () => {
+    if (!sheetUrl.trim()) {
+      toast.error("Please enter a Google Sheet URL");
+      return;
+    }
+
+    setLoadingMainQuery(true);
+    try {
+      // Extract sheet ID from URL
+      const sheetIdMatch = sheetUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (!sheetIdMatch) {
+        toast.error("Invalid Google Sheet URL");
+        setLoadingMainQuery(false);
+        return;
+      }
+
+      const sheetId = sheetIdMatch[1];
+      // Fetch from Google Sheets API (published as CSV)
+      const response = await fetch(
+        `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`
+      );
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch from Google Sheet");
+      }
+
+      const csvText = await response.text();
+      // Parse CSV - assuming query is in first row, first column
+      const lines = csvText.split('\n');
+      if (lines.length > 0) {
+        const query = lines[0].split(',')[0].replace(/"/g, '');
+        setMainQuery(query);
+        toast.success("Main query fetched successfully!");
+      } else {
+        toast.error("No data found in sheet");
+      }
+    } catch (error) {
+      console.error("Error fetching main query:", error);
+      toast.error("Failed to fetch main query from Google Sheet");
+    } finally {
+      setLoadingMainQuery(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       {showConfetti && <Confetti />}
@@ -285,6 +333,43 @@ const handleSubmit = async () => {
                     </RadioGroup>
                   </div>
                 ))}
+              </div>
+
+              {/* Main Query from Google Sheet */}
+              <div className="mb-10 p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border-2 border-primary/20">
+                <h3 className="text-xl font-bold mb-4 text-foreground flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-primary" />
+                  Fetch Main Query from Google Sheet
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Enter the Google Sheet URL below to fetch the main SQL query for today's challenge.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Input
+                    type="text"
+                    placeholder="Paste Google Sheet URL here..."
+                    value={sheetUrl}
+                    onChange={(e) => setSheetUrl(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={fetchMainQuery}
+                    disabled={loadingMainQuery || !sheetUrl.trim()}
+                    className="gap-2 whitespace-nowrap"
+                  >
+                    {loadingMainQuery ? "Fetching..." : "Fetch Query"}
+                  </Button>
+                </div>
+
+                {mainQuery && (
+                  <div className="mt-6 p-4 bg-card rounded-lg border border-border">
+                    <h4 className="text-sm font-semibold text-muted-foreground mb-2">Main Query:</h4>
+                    <pre className="text-sm text-foreground whitespace-pre-wrap break-words font-mono bg-muted/50 p-4 rounded">
+                      {mainQuery}
+                    </pre>
+                  </div>
+                )}
               </div>
 
               {!submitted ? (
