@@ -169,12 +169,12 @@ export const Dashboard = ({
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
               Click on today's date to attempt the daily challenge
             </p>
-            <div className="flex justify-center bg-muted/30 p-6 rounded-lg border border-border/50">
+            <div className="flex justify-center">
               <Calendar
                 mode="single"
                 selected={selectedDate}
                 onSelect={handleDateSelect}
-                className="rounded-lg border-0 shadow-sm bg-card"
+                className="rounded-xl border border-border/50 shadow-card bg-card p-2"
                 disabled={(date) => {
                   const today = new Date();
                   today.setHours(0, 0, 0, 0);
@@ -188,8 +188,8 @@ export const Dashboard = ({
                   attempted: (date) => isDateAttempted(date) && !isDateCompleted(date),
                 }}
                 modifiersClassNames={{
-                  completed: "bg-success text-success-foreground font-bold hover:bg-success/90",
-                  attempted: "bg-accent text-accent-foreground font-semibold hover:bg-accent/90",
+                  completed: "bg-success text-success-foreground font-bold hover:bg-success/90 shadow-sm",
+                  attempted: "bg-primary/20 text-primary font-semibold hover:bg-primary/30 border border-primary/30",
                 }}
               />
             </div>
