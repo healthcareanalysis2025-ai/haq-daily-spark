@@ -7,13 +7,73 @@ import { supabase } from "@/integrations/supabase/client";
 import ninjaLogo from "@/assets/ninja-logo.png";
 import { useUser } from "@/context/UserContext";
 import { useNavigate, Link } from "react-router-dom";
-import { format } from "date-fns";
-import { useState } from "react";
+// import { format, addDays, differenceInDays } from "date-fns";
+import { useState,useEffect } from "react";
+import { BASE_URL } from "@/config";
+
+
+
+// import { format, addDays, differenceInDays, isBefore, isEqual } from "date-fns";
+
+//import { format, addDays, differenceInDays, startOfDay,isBefore } from "date-fns";
+
+import { addDays, startOfDay, differenceInDays, format, isBefore } from "date-fns";
+import { ProgressStats } from "./ProgressStats";
+
+function generateDayStatuses(signUpDate: string, attemptedDays: string[]) {
+  const today = startOfDay(new Date());
+  const start = startOfDay(new Date(signUpDate));
+  const diff = differenceInDays(today, start);
+  const statuses = [];
+
+  const hasAttempts = Array.isArray(attemptedDays) && attemptedDays.length > 0;
+
+  for (let i = 0; i <= diff + 7; i++) {
+    const date = startOfDay(addDays(start, i));
+    const dateStr = format(date, "yyyy-MM-dd");
+
+    let status = "";
+    let clickable = false;
+
+    if (date > today) {
+      // Future dates
+      status = "future";
+      clickable = false;
+    } else if (hasAttempts && attemptedDays.includes(dateStr)) {
+      // Already attempted
+      status = "completed";
+      clickable = false;
+    } else if (date.getTime() === today.getTime()) {
+      // Today — always clickable unless already attempted
+      status = "today";
+      clickable = !(hasAttempts && attemptedDays.includes(dateStr));
+    } else if (!hasAttempts && isBefore(date, today) && isBefore(start, date)) {
+      // If no attempts at all — mark all past days as missed
+      status = "missed";
+      clickable = false;
+    } else if (hasAttempts && isBefore(date, today) && !attemptedDays.includes(dateStr)) {
+      // Missed some days (not in attempted list)
+      status = "missed";
+      clickable = false;
+    } else {
+      // Default fallback
+      status = "missed";
+      clickable = false;
+    }
+
+    statuses.push({ date: dateStr, status, clickable });
+  }
+
+  return statuses;
+}
 
 interface DashboardProps {
   userName: string;
   completedDays: string[]; // Now stores date strings in YYYY-MM-DD format
   attemptedDays: string[]; // Store attempted but not completed days
+  // total_attemptedDays:number;
+  // missed_dates:string[];
+  // missed_no_days:number;
   onDayClick: (date: string) => void;
   onViewStats?: () => void;
 }
@@ -22,17 +82,128 @@ export const Dashboard = ({
   userName,
   completedDays,
   attemptedDays,
+  //total_attemptedDays,missed_dates,missed_no_days,
   onDayClick,
   onViewStats,
 }: DashboardProps) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const totalDays = 15;
-  const progress = (completedDays.length / totalDays) * 100;
+  // const totalDays = 15;
+  // const progress = (completedDays.length / totalDays) * 100;
+
+  const [totalDays, setTotalDays] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(0);
+
   const { userId, loginEmail, loginDate, loginTime } = useUser();
-  console.log("Logged in user:", loginEmail, "date :", loginDate, "  Time :", loginTime);
+
+  console.log("Logged in user:", loginEmail, "date :", loginDate, "  Time :", loginTime+" Userid "+userId+" completed days");
+  const [dayStatuses, setDayStatuses] = useState<{ date: string; status: string; clickable: boolean }[]>([]);
   const navigate = useNavigate();
+  const [dashboardData, setDashboardData] = useState<DashboardProps | null>(null);
+console.log("******DASHBOARD*********");
+console.log(completedDays);
+  useEffect(() => {
+  const fetchUserDays = async () => {
+    try {
+      // Example: GET request to n8n endpoint
+      const res = await fetch(`${BASE_URL}/getAttemptedDays`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({user_id:userId}), //  send key-value data
+    });
+
+      if (!res.ok) throw new Error("Failed to fetch user days");
+
+      const data = await res.json();
+
+      // Expected response format:
+      // { signup_date: "2025-10-29", attemptedDays: ["2025-10-29", "2025-11-05"] }
+
+      console.log("Fetched data from n8n:", data);
+
+      const { signup_date, attemptedDays } = data[0];
+      console.log("Signup date:", signup_date);
+      
+      if (!signup_date) {
+        toast.error("No signup date found for user.");
+        return;
+      }
+
+      // 2️⃣ Generate all dates from signup → today (inclusive)
+      const allDates: string[] = [];
+      let currentDate = new Date(signup_date);
+
+      while (currentDate <= new Date(loginDate)) {
+        allDates.push(currentDate.toISOString().split("T")[0]); // format YYYY-MM-DD
+        currentDate.setDate(currentDate.getDate() + 1); // move to next day
+      }
+      
+      // Filter out null or invalid entries
+      const cleanAttemptedDays = Array.isArray(attemptedDays)
+        ? attemptedDays.filter(d => d && typeof d === "string")
+        : [];
+
+      console.log("Signup date:", signup_date);
+      console.log("Clean attempted days:", cleanAttemptedDays);
+      
+      const missedDays = allDates.filter(date => !cleanAttemptedDays.includes(date));
+      console.log("All Dates:", allDates);
+      
+      console.log("Missed Days:", missedDays);
+      // 1️⃣ Difference between signup date & current date
+      const today = new Date();
+      const signup = new Date(signup_date);
+
+      const diffTime = today.getTime() - signup.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))+1;
+      const attemptedCount = cleanAttemptedDays.length;
+      console.log("Attempted days count:", attemptedCount);
+      
+      
+      if(diffDays > 15){
+        setTotalDays(diffDays);
+        setProgress((attemptedCount / diffDays) * 100);
+      } else {
+        setTotalDays(15);
+        setProgress((attemptedCount / 15) * 100);
+      }
+      console.log("Days since signup:", diffDays);
+
+     
+      
+
+      
+
+      setDashboardData(prev => ({
+  ...prev,
+  completedDays: cleanAttemptedDays,
+  attemptedDays:cleanAttemptedDays,
+  total_attemptedDays:attemptedCount,
+  missed_dates:missedDays,
+  missed_no_days:missedDays.length
+}));
+
+
+
+      const statuses = generateDayStatuses(signup_date, cleanAttemptedDays);
+      setDayStatuses(statuses); // if you’re storing it in state
+
+      
+    } catch (error) {
+      console.error("Error fetching data from backend:", error);
+      toast.error("Unable to load calendar data.");
+    }
+  };
+
+  if (userId) {
+    fetchUserDays();
+  }
+}, [userId]);
+
+
+
 
   const handleEmailProgress = () => {
+    console.log(dashboardData);
     toast.success("Progress summary sent to your email!");
   };
 
@@ -49,8 +220,35 @@ export const Dashboard = ({
     }
   };
 
-
   const handleDateSelect = (date: Date | undefined) => {
+  if (!date) return;
+
+  const dateStr = format(date, "yyyy-MM-dd");
+  const selectedStatus = dayStatuses.find(d => d.date === dateStr);
+
+  if (!selectedStatus) return;
+
+  if (selectedStatus.clickable) {
+    setSelectedDate(date);
+    onDayClick(dateStr);
+  } else {
+    toast.error(
+      selectedStatus.status === "future"
+        ? "Future challenges are locked!"
+        : "You can only attempt today's challenge!"
+    );
+  }
+};
+
+// Disable all non-clickable days
+const isDateDisabled = (date: Date) => {
+  const dateStr = format(date, "yyyy-MM-dd");
+  const status = dayStatuses.find(d => d.date === dateStr);
+  return status ? !status.clickable : true;
+};
+
+
+  const handleDateSelectOld = (date: Date | undefined) => {
     if (date) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -153,7 +351,7 @@ export const Dashboard = ({
             <div className="flex justify-between text-sm md:text-base">
               <span className="text-muted-foreground font-medium">Completed Queries</span>
               <span className="font-bold text-primary text-lg">
-                {completedDays.length} / {totalDays}
+                {dashboardData?.completedDays?.length} / {totalDays}
               </span>
             </div>
             <Progress value={progress} className="h-3 bg-muted" />
@@ -170,6 +368,7 @@ export const Dashboard = ({
               Click on today's date to attempt the daily challenge
             </p>
             <div className="flex justify-center bg-muted/30 p-6 rounded-lg border border-border/50">
+              {/*
               <Calendar
                 mode="single"
                 selected={selectedDate}
@@ -191,11 +390,33 @@ export const Dashboard = ({
                   completed: "bg-success text-success-foreground font-bold hover:bg-success/90",
                   attempted: "bg-accent text-accent-foreground font-semibold hover:bg-accent/90",
                 }}
-              />
+              /> */}
+              <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={handleDateSelect}
+                  className="rounded-lg border-0 shadow-sm bg-card"
+                  disabled={isDateDisabled}
+                  modifiers={{
+                    completed: (date) =>
+                      dayStatuses.some(d => d.date === format(date, "yyyy-MM-dd") && d.status === "completed"),
+                    missed: (date) =>
+                      dayStatuses.some(d => d.date === format(date, "yyyy-MM-dd") && d.status === "missed"),
+                    today: (date) =>
+                      dayStatuses.some(d => d.date === format(date, "yyyy-MM-dd") && d.status === "today"),
+                  }}
+                  modifiersClassNames={{
+                    completed: "bg-success text-success-foreground font-bold hover:bg-success/90",
+                    missed: "bg-destructive/70 text-destructive-foreground font-semibold hover:bg-destructive/80",
+                    today: "bg-primary text-primary-foreground font-bold hover:bg-primary/90",
+                  }}
+                />
+
+              
             </div>
           </div>
         </div>
-
+               
         <div className="bg-card p-6 md:p-8 rounded-lg shadow-md border border-border hover:shadow-lg transition-all duration-300">
           <h3 className="text-xl md:text-2xl font-bold mb-6 text-foreground">
             Legend

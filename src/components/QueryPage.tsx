@@ -16,6 +16,7 @@ interface Question {
   options: string[];
   correctAnswer: number;
   correctOption: string;
+  question_id:number;
 }
 
 interface QueryPageProps {
@@ -47,45 +48,96 @@ export const QueryPage = ({
 const [questions, setQuestions] = useState<Question[]>([]);
  const [loading, setLoading] = useState(true);
 const { userId,loginEmail,loginDate,loginTime } = useUser();
+const [questionId, setQuestionId] = useState(0);
+const [queryQuestion, setQueryQuestion] = useState(''); // empty string initially
+const [difficultyLevel,setDifficultyLevel]=useState('');
+//  useEffect(() => {
+//     const fetchQuestions = async () => {
+//       try {
+        
+//         console.log("Date ",loginDate," user ",userId);
+        
+//         //const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/getQuestions", {
+//     const res = await fetch(`${BASE_URL}/getQuestions`, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({current_date:loginDate}), //  send key-value data
+//     });
+//         if (!res.ok) throw new Error("Failed to fetch questions");
+        
+//         const rawData = await res.json(); // raw n8n items
+//         console.log(rawData);
+//         console.log("array kength ",rawData.length);
+        
+// // check if rawData is array or wrapped in {mcqs: [...]}
+// const data: Question[] = Array.isArray(rawData)
+//   ? rawData
+//   : Array.isArray(rawData.mcqs)
+//   ? rawData.mcqs
+//   : [];
+//         setQuestions(data);
+//         setAnswers(Array(data.length).fill(null)); // initialize answers array
+//         setLoading(false);
+        
+//         setQuestionId(data?.[0]?.question_id ?? 0);
+//         console.log("First question ID:", data?.[0]?.question_id ?? 0);
 
- useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
+//         console.log("Fetched questions:", data);
         
-        console.log("Date ",loginDate," user ",userId);
-        
-        //const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/getQuestions", {
-    const res = await fetch(`${BASE_URL}/getQuestions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({current_date:loginDate}), //  send key-value data
-    });
-        if (!res.ok) throw new Error("Failed to fetch questions");
-        
-        const rawData = await res.json(); // raw n8n items
-        console.log(rawData);
-        console.log("array kength ",rawData.length);
-        
-// check if rawData is array or wrapped in {mcqs: [...]}
-const data: Question[] = Array.isArray(rawData)
-  ? rawData
-  : Array.isArray(rawData.mcqs)
-  ? rawData.mcqs
-  : [];
-        console.log("Fetched questions:", data);
 
-        setQuestions(data);
-        setAnswers(Array(data.length).fill(null)); // initialize answers array
-        setLoading(false);
-      } catch (err: any) {
-        console.error(err);
-        toast.error(err.message || "Error fetching questions");
-        setLoading(false);
-      }
-    };
+//       } catch (err: any) {
+//         console.error(err);
+//         toast.error(err.message || "Error fetching questions");
+//         setLoading(false);
+//       }
+//     };
 
-    fetchQuestions();
-  }, []);
+//     fetchQuestions();
+//   }, []);
+
+  useEffect(() => {
+  const fetchQuestions = async () => {
+    try {
+      console.log("Date", loginDate, "user", userId);
+
+      const res = await fetch(`${BASE_URL}/getQuestions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ current_date: loginDate }),
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch questions");
+
+      const rawData = await res.json();
+      console.log("Raw Data:", rawData);
+
+      // rawData is an array with one object
+      const mcqs: Question[] = rawData?.[0]?.mcqs ?? [];
+      const mainQuery = rawData?.[0]?.query ?? null;
+
+      setQueryQuestion(mainQuery?.question ?? "");
+      setDifficultyLevel(mainQuery?.difficulty_level ?? "");
+      // Set state
+      setQuestions(mcqs);
+      setAnswers(Array(mcqs.length).fill(null)); // initialize answers array
+      setLoading(false);
+
+      setQuestionId(mcqs?.[0]?.question_id ?? 0);
+      setSubmitted(false);
+      console.log("Main SQL query:", mainQuery);
+      console.log("First MCQ ID:", mcqs?.[0]?.question_id);
+      console.log("Fetched MCQs:", mcqs);
+
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Error fetching questions");
+      setLoading(false);
+    }
+  };
+
+  fetchQuestions();
+}, []);
+
 
   if (loading) {
     return <p>Loading questions...</p>;
@@ -107,11 +159,122 @@ const handleSubmit = async () => {
     return;
   }
 
+  // 2️⃣ Map difficulty to weight
+  const difficultyWeight = (level: string) => {
+    switch (level.toLowerCase()) {
+      case "easy": return 1;
+      case "medium": return 2;
+      case "hard": return 3;
+      default: return 1;
+    }
+  };
+
+  // 3️⃣ Calculate total question weight
+  const totalQuestionWeight = difficultyWeight(difficultyLevel);
+  console.log("totalQuestionWeight "+totalQuestionWeight);
+  // 4️⃣ Check correctness for each question
+  const results = questions.map((q, i) => answers[i] === q.correctAnswer);
+
+  // 5️⃣ Count correct answers
+  const correctCount = results.filter(Boolean).length;
+
+  // 6️⃣ Calculate daily weighted average (%)
+  const dailyWeightedAvg = correctCount / questions.length;
+
+  // 7️⃣ Calculate weighted score
+  const weightedScore = +(dailyWeightedAvg * totalQuestionWeight).toFixed(2);
+
+  // 8️⃣ Prepare payload for n8n
+  const payload = {
+    responses: questions.map((q, i) => ({
+      mcq_id: q.mcq_id,
+      user_id: userId,
+      selected_option: String.fromCharCode(65 + answers[i]!),
+      correct_flag: results[i],
+      answered: true,
+      respond_date: loginDate,
+    })),
+    summary: {
+      user_id: userId,
+      question_id: questionId,
+      total_mcq: questions.length,
+      total_correct: correctCount,
+      total_avg_score: dailyWeightedAvg.toFixed(2),
+      question_weight: totalQuestionWeight,
+      weighted_score: weightedScore,
+      submitted_date: loginDate,
+    },
+  };
+
+  console.log("Payload sent to n8n:", payload);
+
+  try {
+    const res = await fetch(`${BASE_URL}/submitResponse`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`n8n API error: ${errorText || res.statusText}`);
+    }
+
+    const data = await res.json();
+    console.log("n8n raw response:", data);
+
+    const result = Array.isArray(data) ? data[0] : data;
+
+    if (result.status === "fail") {
+      toast.error(result.message || "Already responded for the day!!");
+      setSubmitted(false);
+      return;
+    }
+
+    if (result.status === "success") {
+      toast.success(result.message || "Responses submitted successfully!");
+      if (correctCount === questions.length) {
+        setIsCorrect(true);
+        setShowConfetti(true);
+        toast.success("All answers correct! 🎉 Great job!");
+        setTimeout(() => {
+          onComplete(day);
+          setShowConfetti(false);
+        }, 2000);
+      } else {
+        setIsCorrect(false);
+        toast.error(`You got ${correctCount}/${questions.length} correct.`);
+      }
+      setSubmitted(true);
+    } else {
+      toast.error("Unexpected response from server.");
+      console.warn("Unexpected n8n response:", data);
+      setSubmitted(false);
+    }
+
+  } catch (err) {
+    console.error("Submission failed:", err);
+    toast.error(`Failed to submit responses: ${err.message || err}`);
+    setSubmitted(false);
+  }
+};
+
+/*
+const handleSubmitOld = async () => {
+  // 1️⃣ Check if any question is unanswered
+  if (answers.some((ans) => ans === null)) {
+    toast.error("Please answer all questions!");
+    return;
+  }
+
   // 2️⃣ Check correctness for each question
   const results = questions.map((q, i) => answers[i] === q.correctAnswer);
 
   // 3️⃣ Count correct answers
   const correctCount = results.filter(Boolean).length;
+
+   // 4️⃣ Calculate daily weighted average (%)
+  const dailyWeightedAvg = (correctCount / questions.length);
 
   // 4️⃣ Prepare payload for n8n
   const payload = {
@@ -124,12 +287,15 @@ const handleSubmit = async () => {
       respond_date: loginDate,
     })),
     summary: {
-      no_correct: correctCount,
-      total_mcq: questions.length,
       user_id: userId,
-      respond_date: loginDate,
-      question_id: 1,
-    },
+      question_id: questionId,
+      total_mcq: questions.length,
+      total_correct: correctCount,
+      total_avg_score: dailyWeightedAvg.toFixed(2),
+      weighted_score:"",
+      question_weight:"",
+      submitted_date: loginDate
+      },
   };
 
   console.log("Payload sent to n8n:", payload);
@@ -186,7 +352,7 @@ const handleSubmit = async () => {
     setSubmitted(false);
   }
 };
-
+*/
 
 
 
@@ -217,10 +383,13 @@ const handleSubmit = async () => {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                   <div className="space-y-2">
                     <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                      Query for {new Date(day).toLocaleDateString()}
+                      Query for {loginDate}
                     </h2>
                     <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                      Answer all questions below to complete today's challenge
+                      <b>{queryQuestion}</b>
+                      </p>
+                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                    Solve the above query and answer all questions below to complete today's challenge
                     </p>
                   </div>
                   <Button

@@ -87,6 +87,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   }
 
   // DUMMY LOGIN - Backend disabled temporarily
+  /*
   try {
     toast({
       title: "Account created!",
@@ -107,8 +108,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   } catch (error: any) {
     console.error("Error during signup:", error);
   }
-
-  /* BACKEND CALL - Commented out temporarily
+*/
+  /* BACKEND N8N CALL*/
   try {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -168,7 +169,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       variant: "destructive",
     });
   }
-  */
+  
 };
 
   const handleLogin = async () => {
@@ -182,6 +183,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   }
 
   // DUMMY LOGIN - Backend disabled temporarily
+  /**
   try {
     toast({
       title: "Welcome back!",
@@ -205,8 +207,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   } catch (error: any) {
     console.error("Error during login:", error);
   }
-
-  /* BACKEND CALL - Commented out temporarily
+ */
+  /* BACKEND CALL - Commented out temporarily*/
   try {
     const payload = {
       email: email,
@@ -274,7 +276,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       variant: "destructive",
     });
   }
-  */
+  
 };
 
   const handleLogout_supabase = async () => {

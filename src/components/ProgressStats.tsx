@@ -8,6 +8,7 @@ interface ProgressStatsProps {
   userName: string;
   completedDays: string[];
   attemptedDays: string[];
+  // missed_dates: string[];
   onBack: () => void;
 }
 
@@ -22,7 +23,8 @@ export const ProgressStats = ({
   const attemptedCount = attemptedDays.length;
   const successRate = attemptedCount > 0 ? (completedCount / attemptedCount) * 100 : 0;
   const overallProgress = (completedCount / totalDays) * 100;
-  
+  console.log("from dashboard ");
+  console.log(completedDays);
   // Calculate streak based on consecutive dates
   const calculateStreak = () => {
     if (completedDays.length === 0) return 0;
