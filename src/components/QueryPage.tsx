@@ -385,8 +385,8 @@ const handleSubmitOld = async () => {
                     <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
                       Query for {loginDate}
                     </h2>
-                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                      <b>{queryQuestion}</b>
+                    <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
+                      {queryQuestion}
                       </p>
                     <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                     Solve the above query and answer all questions below to complete today's challenge
