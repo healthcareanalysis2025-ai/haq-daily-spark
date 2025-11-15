@@ -1,7 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Database, Code2, LogOut } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ninjaLogo from "@/assets/ninja-logo.png";
 
@@ -10,9 +9,10 @@ interface TechnologySelectionProps {
 }
 
 export const TechnologySelection = ({ onSelect }: TechnologySelectionProps) => {
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.clear();
     toast.success("Logged out successfully");
+    window.location.href = "/";
   };
 
   return (

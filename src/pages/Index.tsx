@@ -6,7 +6,6 @@ import { QueryPage } from "@/components/QueryPage";
 import { CertificatePage } from "@/components/CertificatePage";
 import { CompletionPage } from "@/components/CompletionPage";
 import { ProgressStats } from "@/components/ProgressStats";
-import { supabase } from "@/integrations/supabase/client";
 
 interface UserData {
   name: string;
@@ -25,53 +24,34 @@ const Index = () => {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
 
-  // Check authentication and load data
+  // Load data from localStorage on mount
   useEffect(() => {
-    // Check for active Supabase session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        // User is authenticated, load their data
-        const savedUser = localStorage.getItem("haq_user");
-        const savedCompleted = localStorage.getItem("haq_completed");
-        const savedAttempted = localStorage.getItem("haq_attempted");
+    const savedUser = localStorage.getItem("haq_user");
+    const savedCompleted = localStorage.getItem("haq_completed");
+    const savedAttempted = localStorage.getItem("haq_attempted");
 
-        if (savedUser) {
-          const user = JSON.parse(savedUser);
-          setUserData(user);
-          
-          // Check if technology is selected
-          if (user.technology) {
-            setCurrentView("dashboard");
-          } else {
-            setCurrentView("techSelection");
-          }
-        } else {
-          // Has session but no user data, stay on login to complete profile
-          setCurrentView("login");
-        }
-        
-        if (savedCompleted) {
-          setCompletedDays(JSON.parse(savedCompleted));
-        }
-        if (savedAttempted) {
-          setAttemptedDays(JSON.parse(savedAttempted));
-        }
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      setUserData(user);
+      
+      // Check if technology is selected
+      if (user.technology) {
+        setCurrentView("dashboard");
       } else {
-        // No session, show login
-        setCurrentView("login");
+        setCurrentView("techSelection");
       }
-      setIsAuthChecking(false);
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        setUserData(null);
-        setCurrentView("login");
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    } else {
+      setCurrentView("login");
+    }
+    
+    if (savedCompleted) {
+      setCompletedDays(JSON.parse(savedCompleted));
+    }
+    if (savedAttempted) {
+      setAttemptedDays(JSON.parse(savedAttempted));
+    }
+    
+    setIsAuthChecking(false);
   }, []);
 
   // Check if all queries are completed
