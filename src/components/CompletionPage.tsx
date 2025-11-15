@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Calendar, LogOut, X, CheckCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface CompletionPageProps {
@@ -11,9 +10,11 @@ interface CompletionPageProps {
 }
 
 export const CompletionPage = ({ day, onBackToDashboard, onBackToTechSelection }: CompletionPageProps) => {
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    // Clear local storage
+    localStorage.clear();
     toast.success("Logged out successfully");
+    window.location.href = "/";
   };
 
   return (

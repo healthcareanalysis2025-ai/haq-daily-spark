@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ninjaLogo from "@/assets/ninja-logo.png";
 import { useUser } from "@/context/UserContext";
@@ -43,29 +42,6 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const { toast } = useToast();
   const { setuserId, setLoginEmail, setLoginDate, setLoginTime } = useUser();
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setIsLoggedIn(true);
-        setCurrentUser(session.user);
-      }
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) {
-        setIsLoggedIn(true);
-        setCurrentUser(session.user);
-      } else {
-        setIsLoggedIn(false);
-        setCurrentUser(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const handleSignUp = async () => {
   if (!name || !track || !batchCode || !email || !password) {
@@ -276,18 +252,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       variant: "destructive",
     });
   }
-  
 };
 
-  const handleLogout_supabase = async () => {
-    await supabase.auth.signOut();
-    setIsLoggedIn(false);
-    setCurrentUser(null);
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
-    });
-  };
   const handleLogout = async () => {
   // DUMMY LOGOUT - Backend disabled temporarily
   setIsLoggedIn(false);

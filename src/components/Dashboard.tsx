@@ -3,7 +3,6 @@ import { Progress } from "@/components/ui/progress";
 import { Mail, Calendar as CalendarIcon, LogOut, BarChart3, XCircle, CheckCircle } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import ninjaLogo from "@/assets/ninja-logo.png";
 import { useUser } from "@/context/UserContext";
 import { useNavigate, Link } from "react-router-dom";
@@ -210,17 +209,11 @@ console.log(completedDays);
     toast.success("Progress summary sent to your email!");
   };
 
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      localStorage.clear();
-      sessionStorage.clear();
-      toast.success("Logged out successfully");
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-      toast.error("Error during logout");
-    }
+  const handleLogout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    toast.success("Logged out successfully");
+    navigate("/");
   };
 
   const handleDateSelect = (date: Date | undefined) => {
