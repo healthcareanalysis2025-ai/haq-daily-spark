@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Mail, Calendar as CalendarIcon, LogOut, BarChart3 } from "lucide-react";
+import { Mail, Calendar as CalendarIcon, LogOut, BarChart3, XCircle, CheckCircle } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -92,6 +92,7 @@ export const Dashboard = ({
 
   const [totalDays, setTotalDays] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
+  const [missedDaysCount, setMissedDaysCount] = useState<number>(0);
 
   const { userId, loginEmail, loginDate, loginTime } = useUser();
 
@@ -149,6 +150,8 @@ console.log(completedDays);
       console.log("All Dates:", allDates);
       
       console.log("Missed Days:", missedDays);
+      setMissedDaysCount(missedDays.length);
+      
       // 1️⃣ Difference between signup date & current date
       const today = new Date();
       const signup = new Date(signup_date);
@@ -360,6 +363,39 @@ const isDateDisabled = (date: Date) => {
             </p>
           </div>
 
+          {/* Challenge Status Card */}
+          <div className="mb-8">
+            {missedDaysCount > 0 ? (
+              <div className="flex items-center gap-5 p-5 bg-destructive/10 rounded-xl border-2 border-destructive/30 shadow-md hover:shadow-lg transition-all">
+                <div className="w-16 h-16 bg-destructive/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <XCircle className="w-9 h-9 text-destructive" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-destructive">
+                    Missed ({missedDaysCount} {missedDaysCount === 1 ? 'Day' : 'Days'})
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Catch up on missed challenges to stay on track
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-5 p-5 bg-success/10 rounded-xl border-2 border-success/30 shadow-md hover:shadow-lg transition-all">
+                <div className="w-16 h-16 bg-success/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-9 h-9 text-success" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-success">
+                    Completed All Days
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Great job staying consistent!
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="mt-6">
             <h3 className="text-lg md:text-xl font-bold mb-2 text-foreground">
               Attempt Today's Challenge
@@ -429,10 +465,10 @@ const isDateDisabled = (date: Date) => {
               <span className="text-sm md:text-base font-medium">Completed Query</span>
             </div>
             <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border border-border/50">
-              <div className="w-14 h-14 bg-accent rounded-lg flex items-center justify-center font-bold text-primary text-xl shadow-sm">
-                ~
+              <div className="w-14 h-14 bg-destructive/70 rounded-lg flex items-center justify-center font-bold text-destructive-foreground text-xl shadow-sm">
+                ✗
               </div>
-              <span className="text-sm md:text-base font-medium">Attempted (Not Completed)</span>
+              <span className="text-sm md:text-base font-medium">Missed Challenge</span>
             </div>
           </div>
         </div>
