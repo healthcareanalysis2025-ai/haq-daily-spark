@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Database, Code2, LogOut } from "lucide-react";
+import { Database, Code2, LogOut, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import ninjaLogo from "@/assets/ninja-logo.png";
 
@@ -24,15 +24,26 @@ export const TechnologySelection = ({ onSelect }: TechnologySelectionProps) => {
             <img src={ninjaLogo} alt="HAQ" className="h-8 md:h-10 object-contain" />
             <h1 className="text-sm md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleLogout}
-            className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.location.href = "/"}
+              className="gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Back</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
+          </div>
         </div>
       </header>
 
