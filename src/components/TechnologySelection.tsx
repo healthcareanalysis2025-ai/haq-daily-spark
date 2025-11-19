@@ -72,21 +72,21 @@ export const TechnologySelection = ({ onSelect }: TechnologySelectionProps) => {
 
           {/* Python Card */}
           <Card 
-            className="group relative bg-card border-border/50 overflow-hidden opacity-60"
+            className="group cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-card border-border overflow-hidden"
+            onClick={() => onSelect("python")}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-muted/50 to-transparent"></div>
-            <CardContent className="relative p-8 md:p-12 flex flex-col items-center text-center">
-              <div className="mb-6 md:mb-8 p-8 md:p-10 rounded-2xl bg-muted transition-colors shadow-sm">
-                <Code2 className="w-16 md:w-20 h-16 md:h-20 text-muted-foreground" strokeWidth={1.5} />
+            <CardContent className="p-8 md:p-12 flex flex-col items-center text-center">
+              <div className="mb-6 md:mb-8 p-8 md:p-10 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-all duration-300 shadow-sm">
+                <Code2 className="w-16 md:w-20 h-16 md:h-20 text-primary" strokeWidth={1.5} />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-foreground">PYTHON</h3>
+              <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-foreground tracking-tight">PYTHON</h3>
               <div className="text-xs md:text-sm text-muted-foreground space-y-2.5 leading-relaxed">
                 <p className="font-semibold text-foreground">Requirements</p>
                 <p>• Anaconda or Jupyter Notebook installed</p>
                 <p>• 10 minutes a day commitment</p>
               </div>
-              <div className="mt-6 px-4 py-2 bg-primary/10 text-primary rounded-full text-xs md:text-sm font-bold">
-                Coming Soon
+              <div className="mt-6 text-xs md:text-sm font-semibold text-primary group-hover:translate-x-1 transition-transform">
+                Get Started →
               </div>
             </CardContent>
           </Card>
