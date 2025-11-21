@@ -43,7 +43,7 @@ export default function Technology() {
           {/* Technology Cards */}
           <div className="grid gap-8 md:gap-10 mt-12">
             {/* SQL Card */}
-            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
+            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => navigate("/")}>
               <CardContent className="p-8 md:p-10">
                 <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
                   <div className="p-6 rounded-lg bg-primary/10 flex-shrink-0">
