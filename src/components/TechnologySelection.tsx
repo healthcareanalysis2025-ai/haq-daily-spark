@@ -91,10 +91,6 @@ export const TechnologySelection = ({ onSelect }: TechnologySelectionProps) => {
             </CardContent>
           </Card>
         </div>
-
-        <button className="mt-8 md:mt-16 text-xs md:text-sm text-primary font-semibold hover:underline hover:translate-x-1 transition-all animate-fade-in">
-          Learn More →
-        </button>
       </main>
     </div>
   );
