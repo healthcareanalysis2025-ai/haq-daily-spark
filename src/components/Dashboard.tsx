@@ -70,6 +70,7 @@ interface DashboardProps {
   userName: string;
   completedDays: string[];
   attemptedDays: string[];
+  technology: "sql" | "python";
   onDayClick: (date: string) => void;
   onViewStats?: (missedDays: string[], totalDays: number, completedDays: string[], attemptedDays: string[]) => void;
 }
@@ -78,10 +79,12 @@ export const Dashboard = ({
   userName,
   completedDays,
   attemptedDays,
+  technology,
   //total_attemptedDays,missed_dates,missed_no_days,
   onDayClick,
   onViewStats,
 }: DashboardProps) => {
+  const techName = technology === "sql" ? "SQL" : "Python";
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   // const totalDays = 15;
   // const progress = (completedDays.length / totalDays) * 100;
@@ -322,7 +325,7 @@ const isDateDisabled = (date: Date) => {
               <div className="p-2.5 rounded-lg bg-primary/10">
                 <CalendarIcon className="text-primary w-6 h-6" />
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground">Your Progress</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground">Your {techName} Progress</h2>
             </div>
             <div className="flex flex-wrap gap-2">
             {onViewStats && (
@@ -441,7 +444,7 @@ const isDateDisabled = (date: Date) => {
 
           <div className="mt-6">
             <h3 className="text-lg md:text-xl font-bold mb-2 text-foreground">
-              Attempt Today's Challenge
+              Attempt Today's {techName} Challenge
             </h3>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
               Click on today's date to attempt the daily challenge

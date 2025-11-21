@@ -22,6 +22,7 @@ interface Question {
 
 interface QueryPageProps {
   day: string;
+  technology?: "sql" | "python";
   onBack: () => void;
   onComplete: (day: string) => void;
   hasAttempted: boolean;
@@ -32,10 +33,12 @@ interface QueryPageProps {
 
 export const QueryPage = ({
   day,
+  technology = "sql",
   onBack,
   onComplete,
   hasAttempted,
 }: QueryPageProps) => {
+  const techName = technology === "sql" ? "SQL" : "Python";
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(hasAttempted);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -146,7 +149,7 @@ const [difficultyLevel,setDifficultyLevel]=useState('');
         <Card className="p-12 max-w-md w-full">
           <div className="flex flex-col items-center gap-4">
             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-lg font-medium text-muted-foreground">Loading today's challenge...</p>
+            <p className="text-lg font-medium text-muted-foreground">Loading today's {techName} challenge...</p>
           </div>
         </Card>
       </div>
@@ -430,7 +433,7 @@ const handleSubmitOld = async () => {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                   <div className="space-y-2">
                     <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                      Query for {loginDate}
+                      {techName} Query for {loginDate}
                     </h2>
                     <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
                       {queryQuestion}
