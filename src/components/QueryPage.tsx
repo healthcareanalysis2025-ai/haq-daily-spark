@@ -5,6 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database, Server, FolderPlus, FileText, Upload, PlayCircle, X, LogOut } from "lucide-react";
 import ninjaLogo from "@/assets/ninja-logo.png";
+import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
@@ -148,7 +149,7 @@ const [difficultyLevel,setDifficultyLevel]=useState('');
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="p-12 max-w-md w-full">
           <div className="flex flex-col items-center gap-4">
-            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <img src={ninjaSpinner} alt="Loading" className="w-16 h-16 animate-spin" />
             <p className="text-lg font-medium text-muted-foreground">Loading today's {techName} challenge...</p>
           </div>
         </Card>

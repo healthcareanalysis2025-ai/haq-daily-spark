@@ -21,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import ninjaLogo from "@/assets/ninja-logo.png";
+import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config";
 import { useNavigate } from "react-router-dom";
@@ -389,7 +390,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 border-3 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
+                      <img src={ninjaSpinner} alt="Loading" className="w-6 h-6 animate-spin" />
                       <span>Logging in...</span>
                     </div>
                   ) : (
@@ -468,7 +469,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 border-3 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
+                      <img src={ninjaSpinner} alt="Loading" className="w-6 h-6 animate-spin" />
                       <span>Creating Account...</span>
                     </div>
                   ) : (

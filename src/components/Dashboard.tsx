@@ -4,6 +4,7 @@ import { Mail, Calendar as CalendarIcon, LogOut, BarChart3, XCircle, CheckCircle
 import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import ninjaLogo from "@/assets/ninja-logo.png";
+import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { useUser } from "@/context/UserContext";
 import { useNavigate, Link } from "react-router-dom";
 // import { format, addDays, differenceInDays } from "date-fns";
@@ -367,7 +368,7 @@ const isDateDisabled = (date: Date) => {
             {isLoading ? (
               <div className="flex items-center justify-center p-12 bg-muted/30 rounded-xl border-2 border-border/30">
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <img src={ninjaSpinner} alt="Loading" className="w-12 h-12 animate-spin" />
                   <p className="text-sm text-muted-foreground">Loading your progress...</p>
                 </div>
               </div>
