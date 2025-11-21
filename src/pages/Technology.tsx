@@ -1,11 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Database, Code2, BarChart3, ArrowLeft } from "lucide-react";
+import { Database, Code2, BarChart3, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import ninjaLogo from "@/assets/ninja-logo.png";
 
 export default function Technology() {
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    toast.success("Logged out successfully");
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -17,12 +25,12 @@ export default function Technology() {
             <h1 className="text-base md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
           </div>
           <Button
-            onClick={() => navigate("/")}
+            onClick={handleLogout}
             variant="outline"
-            className="gap-2"
+            className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Back to Home</span>
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Logout</span>
           </Button>
         </div>
       </header>
