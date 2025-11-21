@@ -90,6 +90,7 @@ export const Dashboard = ({
   const [progress, setProgress] = useState<number>(0);
   const [missedDaysCount, setMissedDaysCount] = useState<number>(0);
   const [missedDaysData, setMissedDaysData] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { userId, loginEmail, loginDate, loginTime } = useUser();
 
@@ -101,6 +102,7 @@ console.log("******DASHBOARD*********");
 console.log(completedDays);
   useEffect(() => {
   const fetchUserDays = async () => {
+    setIsLoading(true);
     try {
       // Example: GET request to n8n endpoint
       const res = await fetch(`${BASE_URL}/getAttemptedDays`, {
@@ -192,6 +194,8 @@ console.log(completedDays);
     } catch (error) {
       console.error("Error fetching data from backend:", error);
       toast.error("Unable to load calendar data.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -357,70 +361,81 @@ const isDateDisabled = (date: Date) => {
 
           {/* Challenge Status Card */}
           <div className="mb-8 space-y-4">
-            {/* Certificate Eligibility Status */}
-            {dashboardData?.completedDays && dashboardData.completedDays.length >= 15 && (
+            {isLoading ? (
+              <div className="flex items-center justify-center p-12 bg-muted/30 rounded-xl border-2 border-border/30">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-sm text-muted-foreground">Loading your progress...</p>
+                </div>
+              </div>
+            ) : (
               <>
-                {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100) >= 70 ? (
-                  <div className="flex items-center gap-5 p-5 bg-primary/10 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-lg transition-all">
-                    <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-9 h-9 text-primary" />
+                {/* Certificate Eligibility Status */}
+                {dashboardData?.completedDays && dashboardData.completedDays.length >= 15 && (
+                  <>
+                    {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100) >= 70 ? (
+                      <div className="flex items-center gap-5 p-5 bg-primary/10 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-lg transition-all">
+                        <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <CheckCircle className="w-9 h-9 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-lg font-bold text-primary">
+                            Certificate Eligible!
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            You've completed {dashboardData.completedDays.length} days with {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100).toFixed(0)}% score
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-5 p-5 bg-yellow-500/10 rounded-xl border-2 border-yellow-500/30 shadow-md hover:shadow-lg transition-all">
+                        <div className="w-16 h-16 bg-yellow-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <XCircle className="w-9 h-9 text-yellow-600" />
+                        </div>
+                        <div>
+                          <p className="text-lg font-bold text-yellow-600">
+                            Need 70% Score for Certificate
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Current score: {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100).toFixed(0)}% - Keep completing challenges!
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+                
+                {/* Missed Days Status */}
+                {missedDaysCount > 0 ? (
+                  <div className="flex items-center gap-5 p-5 bg-destructive/10 rounded-xl border-2 border-destructive/30 shadow-md hover:shadow-lg transition-all">
+                    <div className="w-16 h-16 bg-destructive/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <XCircle className="w-9 h-9 text-destructive" />
                     </div>
                     <div>
-                      <p className="text-lg font-bold text-primary">
-                        Certificate Eligible!
+                      <p className="text-lg font-bold text-destructive">
+                        Missed ({missedDaysCount} {missedDaysCount === 1 ? 'Day' : 'Days'})
                       </p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        You've completed {dashboardData.completedDays.length} days with {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100).toFixed(0)}% score
+                        Catch up on missed challenges to stay on track
                       </p>
                     </div>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-5 p-5 bg-yellow-500/10 rounded-xl border-2 border-yellow-500/30 shadow-md hover:shadow-lg transition-all">
-                    <div className="w-16 h-16 bg-yellow-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <XCircle className="w-9 h-9 text-yellow-600" />
+                  <div className="flex items-center gap-5 p-5 bg-success/10 rounded-xl border-2 border-success/30 shadow-md hover:shadow-lg transition-all">
+                    <div className="w-16 h-16 bg-success/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-9 h-9 text-success" />
                     </div>
                     <div>
-                      <p className="text-lg font-bold text-yellow-600">
-                        Need 70% Score for Certificate
+                      <p className="text-lg font-bold text-success">
+                        Completed All Days
                       </p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Current score: {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100).toFixed(0)}% - Keep completing challenges!
+                        Great job staying consistent!
                       </p>
                     </div>
                   </div>
                 )}
               </>
-            )}
-            
-            {/* Missed Days Status */}
-            {missedDaysCount > 0 ? (
-              <div className="flex items-center gap-5 p-5 bg-destructive/10 rounded-xl border-2 border-destructive/30 shadow-md hover:shadow-lg transition-all">
-                <div className="w-16 h-16 bg-destructive/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <XCircle className="w-9 h-9 text-destructive" />
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-destructive">
-                    Missed ({missedDaysCount} {missedDaysCount === 1 ? 'Day' : 'Days'})
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Catch up on missed challenges to stay on track
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-5 p-5 bg-success/10 rounded-xl border-2 border-success/30 shadow-md hover:shadow-lg transition-all">
-                <div className="w-16 h-16 bg-success/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="w-9 h-9 text-success" />
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-success">
-                    Completed All Days
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Great job staying consistent!
-                  </p>
-                </div>
-              </div>
             )}
           </div>
 
