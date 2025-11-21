@@ -111,8 +111,10 @@ const Index = () => {
     setSelectedDay(null);
   };
 
-  const handleViewStats = (missed: string[] = [], totalDaysCount: number = 15) => {
+  const handleViewStats = (missed: string[] = [], totalDaysCount: number = 15, completed: string[] = [], attempted: string[] = []) => {
     setMissedDays(missed);
+    setCompletedDays(completed);
+    setAttemptedDays(attempted);
     setCurrentView("stats");
   };
 

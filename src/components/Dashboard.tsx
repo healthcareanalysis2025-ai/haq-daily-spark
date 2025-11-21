@@ -71,7 +71,7 @@ interface DashboardProps {
   completedDays: string[];
   attemptedDays: string[];
   onDayClick: (date: string) => void;
-  onViewStats?: (missedDays: string[], totalDays: number) => void;
+  onViewStats?: (missedDays: string[], totalDays: number, completedDays: string[], attemptedDays: string[]) => void;
 }
 
 export const Dashboard = ({
@@ -324,7 +324,7 @@ const isDateDisabled = (date: Date) => {
             {onViewStats && (
                 <Button
                   variant="outline"
-                  onClick={() => onViewStats(missedDaysData, totalDays)}
+                  onClick={() => onViewStats(missedDaysData, totalDays, dashboardData?.completedDays || [], dashboardData?.attemptedDays || [])}
                   className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
                 >
                   <BarChart3 className="w-4 h-4" />
