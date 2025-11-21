@@ -21,6 +21,7 @@ const Index = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [completedDays, setCompletedDays] = useState<string[]>([]);
   const [attemptedDays, setAttemptedDays] = useState<string[]>([]);
+  const [missedDays, setMissedDays] = useState<string[]>([]);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
 
@@ -107,7 +108,8 @@ const Index = () => {
     setSelectedDay(null);
   };
 
-  const handleViewStats = () => {
+  const handleViewStats = (missed: string[] = []) => {
+    setMissedDays(missed);
     setCurrentView("stats");
   };
 
@@ -183,6 +185,7 @@ const Index = () => {
         userName={userData.name}
         completedDays={completedDays}
         attemptedDays={attemptedDays}
+        missedDays={missedDays}
         onBack={handleBackFromStats}
       />
     );

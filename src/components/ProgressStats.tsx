@@ -1,14 +1,14 @@
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trophy, Target, TrendingUp, Calendar, Award, Clock } from "lucide-react";
+import { ArrowLeft, Trophy, XCircle, TrendingUp, Calendar, Award, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface ProgressStatsProps {
   userName: string;
   completedDays: string[];
   attemptedDays: string[];
-  // missed_dates: string[];
+  missedDays?: string[];
   onBack: () => void;
 }
 
@@ -16,11 +16,13 @@ export const ProgressStats = ({
   userName,
   completedDays,
   attemptedDays,
+  missedDays = [],
   onBack,
 }: ProgressStatsProps) => {
   const totalDays = 15;
   const completedCount = completedDays.length;
   const attemptedCount = attemptedDays.length;
+  const missedCount = missedDays.length;
   const successRate = attemptedCount > 0 ? (completedCount / attemptedCount) * 100 : 0;
   const overallProgress = (completedCount / totalDays) * 100;
   console.log("from dashboard ");
@@ -123,12 +125,12 @@ export const ProgressStats = ({
 
           <Card className="p-6 hover-scale">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                <Target className="w-6 h-6 text-accent" />
+              <div className="w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center">
+                <XCircle className="w-6 h-6 text-destructive" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Attempted</p>
-                <p className="text-3xl font-bold text-foreground">{attemptedCount}</p>
+                <p className="text-sm text-muted-foreground">Missed</p>
+                <p className="text-3xl font-bold text-destructive">{missedCount}</p>
               </div>
             </div>
           </Card>
@@ -185,14 +187,12 @@ export const ProgressStats = ({
                 <div className="text-sm text-muted-foreground">Completed</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-500">
-                  {attemptedCount - completedCount}
-                </div>
-                <div className="text-sm text-muted-foreground">In Progress</div>
+                <div className="text-3xl font-bold text-destructive">{missedCount}</div>
+                <div className="text-sm text-muted-foreground">Missed</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-muted-foreground">
-                  {totalDays - attemptedCount}
+                  {totalDays - completedCount - missedCount}
                 </div>
                 <div className="text-sm text-muted-foreground">Not Started</div>
               </div>
