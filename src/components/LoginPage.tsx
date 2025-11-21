@@ -39,6 +39,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showTechDialog, setShowTechDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { setuserId, setLoginEmail, setLoginDate, setLoginTime } = useUser();
   const navigate = useNavigate();
@@ -61,6 +62,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     });
     return;
   }
+
+  setIsLoading(true);
 
   // DUMMY LOGIN - Backend disabled temporarily
   /*
@@ -144,6 +147,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       description: errorDescription,
       variant: "destructive",
     });
+  } finally {
+    setIsLoading(false);
   }
   
 };
@@ -157,6 +162,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     });
     return;
   }
+
+  setIsLoading(true);
 
   // DUMMY LOGIN - Backend disabled temporarily
   /**
@@ -251,6 +258,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       description: errorDescription,
       variant: "destructive",
     });
+  } finally {
+    setIsLoading(false);
   }
 };
 
@@ -375,10 +384,17 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
 
                 <Button
                   onClick={handleLogin}
-                  disabled={!email || !password}
+                  disabled={!email || !password || isLoading}
                   className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground transition-all hover:scale-[1.02] shadow-card hover:shadow-elegant font-semibold text-base mt-2"
                 >
-                  Login
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 border-3 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
+                      <span>Logging in...</span>
+                    </div>
+                  ) : (
+                    "Login"
+                  )}
                 </Button>
               </TabsContent>
 
@@ -447,10 +463,17 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
 
                 <Button
                   onClick={handleSignUp}
-                  disabled={!name || !track || !batchCode || !email || !password}
+                  disabled={!name || !track || !batchCode || !email || !password || isLoading}
                   className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground transition-all hover:scale-[1.02] shadow-card hover:shadow-elegant font-semibold text-base mt-2"
                 >
-                  Create Account
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 border-3 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
+                      <span>Creating Account...</span>
+                    </div>
+                  ) : (
+                    "Create Account"
+                  )}
                 </Button>
               </TabsContent>
             </Tabs>
