@@ -55,12 +55,15 @@ const Index = () => {
     setIsAuthChecking(false);
   }, []);
 
-  // Check if all queries are completed
+  // Check if certificate eligibility: minimum 15 days completed AND 70% score
   useEffect(() => {
-    if (completedDays.length === 15) {
-      setCurrentView("certificate");
+    if (completedDays.length >= 15 && attemptedDays.length > 0) {
+      const score = (completedDays.length / attemptedDays.length) * 100;
+      if (score >= 70 && currentView !== "certificate") {
+        setCurrentView("certificate");
+      }
     }
-  }, [completedDays]);
+  }, [completedDays, attemptedDays, currentView]);
 
   const handleLogin = (name: string, track: string, batchCode: string) => {
     const user = { name, track, batchCode };
@@ -108,7 +111,7 @@ const Index = () => {
     setSelectedDay(null);
   };
 
-  const handleViewStats = (missed: string[] = []) => {
+  const handleViewStats = (missed: string[] = [], totalDaysCount: number = 15) => {
     setMissedDays(missed);
     setCurrentView("stats");
   };
@@ -180,12 +183,14 @@ const Index = () => {
   }
 
   if (currentView === "stats" && userData) {
+    const totalDaysForStats = attemptedDays.length > 15 ? attemptedDays.length : 15;
     return (
       <ProgressStats
         userName={userData.name}
         completedDays={completedDays}
         attemptedDays={attemptedDays}
         missedDays={missedDays}
+        totalDays={totalDaysForStats}
         onBack={handleBackFromStats}
       />
     );

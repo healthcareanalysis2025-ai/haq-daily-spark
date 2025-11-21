@@ -9,6 +9,7 @@ interface ProgressStatsProps {
   completedDays: string[];
   attemptedDays: string[];
   missedDays?: string[];
+  totalDays?: number;
   onBack: () => void;
 }
 
@@ -17,9 +18,9 @@ export const ProgressStats = ({
   completedDays,
   attemptedDays,
   missedDays = [],
+  totalDays = 15,
   onBack,
 }: ProgressStatsProps) => {
-  const totalDays = 15;
   const completedCount = completedDays.length;
   const attemptedCount = attemptedDays.length;
   const missedCount = missedDays.length;
@@ -82,8 +83,8 @@ export const ProgressStats = ({
     },
     { 
       name: "Master", 
-      description: "Complete all 15 queries",
-      unlocked: completedCount === 15,
+      description: "Complete minimum 15 queries with 70%+ score",
+      unlocked: completedCount >= 15 && successRate >= 70,
       icon: "👑"
     },
   ];
