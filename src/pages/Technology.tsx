@@ -90,19 +90,14 @@ export default function Technology() {
             </Card>
 
             {/* Python Card */}
-            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
+            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => navigate("/")}>
               <CardContent className="p-8 md:p-10">
                 <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
                   <div className="p-6 rounded-lg bg-primary/10 flex-shrink-0">
                     <Code2 className="w-12 h-12 md:w-16 md:h-16 text-primary" strokeWidth={1.5} />
                   </div>
                   <div className="flex-1 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">Python</h2>
-                      <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">
-                        Coming Soon
-                      </span>
-                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">Python</h2>
                     <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                       Python brings advanced analytics, machine learning, and automation to healthcare data science. 
                       Build predictive models, automate reporting, and create sophisticated visualizations.
@@ -194,22 +189,6 @@ export default function Technology() {
             </Card>
           </div>
 
-          {/* CTA Section */}
-          <div className="text-center pt-12 space-y-6 animate-fade-in">
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground">
-              Ready to Begin Your Journey?
-            </h3>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Start with SQL to build your foundation in healthcare data analysis
-            </p>
-            <Button
-              onClick={() => navigate("/")}
-              size="lg"
-              className="gap-2 shadow-md hover:shadow-lg"
-            >
-              Get Started Today
-            </Button>
-          </div>
         </div>
       </div>
     </div>
