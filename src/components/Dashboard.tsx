@@ -70,11 +70,8 @@ interface DashboardProps {
   userName: string;
   completedDays: string[]; // Now stores date strings in YYYY-MM-DD format
   attemptedDays: string[]; // Store attempted but not completed days
-  // total_attemptedDays:number;
-  // missed_dates:string[];
-  // missed_no_days:number;
   onDayClick: (date: string) => void;
-  onViewStats?: () => void;
+  onViewStats?: (missedDays: string[]) => void;
 }
 
 export const Dashboard = ({
@@ -92,6 +89,7 @@ export const Dashboard = ({
   const [totalDays, setTotalDays] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
   const [missedDaysCount, setMissedDaysCount] = useState<number>(0);
+  const [missedDaysData, setMissedDaysData] = useState<string[]>([]);
 
   const { userId, loginEmail, loginDate, loginTime } = useUser();
 
@@ -150,6 +148,7 @@ console.log(completedDays);
       
       console.log("Missed Days:", missedDays);
       setMissedDaysCount(missedDays.length);
+      setMissedDaysData(missedDays);
       
       // 1️⃣ Difference between signup date & current date
       const today = new Date();
@@ -322,10 +321,10 @@ const isDateDisabled = (date: Date) => {
               <h2 className="text-2xl md:text-3xl font-bold text-foreground">Your Progress</h2>
             </div>
             <div className="flex flex-wrap gap-2">
-              {onViewStats && (
+            {onViewStats && (
                 <Button
                   variant="outline"
-                  onClick={onViewStats}
+                  onClick={() => onViewStats(missedDaysData)}
                   className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
                 >
                   <BarChart3 className="w-4 h-4" />
