@@ -211,10 +211,15 @@ console.log(completedDays);
   };
 
   const handleLogout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
+    localStorage.removeItem("haq_user");
+    localStorage.removeItem("haq_userId");
+    localStorage.removeItem("haq_loginEmail");
+    localStorage.removeItem("haq_loginDate");
+    localStorage.removeItem("haq_loginTime");
+    localStorage.removeItem("haq_completed");
+    localStorage.removeItem("haq_attempted");
     toast.success("Logged out successfully");
-    navigate("/");
+    window.location.href = "/";
   };
 
   const handleDateSelect = (date: Date | undefined) => {
