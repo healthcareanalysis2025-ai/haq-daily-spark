@@ -239,67 +239,6 @@ export const ProgressStats = ({
           </div>
         </Card>
 
-        {/* Day-by-Day Breakdown */}
-        <Card className="p-8 mt-8">
-          <h2 className="text-2xl font-semibold mb-6">Recent Activity</h2>
-          
-          <div className="space-y-3">
-            {completedDays.length > 0 ? (
-              <>
-                <h3 className="text-lg font-semibold text-primary mb-3">Completed Dates:</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {completedDays.map((date) => (
-                    <div
-                      key={date}
-                      className="bg-success/10 border-2 border-success text-success-foreground rounded-lg p-3 text-center font-semibold"
-                    >
-                      <div className="text-xs opacity-75 mb-1">Completed</div>
-                      <div>{new Date(date).toLocaleDateString()}</div>
-                      <div className="text-xs mt-1">✓</div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <p className="text-muted-foreground text-center py-8">
-                No completed queries yet. Start by selecting a date on the calendar!
-              </p>
-            )}
-            
-            {attemptedDays.length > completedDays.length && (
-              <>
-                <h3 className="text-lg font-semibold text-yellow-600 dark:text-yellow-400 mb-3 mt-6">
-                  Attempted (Not Completed):
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {attemptedDays
-                    .filter(date => !completedDays.includes(date))
-                    .map((date) => (
-                      <div
-                        key={date}
-                        className="bg-yellow-500/10 border-2 border-yellow-500 text-yellow-700 dark:text-yellow-400 rounded-lg p-3 text-center font-semibold"
-                      >
-                        <div className="text-xs opacity-75 mb-1">Attempted</div>
-                        <div>{new Date(date).toLocaleDateString()}</div>
-                        <div className="text-xs mt-1">⏳</div>
-                      </div>
-                    ))}
-                </div>
-              </>
-            )}
-          </div>
-          
-          <div className="flex flex-wrap gap-4 mt-6 pt-6 border-t text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-success rounded"></div>
-              <span>Completed</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-yellow-500/20 border-2 border-yellow-500 rounded"></div>
-              <span>Attempted</span>
-            </div>
-          </div>
-        </Card>
       </div>
     </div>
   );
