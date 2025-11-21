@@ -10,11 +10,7 @@ interface TechnologySelectionProps {
 
 export const TechnologySelection = ({ onSelect }: TechnologySelectionProps) => {
   const handleLogout = () => {
-    localStorage.removeItem("haq_user");
-    localStorage.removeItem("haq_userId");
-    localStorage.removeItem("haq_loginEmail");
-    localStorage.removeItem("haq_loginDate");
-    localStorage.removeItem("haq_loginTime");
+    localStorage.clear();
     toast.success("Logged out successfully");
     window.location.href = "/";
   };

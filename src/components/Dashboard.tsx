@@ -90,7 +90,6 @@ export const Dashboard = ({
   const [progress, setProgress] = useState<number>(0);
   const [missedDaysCount, setMissedDaysCount] = useState<number>(0);
   const [missedDaysData, setMissedDaysData] = useState<string[]>([]);
-  const [isLoadingData, setIsLoadingData] = useState<boolean>(true);
 
   const { userId, loginEmail, loginDate, loginTime } = useUser();
 
@@ -102,7 +101,6 @@ console.log("******DASHBOARD*********");
 console.log(completedDays);
   useEffect(() => {
   const fetchUserDays = async () => {
-    setIsLoadingData(true);
     try {
       // Example: GET request to n8n endpoint
       const res = await fetch(`${BASE_URL}/getAttemptedDays`, {
@@ -211,15 +209,10 @@ console.log(completedDays);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("haq_user");
-    localStorage.removeItem("haq_userId");
-    localStorage.removeItem("haq_loginEmail");
-    localStorage.removeItem("haq_loginDate");
-    localStorage.removeItem("haq_loginTime");
-    localStorage.removeItem("haq_completed");
-    localStorage.removeItem("haq_attempted");
+    localStorage.clear();
+    sessionStorage.clear();
     toast.success("Logged out successfully");
-    window.location.href = "/";
+    navigate("/");
   };
 
   const handleDateSelect = (date: Date | undefined) => {
@@ -308,22 +301,7 @@ const isDateDisabled = (date: Date) => {
         </div>
       </header>
 
-      {isLoadingData ? (
-        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center">
-          <div className="text-center space-y-6 animate-fade-in">
-            <div className="relative">
-              <div className="w-20 h-20 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <CalendarIcon className="w-8 h-8 text-primary animate-pulse" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <p className="text-xl font-semibold text-foreground">Loading Your Progress</p>
-              <p className="text-sm text-muted-foreground">Fetching your challenge data...</p>
-            </div>
-          </div>
-        </div>
-      ) : (
+      <div className="p-4 md:p-8">
         <div className="max-w-5xl mx-auto animate-fade-in space-y-6">
           <div className="text-center mb-10 space-y-3">
             <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-3 tracking-tight">
@@ -523,7 +501,7 @@ const isDateDisabled = (date: Date) => {
           </div>
         </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

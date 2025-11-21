@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 interface UserContextType {
   userId: number | null;
@@ -14,44 +14,13 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  // Initialize from localStorage
-  const [userId, setUserIdState] = useState<number | null>(() => {
-    const saved = localStorage.getItem("haq_userId");
-    return saved ? parseInt(saved) : null;
-  });
-  const [loginEmail, setLoginEmailState] = useState<string | null>(() => {
-    return localStorage.getItem("haq_loginEmail") || null;
-  });
-  const [loginTime, setLoginTimeState] = useState<string | null>(() => {
-    return localStorage.getItem("haq_loginTime") || null;
-  });
-  const [loginDate, setLoginDateState] = useState<string | null>(() => {
-    return localStorage.getItem("haq_loginDate") || null;
-  });
-
-  // Wrapper functions that save to localStorage
-  const setuserId = (id: number) => {
-    setUserIdState(id);
-    localStorage.setItem("haq_userId", id.toString());
-  };
-
-  const setLoginEmail = (email: string) => {
-    setLoginEmailState(email);
-    localStorage.setItem("haq_loginEmail", email);
-  };
-
-  const setLoginTime = (time: string) => {
-    setLoginTimeState(time);
-    localStorage.setItem("haq_loginTime", time);
-  };
-
-  const setLoginDate = (date: string) => {
-    setLoginDateState(date);
-    localStorage.setItem("haq_loginDate", date);
-  };
+  const [userId, setuserId] = useState<number | null>(null);
+  const [loginEmail, setLoginEmail] = useState<string | null>(null);
+  const [loginTime, setLoginTime] = useState<string | null>(null);
+  const [loginDate, setLoginDate] = useState<string | null>(null);
 
   return (
-    <UserContext.Provider value={{ userId, setuserId, loginEmail, setLoginEmail, loginTime, setLoginTime, loginDate, setLoginDate }}>
+    <UserContext.Provider value={{ userId,setuserId, loginEmail, setLoginEmail, loginTime, setLoginTime, loginDate, setLoginDate }}>
       {children}
     </UserContext.Provider>
   );
