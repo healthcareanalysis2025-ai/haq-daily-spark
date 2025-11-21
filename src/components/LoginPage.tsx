@@ -313,37 +313,6 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
             <img src={ninjaLogo} alt="HAQ" className="h-10 w-10 object-contain" />
             <h1 className="text-base md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
           </div>
-          <nav className="flex gap-4 md:gap-8 items-center">
-            <button 
-              onClick={() => navigate("/technology")}
-              className="nav-link text-sm md:text-base"
-            >
-              Technology
-            </button>
-            <button 
-              onClick={() => navigate("/about")}
-              className="nav-link text-sm md:text-base hidden sm:block"
-            >
-              About Us
-            </button>
-            {isLoggedIn ? (
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-                className="text-xs md:text-sm font-medium hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-              >
-                Logout
-              </Button>
-            ) : (
-              <button 
-                onClick={() => setActiveTab("login")}
-                className="nav-link !text-primary text-sm md:text-base"
-              >
-                Login
-              </button>
-            )}
-          </nav>
         </div>
       </header>
 
