@@ -74,7 +74,7 @@ export const ProgressStats = ({
     },
     { 
       name: "Perfect Score", 
-      description: "100% success rate with 5+ attempts",
+      description: "100% score with 5+ attempts",
       unlocked: successRate === 100 && attemptedCount >= 5,
       icon: "💯"
     },
@@ -139,7 +139,7 @@ export const ProgressStats = ({
                 <TrendingUp className="w-6 h-6 text-success" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Success Rate</p>
+                <p className="text-sm text-muted-foreground">Score</p>
                 <p className="text-3xl font-bold text-success">{successRate.toFixed(0)}%</p>
               </div>
             </div>
