@@ -40,7 +40,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [showTechDialog, setShowTechDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
   const { toast } = useToast();
-  const { setuserId, setLoginEmail, setLoginDate, setLoginTime } = useUser();
+  const { setuserId, userId, setLoginEmail, loginDate, setLoginDate, loginTime, setLoginTime } = useUser();
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
@@ -186,9 +186,24 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
  */
   /* BACKEND CALL - Commented out temporarily*/
   try {
+
+    const userDate=new Date().toLocaleDateString("en-CA");
+    const userTime = new Date().toLocaleTimeString("en-CA", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    });
+
+
+    console.log("User date:", userDate);
+    console.log("User time:", userTime);
+
     const payload = {
       email: email,
-      password: password
+      password: password,
+      userDate: userDate,
+      userTime: userTime
     };
 
     const res = await fetch(`${BASE_URL}/login`, {
@@ -215,15 +230,14 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
         description: "Successfully logged in.",
       });
       
-      const now = new Date();
-      const date = now.toISOString().split("T")[0];
-      const time = now.toTimeString().split(" ")[0];
+      
       
       setuserId(data.user.user_id);
       setLoginEmail(email);
-      setLoginDate(date);
-      setLoginTime(time);
-
+      setLoginDate(userDate);
+      setLoginTime(userTime);
+      setCurrentUser(data.user);
+      
       onLogin(
         data.user.name || "User",
         data.user.track || "DA",
@@ -256,23 +270,26 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
 
   const handleLogout = async () => {
   // DUMMY LOGOUT - Backend disabled temporarily
-  setIsLoggedIn(false);
-  setCurrentUser(null);
-  setLoginEmail(null);
-  setLoginDate(null);
-  setLoginTime(null);
+  // setIsLoggedIn(false);
+  // setCurrentUser(null);
+  // setLoginEmail(null);
+  // setLoginDate(null);
+  // setLoginTime(null);
   
   toast({
     title: "Logged out",
     description: "You have been successfully logged out.",
   });
 
-  /* BACKEND CALL - Commented out temporarily
-  try {
-    const res = await fetch("https://your-ngrok-url.ngrok-free.app/webhook-test/logout", {
+  /* BACKEND CALL - Commented out temporarily*/
+  try { console.log("User ID:", userId);
+    console.log("Login Date:", loginDate);
+    console.log("Login Time:", loginTime);
+
+    const res = await fetch(`${BASE_URL}-test/logout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: currentUser.email })
+      body: JSON.stringify({ user_id: userId,userDate: loginDate,userTime:loginTime })
     });
 
     const data = await res.json();
@@ -287,6 +304,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       setLoginEmail(null);
       setLoginDate(null);
       setLoginTime(null);
+      setuserId(null);
     } else {
       toast({
         title: "Logout failed",
@@ -301,7 +319,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       variant: "destructive",
     });
   }
-  */
+  /**/
 };
 
   return (

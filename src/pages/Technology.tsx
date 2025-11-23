@@ -5,7 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import ninjaLogo from "@/assets/ninja-logo.png";
 
-export default function Technology() {
+interface TechnologyProps {
+  
+  onSelect: (technology: "sql" | "python") => void;
+  
+}
+
+export default function Technology({ onSelect }: TechnologyProps) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -51,7 +57,7 @@ export default function Technology() {
           {/* Technology Cards */}
           <div className="grid gap-8 md:gap-10 mt-12">
             {/* SQL Card */}
-            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => navigate("/")}>
+            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => onSelect("sql")}>
               <CardContent className="p-8 md:p-10">
                 <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
                   <div className="p-6 rounded-lg bg-primary/10 flex-shrink-0">
@@ -98,7 +104,7 @@ export default function Technology() {
             </Card>
 
             {/* Python Card */}
-            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => navigate("/")}>
+            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => onSelect("python")}>
               <CardContent className="p-8 md:p-10">
                 <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
                   <div className="p-6 rounded-lg bg-primary/10 flex-shrink-0">

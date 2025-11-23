@@ -67,7 +67,14 @@ function generateDayStatuses(signUpDate: string, attemptedDays: string[]) {
 }
 
 interface DashboardProps {
-  userName: string;
+  userData: {
+    name: string;
+    track: string;
+    batchCode: string;
+    technology?: "sql" | "python";
+    tech_id?: number;
+  };
+  
   completedDays: string[];
   attemptedDays: string[];
   onDayClick: (date: string) => void;
@@ -75,7 +82,7 @@ interface DashboardProps {
 }
 
 export const Dashboard = ({
-  userName,
+  userData,
   completedDays,
   attemptedDays,
   //total_attemptedDays,missed_dates,missed_no_days,
@@ -99,6 +106,7 @@ export const Dashboard = ({
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState<DashboardProps | null>(null);
 console.log("******DASHBOARD*********");
+console.log("from dashboard technology:", userData.tech_id);
 console.log(completedDays);
   useEffect(() => {
   const fetchUserDays = async () => {
@@ -108,7 +116,7 @@ console.log(completedDays);
       const res = await fetch(`${BASE_URL}/getAttemptedDays`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({user_id:userId}), //  send key-value data
+      body: JSON.stringify({user_id:userId, tech_id:userData.tech_id}), //  send key-value data
     });
 
       if (!res.ok) throw new Error("Failed to fetch user days");
@@ -309,7 +317,7 @@ const isDateDisabled = (date: Date) => {
         <div className="max-w-5xl mx-auto animate-fade-in space-y-6">
           <div className="text-center mb-10 space-y-3">
             <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-3 tracking-tight">
-              Welcome back, <span className="text-primary">{userName}</span>!
+              Welcome back, <span className="text-primary">{userData.name} in {userData.technology?.toUpperCase()} track</span>!
             </h1>
             <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
               Continue your learning journey and track your progress

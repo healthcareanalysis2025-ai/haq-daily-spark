@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface ProgressStatsProps {
   userName: string;
+  technology: string;
   completedDays: string[];
   attemptedDays: string[];
   missedDays?: string[];
@@ -15,6 +16,7 @@ interface ProgressStatsProps {
 
 export const ProgressStats = ({
   userName,
+  technology,
   completedDays,
   attemptedDays,
   missedDays = [],
@@ -26,7 +28,7 @@ export const ProgressStats = ({
   const missedCount = missedDays.length;
   const successRate = attemptedCount > 0 ? (completedCount / attemptedCount) * 100 : 0;
   const overallProgress = (completedCount / totalDays) * 100;
-  console.log("from dashboard ");
+  console.log("from dashboard technology:", technology);
   console.log(completedDays);
   // Calculate streak based on consecutive dates
   const calculateStreak = () => {

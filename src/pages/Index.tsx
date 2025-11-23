@@ -6,15 +6,17 @@ import { QueryPage } from "@/components/QueryPage";
 import { CertificatePage } from "@/components/CertificatePage";
 import { CompletionPage } from "@/components/CompletionPage";
 import { ProgressStats } from "@/components/ProgressStats";
+import Technology from "./Technology";
 
 interface UserData {
   name: string;
   track: string;
   batchCode: string;
   technology?: "sql" | "python";
+  tech_id?: number;
 }
 
-type View = "login" | "techSelection" | "dashboard" | "query" | "certificate" | "completion" | "stats";
+type View = "login" | "techSelection" | "dashboard" | "query" | "certificate" | "completion" | "stats" | "technology";
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>("login");
@@ -71,15 +73,27 @@ const Index = () => {
     localStorage.setItem("haq_user", JSON.stringify(user));
     setCurrentView("techSelection");
   };
-
+  
   const handleTechnologySelect = (technology: "sql" | "python") => {
     if (userData) {
-      const updatedUser = { ...userData, technology };
+      console.log("technology selected:", technology);
+      const techMap: Record<"sql" | "python", number> = {
+        sql: 1,
+        python: 2,
+      };
+      
+      
+      const tech_id = techMap[technology]; 
+      console.log("tech_id:", tech_id);
+      const updatedUser = { ...userData, technology, tech_id };
+      console.log("Inside index file Technology Selection Updated User:", updatedUser);
       setUserData(updatedUser);
       localStorage.setItem("haq_user", JSON.stringify(updatedUser));
       setCurrentView("dashboard");
     }
   };
+
+  
 
   const handleDayClick = (dateString: string) => {
     setSelectedDay(dateString);
@@ -152,9 +166,17 @@ const Index = () => {
     return <TechnologySelection onSelect={handleTechnologySelect} />;
   }
 
+  if (currentView === "technology") {
+    console.log("from index file technology view userData:", userData);
+    return <Technology 
+            
+            onSelect={handleTechnologySelect} />;
+  }
+
   if (currentView === "query" && selectedDay && userData) {
     return (
       <QueryPage
+        userData={userData}
         day={selectedDay}
         onBack={handleBackToDashboard}
         onComplete={handleQueryComplete}
@@ -191,6 +213,7 @@ const Index = () => {
         userName={userData.name}
         completedDays={completedDays}
         attemptedDays={attemptedDays}
+        technology={userData.technology}
         missedDays={missedDays}
         totalDays={totalDaysForStats}
         onBack={handleBackFromStats}
@@ -201,7 +224,7 @@ const Index = () => {
   if (currentView === "dashboard" && userData) {
     return (
       <Dashboard
-        userName={userData.name}
+        userData={userData}
         completedDays={completedDays}
         attemptedDays={attemptedDays}
         onDayClick={handleDayClick}

@@ -21,6 +21,13 @@ interface Question {
 }
 
 interface QueryPageProps {
+  userData: {
+    name: string;
+    track: string;
+    batchCode: string;
+    technology?: "sql" | "python";
+    tech_id?: number;
+  };
   day: string;
   onBack: () => void;
   onComplete: (day: string) => void;
@@ -31,6 +38,7 @@ interface QueryPageProps {
 
 
 export const QueryPage = ({
+  userData,
   day,
   onBack,
   onComplete,
@@ -52,6 +60,7 @@ const { userId,loginEmail,loginDate,loginTime } = useUser();
 const [questionId, setQuestionId] = useState(0);
 const [queryQuestion, setQueryQuestion] = useState(''); // empty string initially
 const [difficultyLevel,setDifficultyLevel]=useState('');
+
 //  useEffect(() => {
 //     const fetchQuestions = async () => {
 //       try {
@@ -99,12 +108,12 @@ const [difficultyLevel,setDifficultyLevel]=useState('');
   useEffect(() => {
   const fetchQuestions = async () => {
     try {
-      console.log("Date", loginDate, "user", userId);
+      console.log("useefect INSIDE QUERY PAGE ***********Date", loginDate, "user", userId, "tech_id", userData.tech_id);
 
       const res = await fetch(`${BASE_URL}/getQuestions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ current_date: loginDate }),
+        body: JSON.stringify({ current_date: loginDate, tech_id: userData.tech_id,user_id:userId }),
       });
 
       if (!res.ok) throw new Error("Failed to fetch questions");
