@@ -4,6 +4,7 @@ import { Mail, Calendar as CalendarIcon, LogOut, BarChart3, XCircle, CheckCircle
 import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import ninjaLogo from "@/assets/ninja-logo.png";
+import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { useUser } from "@/context/UserContext";
 import { useNavigate, Link } from "react-router-dom";
 // import { format, addDays, differenceInDays } from "date-fns";
@@ -77,6 +78,7 @@ interface DashboardProps {
   
   completedDays: string[];
   attemptedDays: string[];
+  technology: "sql" | "python";
   onDayClick: (date: string) => void;
   onViewStats?: (missedDays: string[], totalDays: number, completedDays: string[], attemptedDays: string[]) => void;
 }
@@ -85,10 +87,12 @@ export const Dashboard = ({
   userData,
   completedDays,
   attemptedDays,
+  technology,
   //total_attemptedDays,missed_dates,missed_no_days,
   onDayClick,
   onViewStats,
 }: DashboardProps) => {
+  const techName = technology === "sql" ? "SQL" : "Python";
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   // const totalDays = 15;
   // const progress = (completedDays.length / totalDays) * 100;
@@ -330,7 +334,7 @@ const isDateDisabled = (date: Date) => {
               <div className="p-2.5 rounded-lg bg-primary/10">
                 <CalendarIcon className="text-primary w-6 h-6" />
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground">Your Progress</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground">Your {techName} Progress</h2>
             </div>
             <div className="flex flex-wrap gap-2">
             {onViewStats && (
@@ -372,7 +376,7 @@ const isDateDisabled = (date: Date) => {
             {isLoading ? (
               <div className="flex items-center justify-center p-12 bg-muted/30 rounded-xl border-2 border-border/30">
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <img src={ninjaSpinner} alt="Loading" className="w-12 h-12 animate-spin" />
                   <p className="text-sm text-muted-foreground">Loading your progress...</p>
                 </div>
               </div>
@@ -449,7 +453,7 @@ const isDateDisabled = (date: Date) => {
 
           <div className="mt-6">
             <h3 className="text-lg md:text-xl font-bold mb-2 text-foreground">
-              Attempt Today's Challenge
+              Attempt Today's {techName} Challenge
             </h3>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
               Click on today's date to attempt the daily challenge

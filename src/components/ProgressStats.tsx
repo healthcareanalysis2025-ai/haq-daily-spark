@@ -11,6 +11,7 @@ interface ProgressStatsProps {
   attemptedDays: string[];
   missedDays?: string[];
   totalDays?: number;
+  technology?: "sql" | "python";
   onBack: () => void;
 }
 
@@ -21,8 +22,10 @@ export const ProgressStats = ({
   attemptedDays,
   missedDays = [],
   totalDays = 15,
+  technology = "sql",
   onBack,
 }: ProgressStatsProps) => {
+  const techName = technology === "sql" ? "SQL" : "Python";
   const completedCount = completedDays.length;
   const attemptedCount = attemptedDays.length;
   const missedCount = missedDays.length;
@@ -105,7 +108,7 @@ export const ProgressStats = ({
 
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-primary mb-2">
-            Your Progress, {userName}
+            Your {techName} Progress, {userName}
           </h1>
           <p className="text-muted-foreground text-lg">
             Track your learning journey and achievements

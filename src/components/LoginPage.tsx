@@ -21,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import ninjaLogo from "@/assets/ninja-logo.png";
+import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +40,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [showTechDialog, setShowTechDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { setuserId, userId, setLoginEmail, loginDate, setLoginDate, loginTime, setLoginTime } = useUser();
   const navigate = useNavigate();
@@ -61,6 +63,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     });
     return;
   }
+
+  setIsLoading(true);
 
   // DUMMY LOGIN - Backend disabled temporarily
   /*
@@ -144,6 +148,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       description: errorDescription,
       variant: "destructive",
     });
+  } finally {
+    setIsLoading(false);
   }
   
 };
@@ -157,6 +163,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     });
     return;
   }
+
+  setIsLoading(true);
 
   // DUMMY LOGIN - Backend disabled temporarily
   /**
@@ -265,6 +273,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       description: errorDescription,
       variant: "destructive",
     });
+  } finally {
+    setIsLoading(false);
   }
 };
 
@@ -393,10 +403,17 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
 
                 <Button
                   onClick={handleLogin}
-                  disabled={!email || !password}
+                  disabled={!email || !password || isLoading}
                   className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground transition-all hover:scale-[1.02] shadow-card hover:shadow-elegant font-semibold text-base mt-2"
                 >
-                  Login
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <img src={ninjaSpinner} alt="Loading" className="w-6 h-6 animate-spin" />
+                      <span>Logging in...</span>
+                    </div>
+                  ) : (
+                    "Login"
+                  )}
                 </Button>
               </TabsContent>
 
@@ -465,10 +482,17 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
 
                 <Button
                   onClick={handleSignUp}
-                  disabled={!name || !track || !batchCode || !email || !password}
+                  disabled={!name || !track || !batchCode || !email || !password || isLoading}
                   className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground transition-all hover:scale-[1.02] shadow-card hover:shadow-elegant font-semibold text-base mt-2"
                 >
-                  Create Account
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <img src={ninjaSpinner} alt="Loading" className="w-6 h-6 animate-spin" />
+                      <span>Creating Account...</span>
+                    </div>
+                  ) : (
+                    "Create Account"
+                  )}
                 </Button>
               </TabsContent>
             </Tabs>

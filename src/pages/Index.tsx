@@ -178,6 +178,7 @@ const Index = () => {
       <QueryPage
         userData={userData}
         day={selectedDay}
+        technology={userData.technology || "sql"}
         onBack={handleBackToDashboard}
         onComplete={handleQueryComplete}
         hasAttempted={attemptedDays.includes(selectedDay)}
@@ -216,6 +217,7 @@ const Index = () => {
         technology={userData.technology}
         missedDays={missedDays}
         totalDays={totalDaysForStats}
+        technology={userData.technology || "sql"}
         onBack={handleBackFromStats}
       />
     );
@@ -227,6 +229,7 @@ const Index = () => {
         userData={userData}
         completedDays={completedDays}
         attemptedDays={attemptedDays}
+        technology={userData.technology || "sql"}
         onDayClick={handleDayClick}
         onViewStats={handleViewStats}
       />
