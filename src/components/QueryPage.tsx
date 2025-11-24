@@ -574,7 +574,7 @@ const handleSubmitOld = async () => {
                   size="lg"
                   asChild
                 >
-                  <a href="https://physionet.org" target="_blank" rel="noopener noreferrer">
+                  <a href={techName === "SQL" ? "https://physionet.org/content/heart-failure-zigong/1.3/" : "https://physionet.org/content/heart-failure-zigong/1.3/"} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="w-4 h-4" />
                     PhysioNet Details
                   </a>
