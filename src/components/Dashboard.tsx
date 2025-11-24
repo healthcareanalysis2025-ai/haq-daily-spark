@@ -264,6 +264,20 @@ const isDateDisabled = (date: Date) => {
     return attemptedDays.includes(dateString);
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+          <div className="flex flex-col items-center gap-4">
+            <img src={ninjaSpinner} alt="Loading" className="w-16 h-16 animate-spin" />
+            <p className="text-lg text-muted-foreground font-medium">Loading your dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -316,17 +330,8 @@ const isDateDisabled = (date: Date) => {
 
           {/* Challenge Status Card */}
           <div className="mb-8 space-y-4">
-            {isLoading ? (
-              <div className="flex items-center justify-center p-12 bg-muted/30 rounded-xl border-2 border-border/30">
-                <div className="flex flex-col items-center gap-3">
-                  <img src={ninjaSpinner} alt="Loading" className="w-12 h-12 animate-spin" />
-                  <p className="text-sm text-muted-foreground">Loading your progress...</p>
-                </div>
-              </div>
-            ) : (
-              <>
-                {/* Certificate Eligibility Status */}
-                {dashboardData?.completedDays && dashboardData.completedDays.length >= 15 && (
+            {/* Certificate Eligibility Status */}
+            {dashboardData?.completedDays && dashboardData.completedDays.length >= 15 && (
                   <>
                     {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100) >= 70 ? (
                       <div className="flex items-center gap-5 p-5 bg-primary/10 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-lg transition-all">
@@ -390,8 +395,6 @@ const isDateDisabled = (date: Date) => {
                     </div>
                   </div>
                 )}
-              </>
-            )}
           </div>
 
           <div className="mt-6">
