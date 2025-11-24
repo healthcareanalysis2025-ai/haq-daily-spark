@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Mail, Calendar as CalendarIcon, BarChart3, XCircle, CheckCircle } from "lucide-react";
+import { Calendar as CalendarIcon, BarChart3, XCircle, CheckCircle } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import ninjaSpinner from "@/assets/ninja-spinner.png";
@@ -208,12 +208,6 @@ console.log(completedDays);
 
 
 
-
-  const handleEmailProgress = () => {
-    console.log(dashboardData);
-    toast.success("Progress summary sent to your email!");
-  };
-
   const handleDateSelect = (date: Date | undefined) => {
   if (!date) return;
 
@@ -304,14 +298,6 @@ const isDateDisabled = (date: Date) => {
                   <span className="hidden sm:inline">View Stats</span>
                 </Button>
               )}
-              <Button
-                variant="outline"
-                onClick={handleEmailProgress}
-                className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
-              >
-                <Mail className="w-4 h-4" />
-                <span className="hidden sm:inline">Email Progress</span>
-              </Button>
             </div>
           </div>
           
