@@ -293,7 +293,7 @@ const isDateDisabled = (date: Date) => {
             </p>
           </div>
 
-        <div className="sticky top-0 z-10 bg-card p-6 md:p-8 rounded-lg shadow-md border border-border mb-6 hover:shadow-lg transition-all duration-300">
+        <div className="bg-card p-6 md:p-8 rounded-lg shadow-md border border-border mb-6 hover:shadow-lg transition-all duration-300">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-lg bg-primary/10">
