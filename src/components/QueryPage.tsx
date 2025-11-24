@@ -399,22 +399,26 @@ const handleSubmitOld = async () => {
 
       <div className="p-4 md:p-8">
         <div className="max-w-7xl mx-auto animate-fade-in space-y-6">
-          <Button
-            variant="ghost"
-            onClick={onBack}
-            className="mb-6 gap-2 hover:bg-muted"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
-          </Button>
+          <div className="mb-8">
+            <Button
+              variant="outline"
+              onClick={onBack}
+              size="lg"
+              className="gap-3 px-6 py-6 text-base font-semibold border-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              Back to Dashboard
+            </Button>
+          </div>
 
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Questions (2/3 width) */}
           <div className="lg:col-span-2 space-y-6">
             <Card className="p-6 md:p-8 shadow-md border-border hover:shadow-lg transition-all duration-300">
-              <div className="mb-8">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+              {/* Sticky Query Header */}
+              <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm -mx-6 -mt-6 md:-mx-8 md:-mt-8 px-6 py-6 md:px-8 md:py-6 mb-8 border-b border-border/50 shadow-sm">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="space-y-2">
                     <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
                       {techName} Query for {loginDate}
