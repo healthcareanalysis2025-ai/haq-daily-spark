@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, Award, Share2, LogOut } from "lucide-react";
+import { Download, Award, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
 import haqLogo from "@/assets/haq-logo.png";
-import ninjaLogo from "@/assets/ninja-logo.png";
 import { useRef } from "react";
+import { Header } from "@/components/Header";
 
 interface CertificatePageProps {
   userName: string;
@@ -44,44 +44,11 @@ export const CertificatePage = ({
     }
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    toast.success("Logged out successfully");
-    window.location.href = "/";
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Confetti />
       
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-card/80 backdrop-blur-lg shadow-sm">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={ninjaLogo} alt="HAQ" className="h-10 w-10 object-contain" />
-            <h1 className="text-lg md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
-          </div>
-          <div className="flex items-center gap-4 md:gap-6">
-            <nav className="hidden md:flex gap-6 items-center">
-              <a href="/technology" className="nav-link text-sm">
-                Technology
-              </a>
-              <a href="/about" className="nav-link text-sm">
-                About Us
-              </a>
-            </nav>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Logout</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="p-4 md:p-8 flex items-center justify-center min-h-[calc(100vh-80px)]">
       

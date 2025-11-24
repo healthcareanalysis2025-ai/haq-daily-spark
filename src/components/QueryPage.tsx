@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database, Server, FolderPlus, FileText, Upload, PlayCircle, X, LogOut } from "lucide-react";
-import ninjaLogo from "@/assets/ninja-logo.png";
+import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database, Server, FolderPlus, FileText, Upload, PlayCircle, X } from "lucide-react";
 import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
 import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config";
+import { Header } from "@/components/Header";
 
 interface Question {
   mcq_id: number;
@@ -395,33 +395,7 @@ const handleSubmitOld = async () => {
     <div className="min-h-screen bg-background">
       {showConfetti && <Confetti />}
       
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-card/80 backdrop-blur-lg shadow-sm">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={ninjaLogo} alt="HAQ" className="h-10 w-10 object-contain" />
-            <h1 className="text-lg md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
-          </div>
-          <div className="flex items-center gap-4 md:gap-6">
-            <nav className="hidden md:flex gap-6 items-center">
-              <a href="/technology" className="nav-link text-sm">
-                Technology
-              </a>
-              <a href="/about" className="nav-link text-sm">
-                About Us
-              </a>
-            </nav>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Logout</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="p-4 md:p-8">
         <div className="max-w-7xl mx-auto animate-fade-in space-y-6">
