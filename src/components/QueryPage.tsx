@@ -557,15 +557,17 @@ const handleSubmitOld = async () => {
                     Download Dataset
                   </a>
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
-                  size="lg"
-                  onClick={() => setShowSetupGuide(true)}
-                >
-                  <Settings className="w-4 h-4" />
-                  Setup Guide
-                </Button>
+                {techName !== "Python" && (
+                  <Button 
+                    variant="outline" 
+                    className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
+                    size="lg"
+                    onClick={() => setShowSetupGuide(true)}
+                  >
+                    <Settings className="w-4 h-4" />
+                    Setup Guide
+                  </Button>
+                )}
                 <Button 
                   variant="outline" 
                   className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
