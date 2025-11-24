@@ -1,24 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Mail, Calendar as CalendarIcon, LogOut, BarChart3, XCircle, CheckCircle } from "lucide-react";
+import { Calendar as CalendarIcon, BarChart3, XCircle, CheckCircle } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
-import ninjaLogo from "@/assets/ninja-logo.png";
 import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { useUser } from "@/context/UserContext";
-import { useNavigate, Link } from "react-router-dom";
-// import { format, addDays, differenceInDays } from "date-fns";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { BASE_URL } from "@/config";
-
-
-
-// import { format, addDays, differenceInDays, isBefore, isEqual } from "date-fns";
-
-//import { format, addDays, differenceInDays, startOfDay,isBefore } from "date-fns";
-
 import { addDays, startOfDay, differenceInDays, format, isBefore } from "date-fns";
 import { ProgressStats } from "./ProgressStats";
+import { Header } from "@/components/Header";
 
 function generateDayStatuses(signUpDate: string, attemptedDays: string[]) {
   const today = startOfDay(new Date());
@@ -107,7 +98,6 @@ export const Dashboard = ({
 
   console.log("Logged in user:", loginEmail, "date :", loginDate, "  Time :", loginTime+" Userid "+userId+" completed days");
   const [dayStatuses, setDayStatuses] = useState<{ date: string; status: string; clickable: boolean }[]>([]);
-  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState<DashboardProps | null>(null);
 console.log("******DASHBOARD*********");
 console.log("from dashboard technology:", userData.tech_id);
@@ -218,19 +208,6 @@ console.log(completedDays);
 
 
 
-
-  const handleEmailProgress = () => {
-    console.log(dashboardData);
-    toast.success("Progress summary sent to your email!");
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    toast.success("Logged out successfully");
-    navigate("/");
-  };
-
   const handleDateSelect = (date: Date | undefined) => {
   if (!date) return;
 
@@ -289,33 +266,7 @@ const isDateDisabled = (date: Date) => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-card/80 backdrop-blur-lg shadow-sm">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={ninjaLogo} alt="HAQ" className="h-10 w-10 object-contain" />
-            <h1 className="text-lg md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
-          </div>
-          <div className="flex items-center gap-4 md:gap-6">
-            <nav className="hidden md:flex gap-6 items-center">
-              <Link to="/technology" className="nav-link text-sm">
-                Technology
-              </Link>
-              <Link to="/about" className="nav-link text-sm">
-                About Us
-              </Link>
-            </nav>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Logout</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="p-4 md:p-8">
         <div className="max-w-5xl mx-auto animate-fade-in space-y-6">
@@ -347,14 +298,6 @@ const isDateDisabled = (date: Date) => {
                   <span className="hidden sm:inline">View Stats</span>
                 </Button>
               )}
-              <Button
-                variant="outline"
-                onClick={handleEmailProgress}
-                className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
-              >
-                <Mail className="w-4 h-4" />
-                <span className="hidden sm:inline">Email Progress</span>
-              </Button>
             </div>
           </div>
           

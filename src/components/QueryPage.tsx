@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database, Server, FolderPlus, FileText, Upload, PlayCircle, X, LogOut } from "lucide-react";
-import ninjaLogo from "@/assets/ninja-logo.png";
+import { ArrowLeft, Mail, CheckCircle, XCircle, Download, Settings, ExternalLink, Database, Server, FolderPlus, FileText, Upload, PlayCircle, X } from "lucide-react";
 import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Confetti } from "./Confetti";
 import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config";
+import { Header } from "@/components/Header";
 
 interface Question {
   mcq_id: number;
@@ -399,72 +399,48 @@ const handleSubmitOld = async () => {
     <div className="min-h-screen bg-background">
       {showConfetti && <Confetti />}
       
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-card/80 backdrop-blur-lg shadow-sm">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={ninjaLogo} alt="HAQ" className="h-10 w-10 object-contain" />
-            <h1 className="text-lg md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
-          </div>
-          <div className="flex items-center gap-4 md:gap-6">
-            <nav className="hidden md:flex gap-6 items-center">
-              <a href="/technology" className="nav-link text-sm">
-                Technology
-              </a>
-              <a href="/about" className="nav-link text-sm">
-                About Us
-              </a>
-            </nav>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Logout</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="p-4 md:p-8">
         <div className="max-w-7xl mx-auto animate-fade-in space-y-6">
-          <Button
-            variant="ghost"
-            onClick={onBack}
-            className="mb-6 gap-2 hover:bg-muted"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
-          </Button>
-
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Questions (2/3 width) */}
           <div className="lg:col-span-2 space-y-6">
             <Card className="p-6 md:p-8 shadow-md border-border hover:shadow-lg transition-all duration-300">
-              <div className="mb-8">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                  <div className="space-y-2">
+              {/* Sticky Query Header */}
+              <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm -mx-6 -mt-6 md:-mx-8 md:-mt-8 px-6 py-6 md:px-8 md:py-6 mb-8 border-b border-border/50 shadow-sm">
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <div className="flex items-center gap-3 flex-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={onBack}
+                      className="flex-shrink-0 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-colors rounded-full"
+                    >
+                      <ArrowLeft className="w-6 h-6 text-primary" />
+                    </Button>
                     <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                      {techName} Query for {loginDate}
+                      {techName === "Python" ? "Python Question" : "SQL Query"} for {loginDate}
                     </h2>
-                    <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
-                      {queryQuestion}
-                      </p>
-                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                    Solve the above query and answer all questions below to complete today's challenge
-                    </p>
                   </div>
                   <Button
-                    variant="outline"
-                    size="sm"
+                    variant="ghost"
+                    size="icon"
                     onClick={handleEmailQuery}
-                    className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
+                    className="flex-shrink-0 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-colors rounded-full"
+                    title="Email Solution"
                   >
-                    <Mail className="w-4 h-4" />
-                    <span className="hidden sm:inline">Email Query</span>
+                    <Mail className="w-6 h-6 text-primary" />
                   </Button>
+                </div>
+                <div className="space-y-2 ml-14">
+                  <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
+                    {queryQuestion}
+                  </p>
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                    Solve the above query and answer all questions below to complete today's challenge
+                  </p>
                 </div>
               </div>
 
@@ -580,27 +556,29 @@ const handleSubmitOld = async () => {
                   size="lg"
                   asChild
                 >
-                  <a href="https://drive.google.com/your-dataset-link" target="_blank" rel="noopener noreferrer">
+                  <a href={techName === "SQL" ? "https://drive.google.com/drive/u/2/folders/16MX1_7vckRPSgcCcz3ocTfMXyPV1DBmw" : "https://drive.google.com/drive/u/2/folders/1MXv19w82NjLJ7aMH1brezeI5dtQTTbUD"} target="_blank" rel="noopener noreferrer">
                     <Download className="w-4 h-4" />
                     Download Dataset
                   </a>
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
-                  size="lg"
-                  onClick={() => setShowSetupGuide(true)}
-                >
-                  <Settings className="w-4 h-4" />
-                  Setup Guide
-                </Button>
+                {techName !== "Python" && (
+                  <Button 
+                    variant="outline" 
+                    className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
+                    size="lg"
+                    onClick={() => setShowSetupGuide(true)}
+                  >
+                    <Settings className="w-4 h-4" />
+                    Setup Guide
+                  </Button>
+                )}
                 <Button 
                   variant="outline" 
                   className="w-full gap-2 hover:bg-primary/5 hover:border-primary/50"
                   size="lg"
                   asChild
                 >
-                  <a href="https://physionet.org" target="_blank" rel="noopener noreferrer">
+                  <a href={techName === "SQL" ? "https://physionet.org/content/heart-failure-zigong/1.3/" : "https://physionet.org/content/heart-failure-zigong/1.3/"} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="w-4 h-4" />
                     PhysioNet Details
                   </a>

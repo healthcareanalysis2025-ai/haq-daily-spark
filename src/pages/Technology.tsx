@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Database, Code2, BarChart3, LogOut } from "lucide-react";
+import { Database, Code2, BarChart3 } from "lucide-react";
+import { Header } from "@/components/Header";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import ninjaLogo from "@/assets/ninja-logo.png";
 
 interface TechnologyProps {
   
@@ -14,32 +13,51 @@ interface TechnologyProps {
 export default function Technology({ onSelect }: TechnologyProps) {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    toast.success("Logged out successfully");
-    navigate("/");
+  const handleTechnologySelect = (technology: "sql" | "python") => {
+    try {
+      // Get current user data from localStorage
+      const savedUser = localStorage.getItem("haq_user");
+      
+      if (!savedUser) {
+        toast.error("Please login first");
+        navigate("/");
+        return;
+      }
+
+      const userData = JSON.parse(savedUser);
+      
+      // Map technology to tech_id
+      const techMap: Record<"sql" | "python", number> = {
+        sql: 1,
+        python: 2,
+      };
+      
+      const tech_id = techMap[technology];
+      
+      // Update user data with selected technology
+      const updatedUser = { 
+        ...userData, 
+        technology, 
+        tech_id 
+      };
+      
+      // Save to localStorage
+      localStorage.setItem("haq_user", JSON.stringify(updatedUser));
+      
+      // Show success message
+      toast.success(`${technology.toUpperCase()} selected successfully!`);
+      
+      // Redirect to home (which will show dashboard)
+      navigate("/");
+    } catch (error) {
+      console.error("Error selecting technology:", error);
+      toast.error("Failed to select technology");
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-card/80 backdrop-blur-lg shadow-sm">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={ninjaLogo} alt="HAQ" className="h-10 w-10 object-contain" />
-            <h1 className="text-base md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
-          </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </Button>
-        </div>
-      </header>
+      <Header />
 
       <div className="container mx-auto px-6 py-12 md:py-20">
         <div className="max-w-5xl mx-auto space-y-12">
@@ -57,7 +75,7 @@ export default function Technology({ onSelect }: TechnologyProps) {
           {/* Technology Cards */}
           <div className="grid gap-8 md:gap-10 mt-12">
             {/* SQL Card */}
-            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => onSelect("sql")}>
+            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => handleTechnologySelect("sql")}>
               <CardContent className="p-8 md:p-10">
                 <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
                   <div className="p-6 rounded-lg bg-primary/10 flex-shrink-0">
@@ -104,7 +122,7 @@ export default function Technology({ onSelect }: TechnologyProps) {
             </Card>
 
             {/* Python Card */}
-            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => onSelect("python")}>
+            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => handleTechnologySelect("python")}>
               <CardContent className="p-8 md:p-10">
                 <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
                   <div className="p-6 rounded-lg bg-primary/10 flex-shrink-0">
