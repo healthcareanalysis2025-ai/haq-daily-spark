@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Database, Code2, BarChart3 } from "lucide-react";
 import { Header } from "@/components/Header";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface TechnologyProps {
   
@@ -9,6 +11,50 @@ interface TechnologyProps {
 }
 
 export default function Technology({ onSelect }: TechnologyProps) {
+  const navigate = useNavigate();
+
+  const handleTechnologySelect = (technology: "sql" | "python") => {
+    try {
+      // Get current user data from localStorage
+      const savedUser = localStorage.getItem("haq_user");
+      
+      if (!savedUser) {
+        toast.error("Please login first");
+        navigate("/");
+        return;
+      }
+
+      const userData = JSON.parse(savedUser);
+      
+      // Map technology to tech_id
+      const techMap: Record<"sql" | "python", number> = {
+        sql: 1,
+        python: 2,
+      };
+      
+      const tech_id = techMap[technology];
+      
+      // Update user data with selected technology
+      const updatedUser = { 
+        ...userData, 
+        technology, 
+        tech_id 
+      };
+      
+      // Save to localStorage
+      localStorage.setItem("haq_user", JSON.stringify(updatedUser));
+      
+      // Show success message
+      toast.success(`${technology.toUpperCase()} selected successfully!`);
+      
+      // Redirect to home (which will show dashboard)
+      navigate("/");
+    } catch (error) {
+      console.error("Error selecting technology:", error);
+      toast.error("Failed to select technology");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -29,7 +75,7 @@ export default function Technology({ onSelect }: TechnologyProps) {
           {/* Technology Cards */}
           <div className="grid gap-8 md:gap-10 mt-12">
             {/* SQL Card */}
-            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => onSelect("sql")}>
+            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => handleTechnologySelect("sql")}>
               <CardContent className="p-8 md:p-10">
                 <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
                   <div className="p-6 rounded-lg bg-primary/10 flex-shrink-0">
@@ -76,7 +122,7 @@ export default function Technology({ onSelect }: TechnologyProps) {
             </Card>
 
             {/* Python Card */}
-            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => onSelect("python")}>
+            <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300 animate-fade-in cursor-pointer" onClick={() => handleTechnologySelect("python")}>
               <CardContent className="p-8 md:p-10">
                 <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
                   <div className="p-6 rounded-lg bg-primary/10 flex-shrink-0">
