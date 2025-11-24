@@ -105,15 +105,15 @@ export const ProgressStats = ({
                 variant="ghost"
                 size="icon"
                 onClick={onBack}
-                className="h-10 w-10"
+                className="h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-colors rounded-full"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-6 h-6 text-primary" />
               </Button>
               <h1 className="text-4xl font-bold text-primary">
                 Your {techName} Progress, {userName}
               </h1>
             </div>
-            <p className="text-muted-foreground text-lg ml-[52px]">
+            <p className="text-muted-foreground text-lg ml-[60px]">
               Track your learning journey and achievements
             </p>
           </div>
