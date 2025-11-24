@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 
 interface ProgressStatsProps {
   userName: string;
-  technology: string;
   completedDays: string[];
   attemptedDays: string[];
   missedDays?: string[];
@@ -17,7 +16,6 @@ interface ProgressStatsProps {
 
 export const ProgressStats = ({
   userName,
-  technology,
   completedDays,
   attemptedDays,
   missedDays = [],
