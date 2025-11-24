@@ -552,7 +552,7 @@ const handleSubmitOld = async () => {
                   size="lg"
                   asChild
                 >
-                  <a href="https://drive.google.com/your-dataset-link" target="_blank" rel="noopener noreferrer">
+                  <a href={techName === "SQL" ? "https://drive.google.com/drive/u/2/folders/16MX1_7vckRPSgcCcz3ocTfMXyPV1DBmw" : "https://drive.google.com/drive/u/2/folders/1MXv19w82NjLJ7aMH1brezeI5dtQTTbUD"} target="_blank" rel="noopener noreferrer">
                     <Download className="w-4 h-4" />
                     Download Dataset
                   </a>
