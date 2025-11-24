@@ -35,6 +35,9 @@ export const useLogout = () => {
     setLoginDate(null);
     setLoginTime(null);
     
+    // Dispatch custom logout event for Index component
+    window.dispatchEvent(new Event("logout"));
+    
     toast.success("Logged out successfully");
     
     // Navigate to login page
