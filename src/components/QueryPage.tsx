@@ -406,37 +406,37 @@ const handleSubmitOld = async () => {
             <Card className="p-6 md:p-8 shadow-md border-border hover:shadow-lg transition-all duration-300">
               {/* Sticky Query Header */}
               <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm -mx-6 -mt-6 md:-mx-8 md:-mt-8 px-6 py-6 md:px-8 md:py-6 mb-8 border-b border-border/50 shadow-sm">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="flex items-start gap-3 flex-1">
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <div className="flex items-center gap-3 flex-1">
                     <Button
                       variant="outline"
                       size="icon"
                       onClick={onBack}
-                      className="mt-1 flex-shrink-0 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+                      className="flex-shrink-0 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
                     >
                       <ArrowLeft className="w-5 h-5" />
                     </Button>
-                    <div className="space-y-2">
-                      <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                        {techName} Query for {loginDate}
-                      </h2>
-                      <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
-                        {queryQuestion}
-                      </p>
-                      <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                        Solve the above query and answer all questions below to complete today's challenge
-                      </p>
-                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                      {techName} Query for {loginDate}
+                    </h2>
                   </div>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={handleEmailQuery}
-                    className="mt-1 flex-shrink-0 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+                    className="flex-shrink-0 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
                     title="Email Solution"
                   >
                     <Mail className="w-5 h-5" />
                   </Button>
+                </div>
+                <div className="space-y-2 ml-14">
+                  <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
+                    {queryQuestion}
+                  </p>
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                    Solve the above query and answer all questions below to complete today's challenge
+                  </p>
                 </div>
               </div>
 
