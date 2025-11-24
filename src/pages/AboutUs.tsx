@@ -219,7 +219,7 @@ export default function AboutUs() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/technology")}
                 size="lg"
                 className="gap-2 shadow-md hover:shadow-lg"
               >
