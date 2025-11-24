@@ -27,34 +27,69 @@ const Index = () => {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
 
-  // Load data from localStorage on mount
+  // Load data from localStorage on mount and listen for logout
   useEffect(() => {
-    const savedUser = localStorage.getItem("haq_user");
-    const savedCompleted = localStorage.getItem("haq_completed");
-    const savedAttempted = localStorage.getItem("haq_attempted");
+    const checkAuth = () => {
+      const savedUser = localStorage.getItem("haq_user");
+      const savedCompleted = localStorage.getItem("haq_completed");
+      const savedAttempted = localStorage.getItem("haq_attempted");
 
-    if (savedUser) {
-      const user = JSON.parse(savedUser);
-      setUserData(user);
-      
-      // Check if technology is selected
-      if (user.technology) {
-        setCurrentView("dashboard");
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        setUserData(user);
+        
+        // Check if technology is selected
+        if (user.technology) {
+          setCurrentView("dashboard");
+        } else {
+          setCurrentView("techSelection");
+        }
       } else {
-        setCurrentView("techSelection");
+        setCurrentView("login");
+        setUserData(null);
+        setCompletedDays([]);
+        setAttemptedDays([]);
+        setMissedDays([]);
       }
-    } else {
+      
+      if (savedCompleted) {
+        setCompletedDays(JSON.parse(savedCompleted));
+      }
+      if (savedAttempted) {
+        setAttemptedDays(JSON.parse(savedAttempted));
+      }
+      
+      setIsAuthChecking(false);
+    };
+
+    // Check auth on mount
+    checkAuth();
+
+    // Listen for storage changes (including logout)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "haq_user" || e.key === null) {
+        // key is null when localStorage.clear() is called
+        checkAuth();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // Custom event for logout within same tab
+    const handleLogout = () => {
       setCurrentView("login");
-    }
-    
-    if (savedCompleted) {
-      setCompletedDays(JSON.parse(savedCompleted));
-    }
-    if (savedAttempted) {
-      setAttemptedDays(JSON.parse(savedAttempted));
-    }
-    
-    setIsAuthChecking(false);
+      setUserData(null);
+      setCompletedDays([]);
+      setAttemptedDays([]);
+      setMissedDays([]);
+    };
+
+    window.addEventListener("logout", handleLogout);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("logout", handleLogout);
+    };
   }, []);
 
   // Check if certificate eligibility: minimum 15 days completed AND 70% score
