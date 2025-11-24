@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,7 +24,7 @@ import ninjaLogo from "@/assets/ninja-logo.png";
 import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config";
-import { useNavigate } from "react-router-dom";
+import { useLogout } from "@/hooks/useLogout";
 
 interface LoginPageProps {
   onLogin: (name: string, track: string, batchCode: string) => void;
@@ -36,14 +36,11 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [batchCode, setBatchCode] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [showTechDialog, setShowTechDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { setuserId, userId, setLoginEmail, loginDate, setLoginDate, loginTime, setLoginTime } = useUser();
-  const navigate = useNavigate();
+  const { setuserId, setLoginEmail, setLoginDate, setLoginTime } = useUser();
+  const { logout } = useLogout();
 
   const handleSignUp = async () => {
   if (!name || !track || !batchCode || !email || !password) {
@@ -244,7 +241,6 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       setLoginEmail(email);
       setLoginDate(userDate);
       setLoginTime(userTime);
-      setCurrentUser(data.user);
       
       onLogin(
         data.user.name || "User",
@@ -278,59 +274,6 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   }
 };
 
-  const handleLogout = async () => {
-  // DUMMY LOGOUT - Backend disabled temporarily
-  // setIsLoggedIn(false);
-  // setCurrentUser(null);
-  // setLoginEmail(null);
-  // setLoginDate(null);
-  // setLoginTime(null);
-  
-  toast({
-    title: "Logged out",
-    description: "You have been successfully logged out.",
-  });
-
-  /* BACKEND CALL - Commented out temporarily*/
-  try { console.log("User ID:", userId);
-    console.log("Login Date:", loginDate);
-    console.log("Login Time:", loginTime);
-
-    const res = await fetch(`${BASE_URL}-test/logout`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: userId,userDate: loginDate,userTime:loginTime })
-    });
-
-    const data = await res.json();
-
-    if (data.status === "success") {
-      setIsLoggedIn(false);
-      setCurrentUser(null);
-      toast({
-        title: "Logged out",
-        description: data.message,
-      });
-      setLoginEmail(null);
-      setLoginDate(null);
-      setLoginTime(null);
-      setuserId(null);
-    } else {
-      toast({
-        title: "Logout failed",
-        description: data.message || "Unknown error",
-        variant: "destructive",
-      });
-    }
-  } catch (error) {
-    toast({
-      title: "Network error",
-      description: "Failed to reach logout service",
-      variant: "destructive",
-    });
-  }
-  /**/
-};
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -527,48 +470,6 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
           </CardContent>
         </Card>
       </div>
-
-      {/* Technology Selection Dialog */}
-      <Dialog open={showTechDialog} onOpenChange={setShowTechDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Choose Your Technology</DialogTitle>
-            <DialogDescription>
-              Select the technology you want to focus on for your learning journey.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-2 gap-4 py-4">
-            <Button
-              variant="outline"
-              className="h-24 flex flex-col gap-2 hover:bg-primary/10 hover:border-primary transition-all"
-              onClick={() => {
-                toast({
-                  title: "Python Selected",
-                  description: "You've chosen to learn Python for healthcare analysis.",
-                });
-                setShowTechDialog(false);
-              }}
-            >
-              <span className="text-2xl">🐍</span>
-              <span className="font-semibold">Python</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="h-24 flex flex-col gap-2 hover:bg-primary/10 hover:border-primary transition-all"
-              onClick={() => {
-                toast({
-                  title: "SQL Selected",
-                  description: "You've chosen to learn SQL for healthcare analysis.",
-                });
-                setShowTechDialog(false);
-              }}
-            >
-              <span className="text-2xl">🗄️</span>
-              <span className="font-semibold">SQL</span>
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

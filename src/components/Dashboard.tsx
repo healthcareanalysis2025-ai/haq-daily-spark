@@ -5,7 +5,6 @@ import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
 import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { useUser } from "@/context/UserContext";
-import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { BASE_URL } from "@/config";
 import { addDays, startOfDay, differenceInDays, format, isBefore } from "date-fns";
@@ -99,7 +98,6 @@ export const Dashboard = ({
 
   console.log("Logged in user:", loginEmail, "date :", loginDate, "  Time :", loginTime+" Userid "+userId+" completed days");
   const [dayStatuses, setDayStatuses] = useState<{ date: string; status: string; clickable: boolean }[]>([]);
-  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState<DashboardProps | null>(null);
 console.log("******DASHBOARD*********");
 console.log("from dashboard technology:", userData.tech_id);
@@ -214,13 +212,6 @@ console.log(completedDays);
   const handleEmailProgress = () => {
     console.log(dashboardData);
     toast.success("Progress summary sent to your email!");
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    toast.success("Logged out successfully");
-    navigate("/");
   };
 
   const handleDateSelect = (date: Date | undefined) => {
