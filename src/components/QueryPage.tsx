@@ -399,18 +399,6 @@ const handleSubmitOld = async () => {
 
       <div className="p-4 md:p-8">
         <div className="max-w-7xl mx-auto animate-fade-in space-y-6">
-          <div className="mb-8">
-            <Button
-              variant="outline"
-              onClick={onBack}
-              size="lg"
-              className="gap-3 px-6 py-6 text-base font-semibold border-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 shadow-md hover:shadow-lg"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              Back to Dashboard
-            </Button>
-          </div>
-
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Questions (2/3 width) */}
@@ -419,22 +407,32 @@ const handleSubmitOld = async () => {
               {/* Sticky Query Header */}
               <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm -mx-6 -mt-6 md:-mx-8 md:-mt-8 px-6 py-6 md:px-8 md:py-6 mb-8 border-b border-border/50 shadow-sm">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="space-y-2">
-                    <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                      {techName} Query for {loginDate}
-                    </h2>
-                    <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
-                      {queryQuestion}
+                  <div className="flex items-start gap-3 flex-1">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={onBack}
+                      className="mt-1 flex-shrink-0 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+                    >
+                      <ArrowLeft className="w-5 h-5" />
+                    </Button>
+                    <div className="space-y-2">
+                      <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                        {techName} Query for {loginDate}
+                      </h2>
+                      <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
+                        {queryQuestion}
                       </p>
-                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                    Solve the above query and answer all questions below to complete today's challenge
-                    </p>
+                      <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                        Solve the above query and answer all questions below to complete today's challenge
+                      </p>
+                    </div>
                   </div>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleEmailQuery}
-                    className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
+                    className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all flex-shrink-0"
                   >
                     <Mail className="w-4 h-4" />
                     <span className="hidden sm:inline">Email Query</span>
