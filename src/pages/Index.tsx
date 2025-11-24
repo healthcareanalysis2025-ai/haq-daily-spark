@@ -214,7 +214,6 @@ const Index = () => {
         userName={userData.name}
         completedDays={completedDays}
         attemptedDays={attemptedDays}
-        technology={userData.technology}
         missedDays={missedDays}
         totalDays={totalDaysForStats}
         technology={userData.technology || "sql"}
