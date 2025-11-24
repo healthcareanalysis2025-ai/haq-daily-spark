@@ -175,7 +175,7 @@ const handleSelect = (qIndex: number, value: number) => {
   });
 };
 
-const handleSubmit = async () => {
+const handleSubmit = async () => { console.log("handleSubmit called"+answers.toString());
   // 1️⃣ Check if any question is unanswered
   if (answers.some((ans) => ans === null)) {
     toast.error("Please answer all questions!");
@@ -212,20 +212,24 @@ const handleSubmit = async () => {
     responses: questions.map((q, i) => ({
       mcq_id: q.mcq_id,
       user_id: userId,
+      technology_id: userData.tech_id,
       selected_option: String.fromCharCode(65 + answers[i]!),
       correct_flag: results[i],
       answered: true,
       respond_date: loginDate,
+      userLocal_dateTime: loginDate+" "+loginTime
     })),
     summary: {
       user_id: userId,
       question_id: questionId,
+      technology_id: userData.tech_id,
       total_mcq: questions.length,
       total_correct: correctCount,
       total_avg_score: dailyWeightedAvg.toFixed(2),
       question_weight: totalQuestionWeight,
       weighted_score: weightedScore,
       submitted_date: loginDate,
+      userLocal_dateTime: loginDate+" "+loginTime
     },
   };
 
