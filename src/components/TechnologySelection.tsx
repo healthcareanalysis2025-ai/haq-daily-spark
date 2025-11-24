@@ -1,19 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Database, Code2, LogOut } from "lucide-react";
-import { toast } from "sonner";
 import ninjaLogo from "@/assets/ninja-logo.png";
+import { useLogout } from "@/hooks/useLogout";
 
 interface TechnologySelectionProps {
   onSelect: (technology: "sql" | "python") => void;
 }
 
 export const TechnologySelection = ({ onSelect }: TechnologySelectionProps) => {
-  const handleLogout = () => {
-    localStorage.clear();
-    toast.success("Logged out successfully");
-    window.location.href = "/";
-  };
+  const { logout } = useLogout();
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -27,7 +23,7 @@ export const TechnologySelection = ({ onSelect }: TechnologySelectionProps) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={handleLogout}
+            onClick={logout}
             className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
           >
             <LogOut className="w-4 h-4" />

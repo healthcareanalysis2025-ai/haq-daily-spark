@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import ninjaLogo from "@/assets/ninja-logo.png";
+import { useLogout } from "@/hooks/useLogout";
 
 interface HeaderProps {
   showNavigation?: boolean;
@@ -10,14 +10,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ showNavigation = true, showLogout = true }: HeaderProps) => {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    toast.success("Logged out successfully");
-    navigate("/");
-  };
+  const { logout } = useLogout();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-card/80 backdrop-blur-lg shadow-sm">
@@ -48,7 +41,7 @@ export const Header = ({ showNavigation = true, showLogout = true }: HeaderProps
               <Button
                 variant="outline"
                 size="sm"
-                onClick={handleLogout}
+                onClick={logout}
                 className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
               >
                 <LogOut className="w-4 h-4" />
