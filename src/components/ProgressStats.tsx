@@ -3,6 +3,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trophy, XCircle, TrendingUp, Calendar, Award, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Header } from "@/components/Header";
 
 interface ProgressStatsProps {
   userName: string;
@@ -93,25 +94,29 @@ export const ProgressStats = ({
   ];
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-5xl mx-auto animate-fade-in">
-        <Button
-          variant="ghost"
-          onClick={onBack}
-          className="mb-6 gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Dashboard
-        </Button>
-
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-primary mb-2">
-            Your {techName} Progress, {userName}
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Track your learning journey and achievements
-          </p>
-        </div>
+    <div className="min-h-screen bg-background">
+      <Header showNavigation={true} showLogout={true} />
+      
+      <div className="p-4 md:p-8">
+        <div className="max-w-5xl mx-auto animate-fade-in">
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onBack}
+                className="h-10 w-10"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+              <h1 className="text-4xl font-bold text-primary">
+                Your {techName} Progress, {userName}
+              </h1>
+            </div>
+            <p className="text-muted-foreground text-lg ml-[52px]">
+              Track your learning journey and achievements
+            </p>
+          </div>
 
         {/* Overall Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
@@ -242,6 +247,7 @@ export const ProgressStats = ({
           </div>
         </Card>
 
+        </div>
       </div>
     </div>
   );
