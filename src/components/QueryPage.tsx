@@ -430,12 +430,12 @@ const handleSubmitOld = async () => {
                   </div>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="icon"
                     onClick={handleEmailQuery}
-                    className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all flex-shrink-0"
+                    className="mt-1 flex-shrink-0 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+                    title="Email Solution"
                   >
-                    <Mail className="w-4 h-4" />
-                    <span className="hidden sm:inline">Email Query</span>
+                    <Mail className="w-5 h-5" />
                   </Button>
                 </div>
               </div>
