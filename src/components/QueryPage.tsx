@@ -409,25 +409,25 @@ const handleSubmitOld = async () => {
                 <div className="flex items-center justify-between gap-4 mb-4">
                   <div className="flex items-center gap-3 flex-1">
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
                       onClick={onBack}
-                      className="flex-shrink-0 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+                      className="flex-shrink-0 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-colors rounded-full"
                     >
-                      <ArrowLeft className="w-5 h-5" />
+                      <ArrowLeft className="w-6 h-6 text-primary" />
                     </Button>
                     <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
                       {techName === "Python" ? "Python Question" : "SQL Query"} for {loginDate}
                     </h2>
                   </div>
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
                     onClick={handleEmailQuery}
-                    className="flex-shrink-0 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+                    className="flex-shrink-0 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-colors rounded-full"
                     title="Email Solution"
                   >
-                    <Mail className="w-5 h-5" />
+                    <Mail className="w-6 h-6 text-primary" />
                   </Button>
                 </div>
                 <div className="space-y-2 ml-14">
