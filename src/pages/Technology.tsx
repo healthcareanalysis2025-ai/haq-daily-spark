@@ -1,9 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Database, Code2, BarChart3, LogOut } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import ninjaLogo from "@/assets/ninja-logo.png";
+import { Database, Code2, BarChart3 } from "lucide-react";
+import { Header } from "@/components/Header";
 
 interface TechnologyProps {
   
@@ -12,34 +9,9 @@ interface TechnologyProps {
 }
 
 export default function Technology({ onSelect }: TechnologyProps) {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    toast.success("Logged out successfully");
-    navigate("/");
-  };
-
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-card/80 backdrop-blur-lg shadow-sm">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={ninjaLogo} alt="HAQ" className="h-10 w-10 object-contain" />
-            <h1 className="text-base md:text-xl font-bold text-foreground">HEALTHCARE ANALYSIS HQ</h1>
-          </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="gap-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </Button>
-        </div>
-      </header>
+      <Header />
 
       <div className="container mx-auto px-6 py-12 md:py-20">
         <div className="max-w-5xl mx-auto space-y-12">
