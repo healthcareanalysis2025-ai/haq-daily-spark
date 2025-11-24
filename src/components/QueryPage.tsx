@@ -417,7 +417,7 @@ const handleSubmitOld = async () => {
                       <ArrowLeft className="w-5 h-5" />
                     </Button>
                     <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                      {techName} Query for {loginDate}
+                      {techName === "Python" ? "Python Question" : "SQL Query"} for {loginDate}
                     </h2>
                   </div>
                   <Button
