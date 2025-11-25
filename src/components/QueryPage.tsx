@@ -428,7 +428,8 @@ const handleSubmitOld = async () => {
                     variant="ghost"
                     size="icon"
                     onClick={handleEmailQuery}
-                    className="flex-shrink-0 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-colors rounded-full"
+                    disabled={!submitted}
+                    className="flex-shrink-0 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-colors rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Email Solution"
                   >
                     <Mail className="w-6 h-6 text-primary" />
