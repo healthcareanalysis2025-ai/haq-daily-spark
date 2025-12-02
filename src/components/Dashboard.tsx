@@ -12,9 +12,9 @@ import { ProgressStats } from "./ProgressStats";
 import { Header } from "@/components/Header";
 
 function generateDayStatuses(signUpDate: string, attemptedDays: string[]) {
-  const today = startOfDay(new Date());
-  const start = startOfDay(new Date(signUpDate));
-  const diff = differenceInDays(today, start);
+  const today = startOfDay(new Date()); console.log("generateDayStatuses() is today////: ",attemptedDays,today);
+  const start = startOfDay(new Date(signUpDate)); console.log("generateDayStatuses() is start////: ",start);
+  const diff = differenceInDays(today, start); console.log("generateDayStatuses() is diff////: ",diff);
   const statuses = [];
 
   const hasAttempts = Array.isArray(attemptedDays) && attemptedDays.length > 0;

@@ -236,7 +236,7 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
   console.log("Payload sent to n8n:", payload);
 
   try {
-    const res = await fetch(`${BASE_URL}/submitResponse`, {
+    const res = await fetch(`${BASE_URL}-test/submitResponse`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -383,9 +383,35 @@ const handleSubmitOld = async () => {
 
 
 
-  const handleEmailQuery = () => {
+const handleEmailQuery = async () => { console.log("EMAIL ******");
+  try {
+    const payload = {
+      user_id: userId,
+      question_id: questionId,
+      technology_id: userData.tech_id,
+      posted_date :loginDate
+    };
+
+    const res = await fetch(`${BASE_URL}/email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to send email query");
+    }
+
+    const data = await res.json();
+    console.log("Email Query Response:", data);
+
     toast.success("Query and solution have been emailed");
-  };
+  } catch (error) {
+    console.error("Error sending email query:", error);
+    toast.error("Failed to send email. Please try again.");
+  }
+};
+
 
   const handleLogout = () => {
     localStorage.clear();
