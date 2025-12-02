@@ -236,7 +236,7 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
   console.log("Payload sent to n8n:", payload);
 
   try {
-    const res = await fetch(`${BASE_URL}-test/submitResponse`, {
+    const res = await fetch(`${BASE_URL}/submitResponse`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
