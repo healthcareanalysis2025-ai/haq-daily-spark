@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   base: '/haq-daily-spark/',
+  //base: process.env.NODE_ENV === "production" ? "/haq-daily-spark/" : "/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
