@@ -66,6 +66,7 @@ const { userId,loginEmail,loginDate,loginTime } = useUser();
 const [questionId, setQuestionId] = useState(0);
 const [queryQuestion, setQueryQuestion] = useState(''); // empty string initially
 const [difficultyLevel,setDifficultyLevel]=useState('');
+const [emailLoading, setEmailLoading] = useState(false);
 
 //  useEffect(() => {
 //     const fetchQuestions = async () => {
@@ -390,7 +391,10 @@ const handleSubmitOld = async () => {
 
 
 
-const handleEmailQuery = async () => { console.log("EMAIL ******");
+const handleEmailQuery = async () => { 
+  console.log("EMAIL ******");
+  if (emailLoading) return; // Prevent multiple clicks
+  setEmailLoading(true);
   try {
     const payload = {
       user_id: userId,
@@ -416,6 +420,8 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
   } catch (error) {
     console.error("Error sending email query:", error);
     toast.error("Failed to send email. Please try again.");
+  } finally {
+    setEmailLoading(false);
   }
 };
 
@@ -546,10 +552,20 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
                       </p>
                       <Button
                         onClick={handleEmailQuery}
+                        disabled={emailLoading}
                         className="mt-4 gap-2 shadow-card hover:shadow-card-hover"
                       >
-                        <Mail className="w-4 h-4" />
-                        Email Solution
+                        {emailLoading ? (
+                          <>
+                            <img src={ninjaSpinner} alt="Loading" className="w-4 h-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="w-4 h-4" />
+                            Email Solution
+                          </>
+                        )}
                       </Button>
                     </div>
                   ) : (
@@ -568,10 +584,20 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
                         <Button
                           onClick={handleEmailQuery}
                           variant="outline"
+                          disabled={emailLoading}
                           className="gap-2"
                         >
-                          <Mail className="w-4 h-4" />
-                          Email Solution
+                          {emailLoading ? (
+                            <>
+                              <img src={ninjaSpinner} alt="Loading" className="w-4 h-4 animate-spin" />
+                              Sending...
+                            </>
+                          ) : (
+                            <>
+                              <Mail className="w-4 h-4" />
+                              Email Solution
+                            </>
+                          )}
                         </Button>
                       </div>
                     </div>
