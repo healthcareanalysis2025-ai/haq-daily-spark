@@ -271,9 +271,8 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
         setShowConfetti(true);
         toast.success("All answers correct! 🎉 Great job!");
         setTimeout(() => {
-          onComplete(day);
           setShowConfetti(false);
-        }, 2000);
+        }, 3000);
       } else {
         setIsCorrect(false);
         toast.error(`You got ${correctCount}/${questions.length} correct.`);
@@ -547,26 +546,32 @@ const handleEmailQuery = async () => {
                         <CheckCircle className="w-8 h-8" />
                         Correct! Well done!
                       </div>
-                      <p className="text-muted-foreground text-sm md:text-base">
-                        Returning to dashboard...
+                      <p className="text-muted-foreground text-sm md:text-base mb-4">
+                        Great job! You answered all questions correctly.
                       </p>
-                      <Button
-                        onClick={handleEmailQuery}
-                        disabled={emailLoading}
-                        className="mt-4 gap-2 shadow-card hover:shadow-card-hover"
-                      >
-                        {emailLoading ? (
-                          <>
-                            <img src={ninjaSpinner} alt="Loading" className="w-4 h-4 animate-spin" />
-                            Sending...
-                          </>
-                        ) : (
-                          <>
-                            <Mail className="w-4 h-4" />
-                            Email Solution
-                          </>
-                        )}
-                      </Button>
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <Button onClick={onBack} className="shadow-card hover:shadow-card-hover">
+                          Return to Dashboard
+                        </Button>
+                        <Button
+                          onClick={handleEmailQuery}
+                          variant="outline"
+                          disabled={emailLoading}
+                          className="gap-2"
+                        >
+                          {emailLoading ? (
+                            <>
+                              <img src={ninjaSpinner} alt="Loading" className="w-4 h-4 animate-spin" />
+                              Sending...
+                            </>
+                          ) : (
+                            <>
+                              <Mail className="w-4 h-4" />
+                              Email Solution
+                            </>
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   ) : (
                     <div className="space-y-4">
