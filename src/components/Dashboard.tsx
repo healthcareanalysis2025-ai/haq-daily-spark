@@ -123,11 +123,11 @@ console.log(completedDays);
 
       console.log("Fetched data from n8n:", data);
 
-      const { signup_date, attemptedDays, total_weighted_average } = data[0];
+      const { signup_date, attemptedDays } = data[0];
+      const score = data[0].total_weighted_average || 0;
       console.log("Signup date:", signup_date);
-      setTechScore(total_weighted_average || 0);
-      console.log("Overall Score "+data[0].total_weighted_average);
-      const score=data[0].total_weighted_average;
+      console.log("Overall Score:", score);
+      setTechScore(score);
       setOverallScore(score);
       if (!signup_date) {
         toast.error("No signup date found for user.");
