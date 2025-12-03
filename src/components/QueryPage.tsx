@@ -11,6 +11,7 @@ import { Confetti } from "./Confetti";
 import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config";
 import { Header } from "@/components/Header";
+import { getCurrentDate, getCurrentTime } from "../utils/datetime";
 
 interface Question {
   mcq_id: number;
@@ -219,8 +220,8 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
       selected_option: String.fromCharCode(65 + answers[i]!),
       correct_flag: results[i],
       answered: true,
-      respond_date: loginDate,
-      userLocal_dateTime: loginDate+" "+loginTime
+      respond_date: getCurrentDate(),
+      userLocal_dateTime: getCurrentDate()+" "+getCurrentTime()
     })),
     summary: {
       user_id: userId,
@@ -231,8 +232,8 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
       total_avg_score: dailyWeightedAvg.toFixed(2),
       question_weight: totalQuestionWeight,
       weighted_score: weightedScore,
-      submitted_date: loginDate,
-      userLocal_dateTime: loginDate+" "+loginTime
+      submitted_date: getCurrentDate(),
+      userLocal_dateTime: getCurrentDate()+" "+getCurrentTime()
     },
   };
 
