@@ -71,7 +71,7 @@ interface DashboardProps {
   attemptedDays: string[];
   technology: "sql" | "python";
   onDayClick: (date: string) => void;
-  onViewStats?: (missedDays: string[], totalDays: number, completedDays: string[], attemptedDays: string[]) => void;
+  onViewStats?: (missedDays: string[], totalDays: number, completedDays: string[], attemptedDays: string[], score: number) => void;
 }
 
 export const Dashboard = ({
@@ -92,6 +92,7 @@ export const Dashboard = ({
   const [progress, setProgress] = useState<number>(0);
   const [missedDaysCount, setMissedDaysCount] = useState<number>(0);
   const [missedDaysData, setMissedDaysData] = useState<string[]>([]);
+  const [techScore, setTechScore] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { userId, loginEmail, loginDate, loginTime,setOverallScore } = useUser();
@@ -122,8 +123,9 @@ console.log(completedDays);
 
       console.log("Fetched data from n8n:", data);
 
-      const { signup_date, attemptedDays } = data[0];
+      const { signup_date, attemptedDays, total_weighted_average } = data[0];
       console.log("Signup date:", signup_date);
+      setTechScore(total_weighted_average || 0);
       console.log("Overall Score "+data[0].total_weighted_average);
       const score=data[0].total_weighted_average;
       setOverallScore(score);
@@ -307,7 +309,7 @@ const isDateDisabled = (date: Date) => {
             {onViewStats && (
                 <Button
                   variant="outline"
-                  onClick={() => onViewStats(missedDaysData, totalDays, dashboardData?.completedDays || [], dashboardData?.attemptedDays || [])}
+                  onClick={() => onViewStats(missedDaysData, totalDays, dashboardData?.completedDays || [], dashboardData?.attemptedDays || [], techScore)}
                   className="gap-2 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
                 >
                   <BarChart3 className="w-4 h-4" />
