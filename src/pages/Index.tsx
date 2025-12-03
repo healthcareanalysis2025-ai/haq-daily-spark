@@ -24,6 +24,7 @@ const Index = () => {
   const [completedDays, setCompletedDays] = useState<string[]>([]);
   const [attemptedDays, setAttemptedDays] = useState<string[]>([]);
   const [missedDays, setMissedDays] = useState<string[]>([]);
+  const [techScore, setTechScore] = useState<number>(0);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
 
@@ -160,10 +161,11 @@ const Index = () => {
     setSelectedDay(null);
   };
 
-  const handleViewStats = (missed: string[] = [], totalDaysCount: number = 15, completed: string[] = [], attempted: string[] = []) => {
+  const handleViewStats = (missed: string[] = [], totalDaysCount: number = 15, completed: string[] = [], attempted: string[] = [], score: number = 0) => {
     setMissedDays(missed);
     setCompletedDays(completed);
     setAttemptedDays(attempted);
+    setTechScore(score);
     setCurrentView("stats");
   };
 
@@ -252,6 +254,7 @@ const Index = () => {
         missedDays={missedDays}
         totalDays={totalDaysForStats}
         technology={userData.technology || "sql"}
+        score={techScore}
         onBack={handleBackFromStats}
       />
     );
