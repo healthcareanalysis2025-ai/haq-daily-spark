@@ -443,30 +443,18 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
             <Card className="p-6 md:p-8 shadow-md border-border hover:shadow-lg transition-all duration-300">
               {/* Sticky Query Header */}
               <div className="sticky top-0 z-10 bg-card/95 backdrop-blur-sm -mx-6 -mt-6 md:-mx-8 md:-mt-8 px-6 py-6 md:px-8 md:py-6 mb-8 border-b border-border/50 shadow-sm">
-                <div className="flex items-center justify-between gap-4 mb-4">
-                  <div className="flex items-center gap-3 flex-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={onBack}
-                      className="flex-shrink-0 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-colors rounded-full"
-                    >
-                      <ArrowLeft className="w-6 h-6 text-primary" />
-                    </Button>
-                    <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                      {techName === "Python" ? "Python Question" : "SQL Query"} for {loginDate}
-                    </h2>
-                  </div>
+                <div className="flex items-center gap-3 mb-4">
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={handleEmailQuery}
-                    disabled={!submitted}
-                    className="flex-shrink-0 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-colors rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Email Solution"
+                    onClick={onBack}
+                    className="flex-shrink-0 h-12 w-12 bg-primary/10 hover:bg-primary/20 transition-colors rounded-full"
                   >
-                    <Mail className="w-6 h-6 text-primary" />
+                    <ArrowLeft className="w-6 h-6 text-primary" />
                   </Button>
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                    {techName === "Python" ? "Python Question" : "SQL Query"} for {loginDate}
+                  </h2>
                 </div>
                 <div className="space-y-2 ml-14">
                   <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
@@ -556,6 +544,13 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
                       <p className="text-muted-foreground text-sm md:text-base">
                         Returning to dashboard...
                       </p>
+                      <Button
+                        onClick={handleEmailQuery}
+                        className="mt-4 gap-2 shadow-card hover:shadow-card-hover"
+                      >
+                        <Mail className="w-4 h-4" />
+                        Email Solution
+                      </Button>
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -566,9 +561,19 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
                       <p className="text-muted-foreground text-sm md:text-base mb-4">
                         The correct answers are highlighted above.
                       </p>
-                      <Button onClick={onBack} className="mt-4 shadow-card hover:shadow-card-hover">
-                        Return to Dashboard
-                      </Button>
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <Button onClick={onBack} className="shadow-card hover:shadow-card-hover">
+                          Return to Dashboard
+                        </Button>
+                        <Button
+                          onClick={handleEmailQuery}
+                          variant="outline"
+                          className="gap-2"
+                        >
+                          <Mail className="w-4 h-4" />
+                          Email Solution
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>
