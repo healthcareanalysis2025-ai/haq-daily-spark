@@ -25,6 +25,7 @@ import ninjaSpinner from "@/assets/ninja-spinner.png";
 import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config";
 import { useLogout } from "@/hooks/useLogout";
+import { getCurrentDate, getCurrentTime } from "../utils/datetime";
 
 interface LoginPageProps {
   onLogin: (name: string, track: string, batchCode: string) => void;
@@ -39,7 +40,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { setuserId, setLoginEmail, setLoginDate, setLoginTime } = useUser();
+  const { setuserId, setLoginEmail, setLoginDate, setLoginTime,setUserLogId } = useUser();
   const { logout } = useLogout();
 
   const handleSignUp = async () => {
@@ -89,14 +90,16 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   /* BACKEND N8N CALL*/
   try {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
+    const userLocal_dateTime=getCurrentDate()+" "+getCurrentTime();
+    
     const payload = {
       name: name,
       track: track,
       batch_code: batchCode,
       email: email,
       password: password,
-      zone: timezone
+      zone: timezone,
+      userLocal_dateTime:userLocal_dateTime
     };
 
     const res = await fetch(`${BASE_URL}/signUp`, {
@@ -227,7 +230,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       throw new Error(`Backend returned status ${res.status}`);
     }
 
-    const data = await res.json();
+    const data = await res.json(); console.log(data);
 
     if (data.status === "success" && data.user) {
       toast({
@@ -241,6 +244,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       setLoginEmail(email);
       setLoginDate(userDate);
       setLoginTime(userTime);
+      setUserLogId(data.user_log_id)
       
       onLogin(
         data.user.name || "User",

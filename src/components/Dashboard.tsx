@@ -366,6 +366,7 @@ const isDateDisabled = (date: Date) => {
                 )}
                 
                 {/* Missed Days Status */}
+                {/*
                 {missedDaysCount > 0 ? (
                   <div className="flex items-center gap-5 p-5 bg-destructive/10 rounded-xl border-2 border-destructive/30 shadow-md hover:shadow-lg transition-all">
                     <div className="w-16 h-16 bg-destructive/20 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -394,7 +395,71 @@ const isDateDisabled = (date: Date) => {
                       </p>
                     </div>
                   </div>
+                  
+                )}*/}
+                {/* === Missed / Completed / First-Day Logic === */}
+                {missedDaysCount > 0 ? (
+                  // ❌ User missed some days
+                  <div className="flex items-center gap-5 p-5 bg-destructive/10 rounded-xl border-2 border-destructive/30 shadow-md hover:shadow-lg transition-all">
+                    <div className="w-16 h-16 bg-destructive/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <XCircle className="w-9 h-9 text-destructive" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-destructive">
+                        Missed ({missedDaysCount} {missedDaysCount === 1 ? "Day" : "Days"})
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Catch up on missed challenges to stay on track
+                      </p>
+                    </div>
+                  </div>
+                ) : totalDays <= 1 ? (
+                  // ⭐ First day — no missed days (special message)
+                  <div className="flex items-center gap-5 p-5 bg-blue-500/10 rounded-xl border-2 border-blue-500/30 shadow-md hover:shadow-lg transition-all">
+                    <div className="w-16 h-16 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-9 h-9 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-blue-600">
+                        Welcome to Day 1!
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        No missed days yet — keep the streak going!
+                      </p>
+                    </div>
+                  </div>
+                ) : progress >= 70 ? (
+                  // 🎉 No missed days + high progress
+                  <div className="flex items-center gap-5 p-5 bg-success/10 rounded-xl border-2 border-success/30 shadow-md hover:shadow-lg transition-all">
+                    <div className="w-16 h-16 bg-success/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-9 h-9 text-success" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-success">
+                        Completed All Days
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Great job staying consistent!
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  // 👍 No missed days but progress < 70%
+                  <div className="flex items-center gap-5 p-5 bg-green-500/10 rounded-xl border-2 border-green-500/30 shadow-md hover:shadow-lg transition-all">
+                    <div className="w-16 h-16 bg-green-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-9 h-9 text-green-700" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-green-700">
+                        You're on track!
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Keep going—no missed days so far!
+                      </p>
+                    </div>
+                  </div>
                 )}
+
           </div>
 
           <div className="mt-6">
