@@ -381,7 +381,7 @@ const isDateDisabled = (date: Date) => {
                       </p>
                     </div>
                   </div>
-                ) : (
+                ) : dashboardData?.completedDays && dashboardData.completedDays.length > 0 ? (
                   <div className="flex items-center gap-5 p-5 bg-success/10 rounded-xl border-2 border-success/30 shadow-md hover:shadow-lg transition-all">
                     <div className="w-16 h-16 bg-success/20 rounded-xl flex items-center justify-center flex-shrink-0">
                       <CheckCircle className="w-9 h-9 text-success" />
@@ -392,6 +392,20 @@ const isDateDisabled = (date: Date) => {
                       </p>
                       <p className="text-sm text-muted-foreground mt-1">
                         Great job staying consistent!
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-5 p-5 bg-primary/10 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-lg transition-all">
+                    <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <CalendarIcon className="w-9 h-9 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-primary">
+                        Start Your First Challenge
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Click on today's date below to begin!
                       </p>
                     </div>
                   </div>
