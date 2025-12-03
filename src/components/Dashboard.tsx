@@ -133,8 +133,9 @@ console.log(completedDays);
       // 2️⃣ Generate all dates from signup → today (inclusive)
       const allDates: string[] = [];
       let currentDate = new Date(signup_date);
+      const todayDate = startOfDay(new Date());
 
-      while (currentDate <= new Date(loginDate)) {
+      while (currentDate <= todayDate) {
         allDates.push(currentDate.toISOString().split("T")[0]); // format YYYY-MM-DD
         currentDate.setDate(currentDate.getDate() + 1); // move to next day
       }
@@ -201,10 +202,10 @@ console.log(completedDays);
     }
   };
 
-  if (userId) {
+  if (userId && userData.tech_id) {
     fetchUserDays();
   }
-}, [userId]);
+}, [userId, userData.tech_id]);
 
 
 
