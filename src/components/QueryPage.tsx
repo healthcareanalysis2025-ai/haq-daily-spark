@@ -60,6 +60,7 @@ export const QueryPage = ({
   const [answers, setAnswers] = useState<(number | null)[]>([]); // will initialize after fetch
 const [questions, setQuestions] = useState<Question[]>([]);
  const [loading, setLoading] = useState(true);
+ const [submitting, setSubmitting] = useState(false);
 const { userId,loginEmail,loginDate,loginTime } = useUser();
 const [questionId, setQuestionId] = useState(0);
 const [queryQuestion, setQueryQuestion] = useState(''); // empty string initially
@@ -176,9 +177,11 @@ const handleSelect = (qIndex: number, value: number) => {
 };
 
 const handleSubmit = async () => { console.log("handleSubmit called"+answers.toString());
+  setSubmitting(true);
   // 1️⃣ Check if any question is unanswered
   if (answers.some((ans) => ans === null)) {
     toast.error("Please answer all questions!");
+    setSubmitting(false);
     return;
   }
 
@@ -255,6 +258,7 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
     if (result.status === "fail") {
       toast.error(result.message || "Already responded for the day!!");
       setSubmitted(false);
+      setSubmitting(false);
       return;
     }
 
@@ -283,6 +287,8 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
     console.error("Submission failed:", err);
     toast.error(`Failed to submit responses: ${err.message || err}`);
     setSubmitted(false);
+  } finally {
+    setSubmitting(false);
   }
 };
 
@@ -461,8 +467,8 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
                     <Mail className="w-6 h-6 text-primary" />
                   </Button>
                 </div>
-                <div className="space-y-2 ml-14 overflow-hidden">
-                  <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed break-words whitespace-pre-wrap">
+                <div className="space-y-2 ml-14">
+                  <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
                     {queryQuestion}
                   </p>
                   <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
@@ -474,7 +480,7 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
               <div className="mb-10 space-y-8">
                 {currentQuestion.map((q, qIndex) => (
                   <div key={q.mcq_id} className="p-6 bg-muted/30 rounded-lg border border-border/50">
-                    <h3 className="text-lg md:text-xl font-bold mb-6 text-foreground tracking-tight break-words whitespace-pre-wrap">
+                    <h3 className="text-lg md:text-xl font-bold mb-6 text-foreground tracking-tight">
                       {qIndex + 1}. {q.question}
                     </h3>
 
@@ -526,9 +532,17 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
               {!submitted ? (
                 <Button
                   onClick={handleSubmit}
-                  className="w-full py-6 text-base md:text-lg font-semibold shadow-card hover:shadow-card-hover transition-all hover:scale-[1.02]"
+                  disabled={submitting}
+                  className="w-full py-6 text-base md:text-lg font-semibold shadow-card hover:shadow-card-hover transition-all hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Submit Answer
+                  {submitting ? (
+                    <div className="flex items-center gap-3">
+                      <img src={ninjaSpinner} alt="Loading" className="w-6 h-6 animate-spin" />
+                      Submitting...
+                    </div>
+                  ) : (
+                    "Submit Answer"
+                  )}
                 </Button>
               ) : (
                 <div className="text-center p-6 bg-muted/20 rounded-xl">
