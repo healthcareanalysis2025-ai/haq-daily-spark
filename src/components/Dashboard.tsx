@@ -11,15 +11,9 @@ import { addDays, startOfDay, differenceInDays, format, isBefore } from "date-fn
 import { ProgressStats } from "./ProgressStats";
 import { Header } from "@/components/Header";
 
-// Parse date string as local date (avoids timezone issues)
-function parseLocalDate(dateStr: string): Date {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  return new Date(year, month - 1, day); // month is 0-indexed
-}
-
 function generateDayStatuses(signUpDate: string, attemptedDays: string[]) {
   const today = startOfDay(new Date()); console.log("generateDayStatuses() is today////: ",attemptedDays,today);
-  const start = startOfDay(parseLocalDate(signUpDate)); console.log("generateDayStatuses() is start////: ",start);
+  const start = startOfDay(new Date(signUpDate)); console.log("generateDayStatuses() is start////: ",start);
   const diff = differenceInDays(today, start); console.log("generateDayStatuses() is diff////: ",diff);
   const statuses = [];
 
@@ -138,10 +132,9 @@ console.log(completedDays);
 
       // 2️⃣ Generate all dates from signup → today (inclusive)
       const allDates: string[] = [];
-      let currentDate = parseLocalDate(signup_date);
-      const todayDate = startOfDay(new Date());
+      let currentDate = new Date(signup_date);
 
-      while (currentDate <= todayDate) {
+      while (currentDate <= new Date(loginDate)) {
         allDates.push(currentDate.toISOString().split("T")[0]); // format YYYY-MM-DD
         currentDate.setDate(currentDate.getDate() + 1); // move to next day
       }
@@ -163,7 +156,7 @@ console.log(completedDays);
       
       // 1️⃣ Difference between signup date & current date
       const today = new Date();
-      const signup = parseLocalDate(signup_date);
+      const signup = new Date(signup_date);
 
       const diffTime = today.getTime() - signup.getTime();
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))+1;
@@ -208,10 +201,10 @@ console.log(completedDays);
     }
   };
 
-  if (userId && userData.tech_id) {
+  if (userId) {
     fetchUserDays();
   }
-}, [userId, userData.tech_id]);
+}, [userId]);
 
 
 
@@ -387,7 +380,7 @@ const isDateDisabled = (date: Date) => {
                       </p>
                     </div>
                   </div>
-                ) : dashboardData?.completedDays && dashboardData.completedDays.length > 0 ? (
+                ) : (
                   <div className="flex items-center gap-5 p-5 bg-success/10 rounded-xl border-2 border-success/30 shadow-md hover:shadow-lg transition-all">
                     <div className="w-16 h-16 bg-success/20 rounded-xl flex items-center justify-center flex-shrink-0">
                       <CheckCircle className="w-9 h-9 text-success" />
@@ -398,20 +391,6 @@ const isDateDisabled = (date: Date) => {
                       </p>
                       <p className="text-sm text-muted-foreground mt-1">
                         Great job staying consistent!
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-5 p-5 bg-primary/10 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-lg transition-all">
-                    <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <CalendarIcon className="w-9 h-9 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold text-primary">
-                        Start Your First Challenge
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Click on today's date below to begin!
                       </p>
                     </div>
                   </div>
