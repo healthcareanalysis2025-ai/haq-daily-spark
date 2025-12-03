@@ -260,7 +260,7 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
 
     if (result.status === "success") {
       toast.success(result.message || "Responses submitted successfully!");
-      if (questions.length > 0 && correctCount === questions.length) {
+      if (correctCount === questions.length) {
         setIsCorrect(true);
         setShowConfetti(true);
         toast.success("All answers correct! 🎉 Great job!");
@@ -461,8 +461,8 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
                     <Mail className="w-6 h-6 text-primary" />
                   </Button>
                 </div>
-                <div className="space-y-2 ml-14 overflow-hidden">
-                  <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed break-words whitespace-pre-wrap">
+                <div className="space-y-2 ml-14">
+                  <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
                     {queryQuestion}
                   </p>
                   <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
@@ -474,7 +474,7 @@ const handleEmailQuery = async () => { console.log("EMAIL ******");
               <div className="mb-10 space-y-8">
                 {currentQuestion.map((q, qIndex) => (
                   <div key={q.mcq_id} className="p-6 bg-muted/30 rounded-lg border border-border/50">
-                    <h3 className="text-lg md:text-xl font-bold mb-6 text-foreground tracking-tight break-words whitespace-pre-wrap">
+                    <h3 className="text-lg md:text-xl font-bold mb-6 text-foreground tracking-tight">
                       {qIndex + 1}. {q.question}
                     </h3>
 
