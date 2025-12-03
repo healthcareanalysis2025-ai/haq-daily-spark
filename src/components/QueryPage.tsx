@@ -260,7 +260,7 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
 
     if (result.status === "success") {
       toast.success(result.message || "Responses submitted successfully!");
-      if (correctCount === questions.length) {
+      if (questions.length > 0 && correctCount === questions.length) {
         setIsCorrect(true);
         setShowConfetti(true);
         toast.success("All answers correct! 🎉 Great job!");
