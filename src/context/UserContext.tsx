@@ -9,8 +9,12 @@ interface UserContextType {
   setLoginTime: (time: string) => void;
   loginDate: string | null;
   setLoginDate: (date: string) => void;
+  
   userLogId: number | null;
   setUserLogId: (userLogId: number) => void;
+  
+  overallScore: number | null;
+  setOverallScore: (overallScore: number) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -21,8 +25,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [loginTime, setLoginTime] = useState<string | null>(null);
   const [loginDate, setLoginDate] = useState<string | null>(null);
   const [userLogId, setUserLogId] = useState<number | null>(null);
+   const [overallScore, setOverallScore] = useState<number | null>(null);
   return (
-    <UserContext.Provider value={{ userId,setuserId, loginEmail, setLoginEmail, loginTime, setLoginTime, loginDate, setLoginDate,userLogId, setUserLogId }}>
+    <UserContext.Provider value={{ userId,setuserId, loginEmail, setLoginEmail, loginTime, setLoginTime, loginDate, setLoginDate,userLogId, setUserLogId,overallScore,setOverallScore }}>
       {children}
     </UserContext.Provider>
   );

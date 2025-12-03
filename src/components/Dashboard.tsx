@@ -94,7 +94,7 @@ export const Dashboard = ({
   const [missedDaysData, setMissedDaysData] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const { userId, loginEmail, loginDate, loginTime } = useUser();
+  const { userId, loginEmail, loginDate, loginTime,setOverallScore } = useUser();
 
   console.log("Logged in user:", loginEmail, "date :", loginDate, "  Time :", loginTime+" Userid "+userId+" completed days");
   const [dayStatuses, setDayStatuses] = useState<{ date: string; status: string; clickable: boolean }[]>([]);
@@ -124,7 +124,9 @@ console.log(completedDays);
 
       const { signup_date, attemptedDays } = data[0];
       console.log("Signup date:", signup_date);
-      
+      console.log("Overall Score "+data[0].total_weighted_average);
+      const score=data[0].total_weighted_average;
+      setOverallScore(score);
       if (!signup_date) {
         toast.error("No signup date found for user.");
         return;
@@ -317,9 +319,9 @@ const isDateDisabled = (date: Date) => {
           
           <div className="space-y-3 mb-8 p-5 bg-muted/40 rounded-lg border border-border/50">
             <div className="flex justify-between text-sm md:text-base">
-              <span className="text-muted-foreground font-medium">Completed Queries</span>
+              <span className="text-muted-foreground font-medium">Completed Days</span>
               <span className="font-bold text-primary text-lg">
-                {dashboardData?.completedDays?.length} / {totalDays}
+                {dashboardData?.completedDays?.length} / {totalDays} days
               </span>
             </div>
             <Progress value={progress} className="h-3 bg-muted" />

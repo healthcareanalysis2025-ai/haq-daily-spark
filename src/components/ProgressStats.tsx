@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trophy, XCircle, TrendingUp, Calendar, Award, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/Header";
+import { useUser } from "@/context/UserContext";
 
 interface ProgressStatsProps {
   userName: string;
@@ -23,12 +24,14 @@ export const ProgressStats = ({
   totalDays = 15,
   technology = "sql",
   onBack,
-}: ProgressStatsProps) => {
+}: ProgressStatsProps) => { 
+  const { overallScore } = useUser();
   const techName = technology === "sql" ? "SQL" : "Python";
   const completedCount = completedDays.length;
   const attemptedCount = attemptedDays.length;
   const missedCount = missedDays.length;
-  const successRate = attemptedCount > 0 ? (completedCount / attemptedCount) * 100 : 0;
+  //const successRate = attemptedCount > 0 ? (completedCount / attemptedCount) * 100 : 0;
+  const successRate = overallScore*100;
   const overallProgress = (completedCount / totalDays) * 100;
   console.log("from dashboard technology:", technology);
   console.log(completedDays);
