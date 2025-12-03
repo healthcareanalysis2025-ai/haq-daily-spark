@@ -11,9 +11,15 @@ import { addDays, startOfDay, differenceInDays, format, isBefore } from "date-fn
 import { ProgressStats } from "./ProgressStats";
 import { Header } from "@/components/Header";
 
+// Parse date string as local date (avoids timezone issues)
+function parseLocalDate(dateStr: string): Date {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day); // month is 0-indexed
+}
+
 function generateDayStatuses(signUpDate: string, attemptedDays: string[]) {
   const today = startOfDay(new Date()); console.log("generateDayStatuses() is today////: ",attemptedDays,today);
-  const start = startOfDay(new Date(signUpDate)); console.log("generateDayStatuses() is start////: ",start);
+  const start = startOfDay(parseLocalDate(signUpDate)); console.log("generateDayStatuses() is start////: ",start);
   const diff = differenceInDays(today, start); console.log("generateDayStatuses() is diff////: ",diff);
   const statuses = [];
 
@@ -132,7 +138,7 @@ console.log(completedDays);
 
       // 2️⃣ Generate all dates from signup → today (inclusive)
       const allDates: string[] = [];
-      let currentDate = new Date(signup_date);
+      let currentDate = parseLocalDate(signup_date);
       const todayDate = startOfDay(new Date());
 
       while (currentDate <= todayDate) {
@@ -157,7 +163,7 @@ console.log(completedDays);
       
       // 1️⃣ Difference between signup date & current date
       const today = new Date();
-      const signup = new Date(signup_date);
+      const signup = parseLocalDate(signup_date);
 
       const diffTime = today.getTime() - signup.getTime();
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))+1;
