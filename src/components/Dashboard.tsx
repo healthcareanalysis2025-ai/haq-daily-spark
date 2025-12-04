@@ -335,7 +335,7 @@ const isDateDisabled = (date: Date) => {
           {/* Challenge Status Card */}
           <div className="mb-8 space-y-4">
             {/* Certificate Eligibility Status */}
-            {dashboardData?.completedDays && dashboardData.completedDays.length >= 15 && (
+            {dashboardData?.completedDays && dashboardData.completedDays.length >= 1 && (
                   <>
                     {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100) >= 70 ? (
                       <div className="flex items-center gap-5 p-5 bg-primary/10 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-lg transition-all">
