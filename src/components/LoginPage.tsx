@@ -118,10 +118,52 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     if(data.success === "true"){
       toast({
         title: "Account created!",
-        description: "You can now proceed with your learning journey.",
+        description: "Logging you in...",
       });
 
-      onLogin(name, track, batchCode);
+      // Auto-login after successful signup to get user data
+      const userDate = new Date().toLocaleDateString("en-CA");
+      const userTime = new Date().toLocaleTimeString("en-CA", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      });
+
+      const loginPayload = {
+        email: email,
+        password: password,
+        userDate: userDate,
+        userTime: userTime
+      };
+
+      const loginRes = await fetch(`${BASE_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginPayload),
+        signal: AbortSignal.timeout(10000),
+      });
+
+      if (loginRes.ok) {
+        const loginData = await loginRes.json();
+        
+        if (loginData.status === "success" && loginData.user) {
+          // Set UserContext values
+          setuserId(loginData.user.user_id);
+          setLoginEmail(email);
+          setLoginDate(userDate);
+          setLoginTime(userTime);
+          setUserLogId(loginData.user_log_id);
+          
+          onLogin(name, track, batchCode);
+        } else {
+          // Fallback: proceed without full user context
+          onLogin(name, track, batchCode);
+        }
+      } else {
+        // Fallback: proceed without full user context
+        onLogin(name, track, batchCode);
+      }
     } else {
       toast({
         title: data.message || "Sign up failed",
