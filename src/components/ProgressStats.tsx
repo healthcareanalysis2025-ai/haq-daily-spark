@@ -32,8 +32,7 @@ export const ProgressStats = ({
   const missedCount = missedDays.length;
   const successRate = score * 100;
   const overallProgress = (completedCount / totalDays) * 100;
-  console.log("from dashboard technology:", technology);
-  console.log(completedDays);
+  
   // Calculate streak based on consecutive dates
   const calculateStreak = () => {
     if (completedDays.length === 0) return 0;

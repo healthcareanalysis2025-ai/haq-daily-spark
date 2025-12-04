@@ -41,7 +41,7 @@ const Index = () => {
 
       // If user data exists but auth data is missing/incomplete, clear everything and show login
       if (savedUser && !savedAuth) {
-        console.log("User data exists but auth data missing - clearing session");
+        
         localStorage.removeItem("haq_user");
         localStorage.removeItem("haq_completed");
         localStorage.removeItem("haq_attempted");
@@ -156,7 +156,7 @@ const Index = () => {
   
   const handleTechnologySelect = (technology: "sql" | "python") => {
     if (userData) {
-      console.log("technology selected:", technology);
+      
       const techMap: Record<"sql" | "python", number> = {
         sql: 1,
         python: 2,
@@ -164,9 +164,9 @@ const Index = () => {
       
       
       const tech_id = techMap[technology]; 
-      console.log("tech_id:", tech_id);
+      
       const updatedUser = { ...userData, technology, tech_id };
-      console.log("Inside index file Technology Selection Updated User:", updatedUser);
+      
       setUserData(updatedUser);
       localStorage.setItem("haq_user", JSON.stringify(updatedUser));
       setCurrentView("dashboard");
@@ -248,7 +248,7 @@ const Index = () => {
   }
 
   if (currentView === "technology") {
-    console.log("from index file technology view userData:", userData);
+    
     return <Technology 
             
             onSelect={handleTechnologySelect} />;

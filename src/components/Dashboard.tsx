@@ -97,12 +97,10 @@ export const Dashboard = ({
 
   const { userId, loginEmail, loginDate, loginTime,setOverallScore } = useUser();
 
-  console.log("Logged in user:", loginEmail, "date :", loginDate, "  Time :", loginTime+" Userid "+userId+" completed days");
+  console.log("Logged in user:", loginEmail," Userid "+userId+" Dashboard");
   const [dayStatuses, setDayStatuses] = useState<{ date: string; status: string; clickable: boolean }[]>([]);
   const [dashboardData, setDashboardData] = useState<DashboardProps | null>(null);
-console.log("******DASHBOARD*********");
-console.log("from dashboard technology:", userData.tech_id);
-console.log(completedDays);
+
   useEffect(() => {
   const fetchUserDays = async () => {
     setIsLoading(true);
@@ -121,12 +119,11 @@ console.log(completedDays);
       // Expected response format:
       // { signup_date: "2025-10-29", attemptedDays: ["2025-10-29", "2025-11-05"] }
 
-      console.log("Fetched data from n8n:", data);
+      //console.log("Fetched data from n8n:", data);
 
       const { signup_date, attemptedDays } = data[0];
       const score = data[0].total_weighted_average || 0;
-      console.log("Signup date:", signup_date);
-      console.log("Overall Score:", score);
+      
       setTechScore(score);
       setOverallScore(score);
       if (!signup_date) {
@@ -148,13 +145,12 @@ console.log(completedDays);
         ? attemptedDays.filter(d => d && typeof d === "string")
         : [];
 
-      console.log("Signup date:", signup_date);
-      console.log("Clean attempted days:", cleanAttemptedDays);
+      
       
       const missedDays = allDates.filter(date => !cleanAttemptedDays.includes(date));
-      console.log("All Dates:", allDates);
       
-      console.log("Missed Days:", missedDays);
+      
+      
       setMissedDaysCount(missedDays.length);
       setMissedDaysData(missedDays);
       
@@ -165,7 +161,7 @@ console.log(completedDays);
       const diffTime = today.getTime() - signup.getTime();
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))+1;
       const attemptedCount = cleanAttemptedDays.length;
-      console.log("Attempted days count:", attemptedCount);
+      
       
       
       if(diffDays > 15){
@@ -175,7 +171,7 @@ console.log(completedDays);
         setTotalDays(15);
         setProgress((attemptedCount / 15) * 100);
       }
-      console.log("Days since signup:", diffDays);
+      
 
      
       

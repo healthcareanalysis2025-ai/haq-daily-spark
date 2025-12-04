@@ -68,54 +68,11 @@ const [queryQuestion, setQueryQuestion] = useState(''); // empty string initiall
 const [difficultyLevel,setDifficultyLevel]=useState('');
 const [emailLoading, setEmailLoading] = useState(false);
 
-//  useEffect(() => {
-//     const fetchQuestions = async () => {
-//       try {
-        
-//         console.log("Date ",loginDate," user ",userId);
-        
-//         //const res = await fetch("https://mite-kind-neatly.ngrok-free.app/webhook-test/getQuestions", {
-//     const res = await fetch(`${BASE_URL}/getQuestions`, {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({current_date:loginDate}), //  send key-value data
-//     });
-//         if (!res.ok) throw new Error("Failed to fetch questions");
-        
-//         const rawData = await res.json(); // raw n8n items
-//         console.log(rawData);
-//         console.log("array kength ",rawData.length);
-        
-// // check if rawData is array or wrapped in {mcqs: [...]}
-// const data: Question[] = Array.isArray(rawData)
-//   ? rawData
-//   : Array.isArray(rawData.mcqs)
-//   ? rawData.mcqs
-//   : [];
-//         setQuestions(data);
-//         setAnswers(Array(data.length).fill(null)); // initialize answers array
-//         setLoading(false);
-        
-//         setQuestionId(data?.[0]?.question_id ?? 0);
-//         console.log("First question ID:", data?.[0]?.question_id ?? 0);
-
-//         console.log("Fetched questions:", data);
-        
-
-//       } catch (err: any) {
-//         console.error(err);
-//         toast.error(err.message || "Error fetching questions");
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchQuestions();
-//   }, []);
 
   useEffect(() => {
   const fetchQuestions = async () => {
     try {
-      console.log("useefect INSIDE QUERY PAGE ***********Date", loginDate, "user", userId, "tech_id", userData.tech_id);
+      console.log("useefect INSIDE QUERY PAGE ***********","tech_id", userData.tech_id);
 
       const res = await fetch(`${BASE_URL}/getQuestions`, {
         method: "POST",
@@ -126,7 +83,7 @@ const [emailLoading, setEmailLoading] = useState(false);
       if (!res.ok) throw new Error("Failed to fetch questions");
 
       const rawData = await res.json();
-      console.log("Raw Data:", rawData);
+      
 
       // rawData is an array with one object
       const mcqs: Question[] = rawData?.[0]?.mcqs ?? [];
@@ -141,9 +98,7 @@ const [emailLoading, setEmailLoading] = useState(false);
 
       setQuestionId(mcqs?.[0]?.question_id ?? 0);
       setSubmitted(false);
-      console.log("Main SQL query:", mainQuery);
-      console.log("First MCQ ID:", mcqs?.[0]?.question_id);
-      console.log("Fetched MCQs:", mcqs);
+      
 
     } catch (err: any) {
       console.error(err);
@@ -199,7 +154,7 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
 
   // 3️⃣ Calculate total question weight
   const totalQuestionWeight = difficultyWeight(difficultyLevel);
-  console.log("totalQuestionWeight "+totalQuestionWeight);
+  
   // 4️⃣ Check correctness for each question
   const results = questions.map((q, i) => answers[i] === q.correctAnswer);
 
@@ -238,7 +193,7 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
     },
   };
 
-  console.log("Payload sent to n8n:", payload);
+  
 
   try {
     const res = await fetch(`${BASE_URL}/submitResponse`, {
@@ -253,7 +208,7 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
     }
 
     const data = await res.json();
-    console.log("n8n raw response:", data);
+    
 
     const result = Array.isArray(data) ? data[0] : data;
 
@@ -293,105 +248,11 @@ const handleSubmit = async () => { console.log("handleSubmit called"+answers.toS
   }
 };
 
-/*
-const handleSubmitOld = async () => {
-  // 1️⃣ Check if any question is unanswered
-  if (answers.some((ans) => ans === null)) {
-    toast.error("Please answer all questions!");
-    return;
-  }
-
-  // 2️⃣ Check correctness for each question
-  const results = questions.map((q, i) => answers[i] === q.correctAnswer);
-
-  // 3️⃣ Count correct answers
-  const correctCount = results.filter(Boolean).length;
-
-   // 4️⃣ Calculate daily weighted average (%)
-  const dailyWeightedAvg = (correctCount / questions.length);
-
-  // 4️⃣ Prepare payload for n8n
-  const payload = {
-    responses: questions.map((q, i) => ({
-      mcq_id: q.mcq_id,
-      user_id: userId,
-      selected_option: String.fromCharCode(65 + answers[i]!),
-      correct_flag: results[i],
-      answered: true,
-      respond_date: loginDate,
-    })),
-    summary: {
-      user_id: userId,
-      question_id: questionId,
-      total_mcq: questions.length,
-      total_correct: correctCount,
-      total_avg_score: dailyWeightedAvg.toFixed(2),
-      weighted_score:"",
-      question_weight:"",
-      submitted_date: loginDate
-      },
-  };
-
-  console.log("Payload sent to n8n:", payload);
-
-  try {
-    const res = await fetch(`${BASE_URL}/submitResponse`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(`n8n API error: ${errorText || res.statusText}`);
-    }
-
-    const data = await res.json();
-    console.log("n8n raw response:", data);
-
-    // 🧩 Normalize array/object
-    const result = Array.isArray(data) ? data[0] : data;
-
-    // ✅ Now result.status and result.message will always exist
-    if (result.status === "fail") {
-      toast.error(result.message || "Already responded for the day!!");
-      setSubmitted(false);
-      return;
-    }
-
-    if (result.status === "success") {
-      toast.success(result.message || "Responses submitted successfully!");
-      if (correctCount === questions.length) {
-        setIsCorrect(true);
-        setShowConfetti(true);
-        toast.success("All answers correct! 🎉 Great job!");
-        setTimeout(() => {
-          onComplete(day);
-          setShowConfetti(false);
-        }, 2000);
-      } else {
-        setIsCorrect(false);
-        toast.error(`You got ${correctCount}/${questions.length} correct.`);
-      }
-      setSubmitted(true);
-    } else {
-      toast.error("Unexpected response from server.");
-      console.warn("Unexpected n8n response:", data);
-      setSubmitted(false);
-    }
-
-  } catch (err) {
-    console.error("Submission failed:", err);
-    toast.error(`Failed to submit responses: ${err.message || err}`);
-    setSubmitted(false);
-  }
-};
-*/
 
 
 
 const handleEmailQuery = async () => { 
-  console.log("EMAIL ******");
+  
   if (emailLoading) return; // Prevent multiple clicks
   setEmailLoading(true);
   try {

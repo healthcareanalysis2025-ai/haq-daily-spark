@@ -254,10 +254,6 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       hour12: false
     });
 
-
-    console.log("User date:", userDate);
-    console.log("User time:", userTime);
-
     const payload = {
       email: email,
       password: password,
@@ -281,7 +277,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       throw new Error(`Backend returned status ${res.status}`);
     }
 
-    const data = await res.json(); console.log(data);
+    const data = await res.json();
 
     if (data.status === "success" && data.user) {
       toast({
