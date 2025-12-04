@@ -35,7 +35,10 @@ export const useLogout = () => {
     }
     
     // Always clear client-side data after logout request completes
-    localStorage.clear();
+    localStorage.removeItem("haq_user");
+    localStorage.removeItem("haq_auth");
+    localStorage.removeItem("haq_completed");
+    localStorage.removeItem("haq_attempted");
     sessionStorage.clear();
     
     // Reset user context

@@ -7,6 +7,7 @@ import { CertificatePage } from "@/components/CertificatePage";
 import { CompletionPage } from "@/components/CompletionPage";
 import { ProgressStats } from "@/components/ProgressStats";
 import Technology from "./Technology";
+import { useUser } from "@/context/UserContext";
 
 interface UserData {
   name: string;
@@ -27,16 +28,59 @@ const Index = () => {
   const [techScore, setTechScore] = useState<number>(0);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
+  
+  const { setuserId, setLoginEmail, setLoginDate, setLoginTime, setUserLogId } = useUser();
 
   // Load data from localStorage on mount and listen for logout
   useEffect(() => {
     const checkAuth = () => {
       const savedUser = localStorage.getItem("haq_user");
+      const savedAuth = localStorage.getItem("haq_auth");
       const savedCompleted = localStorage.getItem("haq_completed");
       const savedAttempted = localStorage.getItem("haq_attempted");
 
-      if (savedUser) {
+      // If user data exists but auth data is missing/incomplete, clear everything and show login
+      if (savedUser && !savedAuth) {
+        console.log("User data exists but auth data missing - clearing session");
+        localStorage.removeItem("haq_user");
+        localStorage.removeItem("haq_completed");
+        localStorage.removeItem("haq_attempted");
+        setCurrentView("login");
+        setUserData(null);
+        setCompletedDays([]);
+        setAttemptedDays([]);
+        setMissedDays([]);
+        setIsAuthChecking(false);
+        return;
+      }
+
+      if (savedUser && savedAuth) {
         const user = JSON.parse(savedUser);
+        const auth = JSON.parse(savedAuth);
+        
+        // Validate auth data is complete
+        if (!auth.userId || !auth.userLogId) {
+          console.log("Auth data incomplete - clearing session");
+          localStorage.removeItem("haq_user");
+          localStorage.removeItem("haq_auth");
+          localStorage.removeItem("haq_completed");
+          localStorage.removeItem("haq_attempted");
+          setCurrentView("login");
+          setUserData(null);
+          setCompletedDays([]);
+          setAttemptedDays([]);
+          setMissedDays([]);
+          setIsAuthChecking(false);
+          return;
+        }
+        
+        // Restore UserContext values
+        setuserId(auth.userId);
+        setLoginEmail(auth.loginEmail);
+        setLoginDate(auth.loginDate);
+        setLoginTime(auth.loginTime);
+        setUserLogId(auth.userLogId);
+        
         setUserData(user);
         
         // Check if technology is selected
