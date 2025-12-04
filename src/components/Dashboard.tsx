@@ -337,7 +337,7 @@ const isDateDisabled = (date: Date) => {
             {/* Certificate Eligibility Status */}
             {dashboardData?.completedDays && dashboardData.completedDays.length >= 1 && (
                   <>
-                    {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100) >= 70 ? (
+                    {(techScore ?? 0) >= 0.7 ? (
                       <div className="flex items-center gap-5 p-5 bg-primary/10 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-lg transition-all">
                         <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
                           <CheckCircle className="w-9 h-9 text-primary" />
@@ -347,7 +347,7 @@ const isDateDisabled = (date: Date) => {
                             Certificate Eligible!
                           </p>
                           <p className="text-sm text-muted-foreground mt-1">
-                            You've completed {dashboardData.completedDays.length} days with {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100).toFixed(0)}% score
+                            You've completed {dashboardData.completedDays.length} days with {((techScore ?? 0) * 100).toFixed(0)}% score
                           </p>
                         </div>
                       </div>
@@ -361,7 +361,7 @@ const isDateDisabled = (date: Date) => {
                             Need 70% Score for Certificate
                           </p>
                           <p className="text-sm text-muted-foreground mt-1">
-                            Current score: {((dashboardData.completedDays.length / (dashboardData.attemptedDays?.length || 1)) * 100).toFixed(0)}% - Keep completing challenges!
+                            Current score: {((techScore ?? 0) * 100).toFixed(0)}% - Keep completing challenges!
                           </p>
                         </div>
                       </div>
