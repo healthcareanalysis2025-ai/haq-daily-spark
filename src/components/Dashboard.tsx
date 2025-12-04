@@ -358,7 +358,7 @@ const isDateDisabled = (date: Date) => {
                         </div>
                         <div>
                           <p className="text-lg font-bold text-yellow-600">
-                            Need 70% Score for Certificate
+                            Need minimum of 70% Score for Certificate
                           </p>
                           <p className="text-sm text-muted-foreground mt-1">
                             Current score: {((techScore ?? 0) * 100).toFixed(0)}% - Keep completing challenges!
