@@ -5,7 +5,7 @@ import { BASE_URL } from "@/config";
 
 export const useLogout = () => {
   const navigate = useNavigate();
-  const { userId, loginDate, loginTime, setuserId, setLoginEmail, setLoginDate, setLoginTime,userLogId, setUserLogId } = useUser();
+  const { userId, loginDate, loginTime, setuserId, setLoginEmail, setLoginDate, setLoginTime, userLogId, setUserLogId, setOverallScore } = useUser();
 
   const logout = async () => {
     try {
@@ -43,6 +43,8 @@ export const useLogout = () => {
     setLoginEmail(null);
     setLoginDate(null);
     setLoginTime(null);
+    setUserLogId(null);
+    setOverallScore(null);
     
     // Dispatch custom logout event for Index component
     window.dispatchEvent(new Event("logout"));
