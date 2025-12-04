@@ -274,7 +274,7 @@ const handleEmailQuery = async () => {
     }
 
     const data = await res.json();
-    console.log("Email Query Response:", data);
+    console.log("Email Query Response:");
 
     toast.success("Query and solution have been emailed");
   } catch (error) {
