@@ -155,6 +155,15 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
           setLoginTime(userTime);
           setUserLogId(loginData.user_log_id);
           
+          // Store auth data in localStorage for session persistence
+          localStorage.setItem("haq_auth", JSON.stringify({
+            userId: loginData.user.user_id,
+            userLogId: loginData.user_log_id,
+            loginEmail: email,
+            loginDate: userDate,
+            loginTime: userTime
+          }));
+          
           onLogin(name, track, batchCode);
         } else {
           // Fallback: proceed without full user context
@@ -280,13 +289,21 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
         description: "Successfully logged in.",
       });
       
-      
-      
+      // Set UserContext values
       setuserId(data.user.user_id);
       setLoginEmail(email);
       setLoginDate(userDate);
       setLoginTime(userTime);
-      setUserLogId(data.user_log_id)
+      setUserLogId(data.user_log_id);
+      
+      // Store auth data in localStorage for session persistence
+      localStorage.setItem("haq_auth", JSON.stringify({
+        userId: data.user.user_id,
+        userLogId: data.user_log_id,
+        loginEmail: email,
+        loginDate: userDate,
+        loginTime: userTime
+      }));
       
       onLogin(
         data.user.name || "User",
