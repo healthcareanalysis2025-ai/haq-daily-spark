@@ -337,7 +337,7 @@ const isDateDisabled = (date: Date) => {
             {/* Certificate Eligibility Status */}
             {dashboardData?.completedDays && dashboardData.completedDays.length >= 1 && (
                   <>
-                    {(techScore ?? 0) >= 0.7 ? (
+                    {(techScore ?? 0) >= 0.7 && dashboardData.completedDays.length >= 15 ? (
                       <div className="flex items-center gap-5 p-5 bg-primary/10 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-lg transition-all">
                         <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
                           <CheckCircle className="w-9 h-9 text-primary" />
