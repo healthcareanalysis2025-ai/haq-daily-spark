@@ -260,7 +260,8 @@ const handleEmailQuery = async () => {
       user_id: userId,
       question_id: questionId,
       technology_id: userData.tech_id,
-      posted_date :loginDate
+      posted_date :loginDate,
+      userLocal_dateTime: getCurrentDate()+" "+getCurrentTime()
     };
 
     const res = await fetch(`${BASE_URL}/email`, {
